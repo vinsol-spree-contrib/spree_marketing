@@ -4,7 +4,8 @@ class CreateSpreeContacts < ActiveRecord::Migration
       t.string :mailchimp_id
       t.string :uid, null: false
       t.string :email, null: false
-      t.boolean :active, default: true, index: true
+      t.boolean :active, default: true, index: true, null: false
+      t.index [:email, :active]
     end
   end
 end

@@ -3,7 +3,8 @@ class CreateSpreeLists < ActiveRecord::Migration
     create_table :spree_lists do |t|
       t.string :uid, null: false
       t.string :name
-      t.boolean :active, default: true, index: true
+      t.boolean :active, default: true, index: true, null: false
+      t.index [:name, :active]
     end
   end
 end
