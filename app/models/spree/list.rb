@@ -5,7 +5,7 @@ module Spree
     has_many :contacts, through: :contacts_lists
 
     validates :uid, :name, presence: true
-    validates :uid, uniqueness: { case_sensitive: false }
+    validates :uid, uniqueness: { case_sensitive: false }, allow_blank: true
 
   end
 end
