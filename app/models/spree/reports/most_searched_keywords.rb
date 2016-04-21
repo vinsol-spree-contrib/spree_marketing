@@ -1,6 +1,6 @@
 module Spree
   module Reports
-    class TopKeywords < Base
+    class MostSearchedKeywords < Base
       def query
         Spree::PageEvent.where(action: "search")
                         .group(:search_keywords)
