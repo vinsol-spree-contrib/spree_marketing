@@ -1,7 +1,6 @@
 module Spree
   module Reports
-    class TopProducts < Base
-
+    class MostBoughtProducts < Base
       def query
         Spree::InventoryUnit.includes(variant: :product)
                             .group("spree_variants.id")
@@ -10,7 +9,6 @@ module Spree
                             .limit(@count)
                             .map { |inventory_unit| inventory_unit.variant.product }
       end
-
     end
   end
 end

@@ -1,7 +1,6 @@
 module Spree
   module Reports
-    class TopZones < Base
-
+    class MostActiveZones < Base
       def query
         Spree::Order.includes(ship_address: :state)
                     .group("spree_states.id")
@@ -10,7 +9,6 @@ module Spree
                     .limit(@count)
                     .map { |order| order.ship_address.state }
       end
-
     end
   end
 end

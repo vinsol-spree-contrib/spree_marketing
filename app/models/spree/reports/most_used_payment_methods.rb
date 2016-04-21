@@ -1,6 +1,6 @@
 module Spree
   module Reports
-    class TopPaymentMethods < Base
+    class MostUsedPaymentMethods < Base
       def query
         Spree::Payment.includes(:payment_method, :order)
                       .where(state: :completed)
