@@ -23,7 +23,7 @@ module Spree
         # end
 
         def emails
-          Spree.user_class.all.pluck(:email)
+          raise ::NotImplementedError, 'You must implement emails method for this smart list.'
         end
 
         # def process
