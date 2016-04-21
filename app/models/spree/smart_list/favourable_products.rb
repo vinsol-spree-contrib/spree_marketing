@@ -11,13 +11,13 @@ module Spree
       def query
         Spree::Order.includes(:user, line_items: { variant: :product })
                     .where.not(user_id: nil)
-                    .where("spree_orders.completed_at >= :time_frame", time_frame: Time.current - time_frame)
+                    .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time_frame)
                     .where("spree_products.id = ?", @product_id)
                     .group(:email)
                     .having("COUNT(spree_orders.id) > ?", 1)
                     .order("COUNT(spree_orders.id)")
                     .references(:line_items)
-                    .map { |x| x.user }
+                    .map { |order| order.user }
       end
 
     end

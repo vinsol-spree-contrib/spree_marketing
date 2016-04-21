@@ -10,7 +10,7 @@ module Spree
 
       def query
         Spree::Order.includes(:user, payments: :payment_method)
-                    .where("spree_orders.completed_at >= :time_frame", time_frame: Time.current - time_frame)
+                    .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time_frame)
                     .where("spree_payment_methods.id = ?", @payment_method_id)
                     .where.not(user_id: nil)
                     .group(:email)
