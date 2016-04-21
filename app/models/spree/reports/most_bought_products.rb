@@ -1,6 +1,10 @@
 module Spree
   module Reports
     class MostBoughtProducts < Base
+      def initialize count = 10
+        @count = count
+      end
+
       def query
         Spree::InventoryUnit.includes(variant: :product)
                             .group("spree_variants.id")
