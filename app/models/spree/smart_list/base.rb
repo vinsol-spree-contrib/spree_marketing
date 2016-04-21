@@ -15,7 +15,7 @@ module Spree
       end
 
       def fetch_list_records
-        @list_uid ? MailChimpApi::Call @list_uid || []
+        # @list_uid ? MailChimpApi::Call @list_uid || []
       end
 
       def contacts
@@ -31,7 +31,7 @@ module Spree
       end
 
       def process
-        Spree::List.process_new_list contacts, @list_uid
+        # Spree::List.process_new_list contacts, @list_uid
       end
 
       def computed_time_frame
