@@ -34,6 +34,10 @@ module Spree
         Spree::List.process_new_list contacts, @list_uid
       end
 
+      def computed_time_frame
+        Time.current - time_frame
+      end
+
     end
   end
 end
