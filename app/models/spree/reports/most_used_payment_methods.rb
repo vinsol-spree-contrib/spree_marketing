@@ -6,7 +6,7 @@ module Spree
                       .where(state: :completed)
                       .group("spree_payment_methods.id")
                       .order("COUNT(spree_orders.id) DESC")
-                      .limit(@count)
+                      .limit(count)
                       .map { |payment| payment.payment_method }
       end
     end

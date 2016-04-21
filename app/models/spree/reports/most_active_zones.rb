@@ -6,7 +6,7 @@ module Spree
                     .group("spree_states.id")
                     .order("COUNT(spree_orders.id) DESC")
                     .references(:ship_address)
-                    .limit(@count)
+                    .limit(count)
                     .map { |order| order.ship_address.state }
       end
     end
