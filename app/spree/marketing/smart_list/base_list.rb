@@ -9,8 +9,6 @@ module Spree
                 ]
         TIME_FRAME = 1.week
 
-        attr_reader :list_uid
-
         def initialize time_frame, list_uid = nil
           @list_uid = list_uid
           @time_frame = time_frame || TIME_FRAME
