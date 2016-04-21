@@ -2,9 +2,11 @@ module Spree
   module Marketing
     module SmartList
       class MostDiscountedOrders < Base
+
+        TIME_FRAME = 1.month
+
         def initialize list_uid = nil
-          @list_uid = list_uid
-          @time_frame = 1.month
+          super(TIME_FRAME, list_uid)
         end
 
         def query

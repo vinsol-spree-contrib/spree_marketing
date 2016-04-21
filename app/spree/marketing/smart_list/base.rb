@@ -1,22 +1,19 @@
 module Spree
   module Marketing
     module SmartList
-      class Base
+      class BaseList
 
-        LISTS = [AbondonedCart, FavourableProducts, LeastActiveUsers, LeastZoneWiseOrders, MostActiveUsers
-                  MostDiscountedOrders, MostSearchedKeywords, MostUsedPaymentMethods, MostZoneWiseOrders,
-                  NewUsers
+        LISTS = [AbondonedCart, FavourableProducts, LeastActiveUsers, LeastZoneWiseOrders,
+                  MostActiveUsers, MostDiscountedOrders, MostSearchedKeywords,
+                  MostUsedPaymentMethods, MostZoneWiseOrders, NewUsers
                 ]
         TIME_FRAME = 1.week
 
-        attr_accessor :time_frame, :list_uid
+        attr_reader :list_uid
 
-        def initialize list_uid = nil
+        def initialize time_frame, list_uid = nil
           @list_uid = list_uid
-        end
-
-        def time_frame
-          @time_frame || TIME_FRAME
+          @time_frame = time_frame || TIME_FRAME
         end
 
         def fetch_list_records
@@ -24,15 +21,11 @@ module Spree
         end
 
         def contacts
-          formatted_contacts - fetch_list_records
+          emails - fetch_list_records
         end
 
-        def formatted_contacts
-          query.pluck(:email)
-        end
-
-        def query
-          Spree.user_class.all
+        def emails
+          Spree.user_class.all.pluck(:email)
         end
 
         def process

@@ -2,10 +2,12 @@ module Spree
   module Marketing
     module SmartList
       class MostSearchedKeyword < Base
+
+        TIME_FRAME = 1.month
+
         def initialize searched_keyword, list_uid = nil
-          @list_uid = list_uid
-          @time_frame = 1.month
           @searched_keyword = searched_keyword
+          super(TIME_FRAME, list_uid)
         end
 
         def query

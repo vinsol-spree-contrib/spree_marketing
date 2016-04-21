@@ -3,10 +3,11 @@ module Spree
     module SmartList
       class MostUsedPaymentMethod < Base
 
+        TIME_FRAME = 1.month
+
         def intialize payment_method_id, list_uid = nil
           @payment_method_id = payment_method_id
-          @time_frame = 1.month
-          @list_uid = list_uid
+          super(TIME_FRAME, list_uid)
         end
 
         def query
