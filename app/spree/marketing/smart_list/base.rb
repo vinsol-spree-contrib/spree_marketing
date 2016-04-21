@@ -43,7 +43,7 @@ module Spree
           # new.process
         end
 
-        def computed_time_frame
+        def computed_time
           Time.current - time_frame
         end
 
