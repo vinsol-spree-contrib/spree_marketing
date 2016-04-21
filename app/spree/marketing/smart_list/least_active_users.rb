@@ -2,11 +2,6 @@ module Spree
   module Marketing
     module SmartList
       class LeastActiveUsers < Base
-
-        def initialize list_uid = nil
-          @list_uid = list_uid
-        end
-
         def formatted_contacts
           query
         end
@@ -21,7 +16,6 @@ module Spree
                                   .map { |page_event| page_event.actor.email }
           super.pluck(:email) - users + users
         end
-
       end
     end
   end

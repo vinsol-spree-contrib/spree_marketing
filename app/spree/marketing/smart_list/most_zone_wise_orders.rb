@@ -2,10 +2,12 @@ module Spree
   module Marketing
     module SmartList
       class MostZoneWiseOrders < Base
+
+        TIME_FRAME = 1.month
+
         def initialize state_id, list_uid = nil
           @state_id = state_id
-          @list_uid = list_uid
-          @time_frame = 1.month
+          super(TIME_FRAME, list_uid)
         end
 
         def query
