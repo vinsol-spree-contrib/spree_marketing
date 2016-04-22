@@ -1,6 +1,6 @@
 class GibbonService
 
-  attr_reader :members, :list_uids
+  attr_reader :members, :list_uid
 
   MEMBER_STATUS                   = { unsubscribe: 'unsubscribe', subscribe: 'subscribe' }
   DEFAULT_MEMBER_RETRIEVAL_PARAMS = { params: { 'status': MEMBER_STATUS[:subscribe] } }
@@ -13,11 +13,9 @@ class GibbonService
     @gibbon ||= Gibbon::Request.new
   end
 
-  def initialize(list_uids = [])
-    @list_uids = list_uids
-    if @list_uids.any?
-      @members = {} && retrieve_members
-    end
+  def initialize(list_uid = nil)
+    @list_uid = list_uid
+    retrieve_members if @list_uid
   end
 
   def generate_list(list_name = '')
@@ -40,6 +38,7 @@ class GibbonService
       response = self.class.gibbon.batches.create(body: { operations: member_operations_list_to_generate })
       tail_batch_response(response['batch_id'])
     end
+    retrieve_members
   end
 
   def unsubscribe_members(list_uid = nil)
@@ -74,9 +73,7 @@ class GibbonService
     end
 
     def retrieve_members
-      @list_uids.select do |list_uid|
-        @members[list_uid] = self.class.gibbon.lists(list_uid).members.retrieve(DEFAULT_MEMBER_RETRIEVAL_PARAMS)
-      end
+      @members = self.class.gibbon.lists(@list_uid).members.retrieve(DEFAULT_MEMBER_RETRIEVAL_PARAMS)
     end
 
     def members_uids
