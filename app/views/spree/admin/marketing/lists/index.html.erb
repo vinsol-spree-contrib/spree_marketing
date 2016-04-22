@@ -1,0 +1,26 @@
+<% content_for :page_title do %>
+  <%= "Lists" %>
+<% end %>
+
+<% if @lists.present? %>
+  <table class="table">
+    <thead>
+      <th><%= Spree::Marketing::List.human_attribute_name :name %></th>
+      <th><%= Spree::Marketing::List.human_attribute_name :uid %></th>
+      <th><%= Spree.t(:no_of_contacts) %></th>
+    </thead>
+    <tbody>
+      <% @lists.each do |list| %>
+        <tr>
+          <td><%= link_to list.name, admin_marketing_list_path(list) %></td>
+          <td><%= list.uid %></td>
+          <td><%= list.contacts.active.count %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alert alert-info no-objects-found">
+    <%= Spree.t(:no_resource_found, resource: "Lists") %>,
+  </div>
+<% end %>
