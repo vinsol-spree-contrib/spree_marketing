@@ -1,31 +1,31 @@
 module Spree
   module Marketing
     module SmartList
-      class MostSearchedKeyword < Base
+      class MostSearchedKeywordList < BaseList
 
         TIME_FRAME = 1.month
+        MINIMUM_COUNT = 5
 
         def initialize searched_keyword, list_uid = nil
           @searched_keyword = searched_keyword
           super(TIME_FRAME, list_uid)
         end
 
-        def query
-          Spree::PageEvent.includes(:actor)
-                          .where(search_keywords: @searched_keyword)
+        def user_ids
+          Spree::PageEvent.where(search_keywords: @searched_keyword)
                           .where("created_at >= :time_frame", time_frame: computed_time_frame)
                           .where.not(actor_id: nil)
                           .where(actor_type: Spree.user_class)
                           .group(:actor_id)
-                          .having("COUNT(spree_page_events.id) > ?", 5)
-                          .map { |page_event| page_event.actor }
+                          .having("COUNT(spree_page_events.id) > ?", MINIMUM_COUNT)
+                          .pluck(:actor_id)
         end
 
-        def self.process
-          Reports::MostSearchedKeyword.new.query.each do |keyword|
+        # def self.process
+        #   Reports::MostSearchedKeyword.new.query.each do |keyword|
 
-          end
-        end
+        #   end
+        # end
       end
     end
   end
