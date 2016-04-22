@@ -13,6 +13,9 @@ module Spree
       validates :uid, :email, :mailchimp_id, presence: true
       validates :uid, :email, uniqueness: { case_sensitive: false }, allow_blank: true
 
+      # Scopes
+      scope :active, -> { where(active: true) }
+
     end
   end
 end
