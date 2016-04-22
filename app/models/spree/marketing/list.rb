@@ -52,7 +52,7 @@ module Spree
       end
 
       def time_frame
-        @time_frame ||= TIME_FRAME
+        @time_frame ||= self.class::TIME_FRAME
       end
 
     end
