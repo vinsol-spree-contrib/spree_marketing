@@ -42,7 +42,7 @@ class GibbonService
   end
 
   def unsubscribe_members(list_uid = nil)
-    members_batches = @members[list_uid || @list_uid].in_groups_of(BATCH_COUNT, false)
+    members_batches = @members.in_groups_of(BATCH_COUNT, false)
     members_batches.each do |members_batch|
       response = self.class.gibbon.batches.create(body: { operations: member_operations_list_to_unsubscribe })
       tail_batch_response(response['batch_id'])
@@ -77,11 +77,11 @@ class GibbonService
     end
 
     def members_uids
-      members[@list_uid].map { |member| member[:uid] }
+      @members.map { |member| member[:uid] }
     end
 
     def member_operations_list_to_unsubscribe
-      member_uids.select do |uid|
+      members_uids.select do |uid|
         {
           method: "PATCH",
           path: "lists/#{ @list_uid }/members/#{ uid }",
