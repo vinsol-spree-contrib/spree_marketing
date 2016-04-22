@@ -8,7 +8,7 @@ module Spree
           # right now we are leaving that case.
           Spree::Order.incomplete
                       .where("spree_orders.updated_at >= :time_frame", time_frame: computed_time)
-                      .where.not(user_id: nil)
+                      .without_guest_user
                       .uniq
                       .pluck(:user_id)
         end
