@@ -5,6 +5,7 @@ module Spree
 
         TIME_FRAME = 1.month
         MINIMUM_COUNT = 5
+        MOST_ZONE_WISE_ORDERS_COUNT = 5
 
         def initialize state_id, list_uid = nil
           @state_id = state_id
@@ -27,6 +28,14 @@ module Spree
 
         #   end
         # end
+
+        def data
+          Spree::Order.joins(ship_address: :state)
+            .group("spree_states.id")
+            .order("COUNT(spree_orders.id) DESC")
+            .limit(MOST_ZONE_WISE_ORDERS_COUNT)
+            .pluck(:state_id)
+        end
       end
     end
   end

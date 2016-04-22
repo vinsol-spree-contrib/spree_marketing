@@ -5,6 +5,7 @@ module Spree
 
         TIME_FRAME = 1.month
         MINIMUM_COUNT = 5
+        MOST_USED_PAYMENT_METHODS_COUNT = 5
 
         def intialize payment_method_id, list_uid = nil
           @payment_method_id = payment_method_id
@@ -27,6 +28,15 @@ module Spree
 
         #   end
         # end
+
+        def data
+          Spree::Payment.joins(:payment_method, :order)
+                        .where(state: :completed)
+                        .group("spree_payment_methods.id")
+                        .order("COUNT(spree_orders.id) DESC")
+                        .limit(MOST_USED_PAYMENT_METHODS_COUNT)
+                        .pluck(:payment_method_id)
+        end
       end
     end
   end
