@@ -1,15 +1,12 @@
 module Spree
   module Marketing
-    module SmartList
-      class MostSearchedKeywordList < BaseList
+    module List
+      class MostSearchedKeywordList < Spree::Marketing::List
 
         TIME_FRAME = 1.month
         MOST_SEARCHRD_KEYWORD_COUNT = 5
 
-        def initialize searched_keyword, list_uid = nil
-          @searched_keyword = searched_keyword
-          super(TIME_FRAME, list_uid)
-        end
+        attr_accessor :searched_keyword
 
         def user_ids
           Spree::PageEvent.where(search_keywords: @searched_keyword)
@@ -32,6 +29,10 @@ module Spree
                           .order("COUNT(spree_page_events.id) DESC")
                           .limit(MOST_SEARCHRD_KEYWORD_COUNT)
                           .pluck(:search_keywords)
+        end
+
+        def time_frame
+          @time_frame ||= TIME_FRAME
         end
       end
     end

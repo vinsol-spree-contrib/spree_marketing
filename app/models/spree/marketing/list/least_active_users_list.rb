@@ -1,7 +1,7 @@
 module Spree
   module Marketing
-    module SmartList
-      class LeastActiveUsersList < BaseList
+    module List
+      class LeastActiveUsersList < Spree::Marketing::List
 
         MAXIMUM_PAGE_EVENT_COUNT = 5
 

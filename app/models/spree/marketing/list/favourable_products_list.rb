@@ -1,14 +1,15 @@
 module Spree
   module Marketing
-    module SmartList
-      class FavourableProductsList < BaseList
+    module List
+      class FavourableProductsList < Spree::Marketing::List
 
         TIME_FRAME = 1.month
         FAVOURABLE_PRODUCT_COUNT = 10
 
-        def initialize product_id, list_uid = nil
-          @product_id = product_id
-          super(TIME_FRAME, list_uid)
+        attr_accessor :product_id
+
+        def time_frame
+          @time_frame ||= TIME_FRAME
         end
 
         def user_ids

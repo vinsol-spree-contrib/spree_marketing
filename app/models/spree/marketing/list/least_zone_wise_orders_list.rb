@@ -1,15 +1,12 @@
 module Spree
   module Marketing
-    module SmartList
-      class LeastZoneWiseOrdersList < BaseList
+    module List
+      class LeastZoneWiseOrdersList < Spree::Marketing::List
 
         TIME_FRAME = 1.month
         LEAST_ZONE_WISE_ORDER_COUNT = 5
 
-        def initialize state_id, list_uid = nil
-          @state_id = state_id
-          super(TIME_FRAME, list_uid)
-        end
+        attr_accessor :state_id
 
         def user_ids
           # FIXME: what if state id is not available, only country id is available. Should we use only zones.
@@ -36,6 +33,10 @@ module Spree
             .order("COUNT(spree_orders.id)")
             .limit(MOST_ZONE_WISE_ORDER_COUNT)
             .pluck(:state_id)
+        end
+
+        def time_frame
+          @time_frame ||= TIME_FRAME
         end
       end
     end

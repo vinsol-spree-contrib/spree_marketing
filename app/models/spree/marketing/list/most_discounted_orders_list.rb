@@ -1,14 +1,10 @@
 module Spree
   module Marketing
-    module SmartList
-      class MostDiscountedOrdersList < BaseList
+    module List
+      class MostDiscountedOrdersList < Spree::Marketing::List
 
         TIME_FRAME = 1.month
         MINIMUM_COUNT = 5
-
-        def initialize list_uid = nil
-          super(TIME_FRAME, list_uid)
-        end
 
         def user_ids
           # FIXME: there is a case where guest user email is available but we are leaving that now.
@@ -19,6 +15,10 @@ module Spree
                       .of_registered_users
                       .order("COUNT(spree_orders.id) DESC")
                       .pluck(:user_id)
+        end
+
+        def time_frame
+          @time_frame ||= TIME_FRAME
         end
       end
     end

@@ -1,15 +1,12 @@
 module Spree
   module Marketing
-    module SmartList
-      class MostZoneWiseOrdersList < BaseList
+    module List
+      class MostZoneWiseOrdersList < Spree::Marketing::List
 
         TIME_FRAME = 1.month
         MOST_ZONE_WISE_ORDERS_COUNT = 5
 
-        def initialize state_id, list_uid = nil
-          @state_id = state_id
-          super(TIME_FRAME, list_uid)
-        end
+        attr_accessor :state_id
 
         def user_ids
           # FIXME: There are some countries which do not have states, we are leaving those cases for now.
@@ -34,6 +31,10 @@ module Spree
             .order("COUNT(spree_orders.id) DESC")
             .limit(MOST_ZONE_WISE_ORDERS_COUNT)
             .pluck(:state_id)
+        end
+
+        def time_frame
+          @time_frame ||= TIME_FRAME
         end
       end
     end

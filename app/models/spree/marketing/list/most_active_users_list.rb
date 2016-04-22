@@ -1,7 +1,7 @@
 module Spree
   module Marketing
-    module SmartList
-      class MostActiveUsersList < BaseList
+    module List
+      class MostActiveUsersList < Spree::Marketing::List
 
         MINIMUM_PAGE_EVENT_COUNT = 5
 

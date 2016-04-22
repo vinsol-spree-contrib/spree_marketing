@@ -1,16 +1,13 @@
 module Spree
   module Marketing
-    module SmartList
-      class MostUsedPaymentMethodList < BaseList
+    module List
+      class MostUsedPaymentMethodList < Spree::Marketing::List
 
         TIME_FRAME = 1.month
         MINIMUM_COUNT = 5
         MOST_USED_PAYMENT_METHODS_COUNT = 5
 
-        def intialize payment_method_id, list_uid = nil
-          @payment_method_id = payment_method_id
-          super(TIME_FRAME, list_uid)
-        end
+        attr_accessor :payment_method_id
 
         def user_ids
           Spree::Order.joins(payments: :payment_method)
@@ -36,6 +33,10 @@ module Spree
                         .order("COUNT(spree_orders.id) DESC")
                         .limit(MOST_USED_PAYMENT_METHODS_COUNT)
                         .pluck(:payment_method_id)
+        end
+
+        def time_frame
+          @time_frame ||= TIME_FRAME
         end
       end
     end

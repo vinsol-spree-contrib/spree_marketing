@@ -1,7 +1,7 @@
 module Spree
   module Marketing
-    module SmartList
-      class AbandonedCartList < BaseList
+    module List
+      class AbandonedCartList < Spree::Marketing::List
         def user_ids
           # FIXME: There is a case where guest user has an incomplete order and we
           # might have his email if he has processed address state successfully
