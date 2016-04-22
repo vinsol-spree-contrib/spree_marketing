@@ -40,11 +40,10 @@ module Spree
       end
 
       # def process
-      #   # Spree::List.process_new_list contacts, @list_uid
       # end
 
       # def self.process
-      #   # new.process
+      #   new.process
       # end
 
       def computed_time
@@ -53,6 +52,12 @@ module Spree
 
       def time_frame
         @time_frame ||= self.class::TIME_FRAME
+      end
+
+      def self.generate
+        LISTS.each do |list_type|
+          list_type.generate
+        end
       end
 
     end
