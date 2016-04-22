@@ -4,6 +4,7 @@ module Spree
       class LeastZoneWiseOrdersList < BaseList
 
         TIME_FRAME = 1.month
+        LEAST_ZONE_WISE_ORDER_COUNT = 5
 
         def initialize state_id, list_uid = nil
           @state_id = state_id
@@ -28,6 +29,14 @@ module Spree
 
         #   # end
         # end
+
+        def data
+          Spree::Order.joins(ship_address: :state)
+            .group("spree_states.id")
+            .order("COUNT(spree_orders.id)")
+            .limit(MOST_ZONE_WISE_ORDER_COUNT)
+            .pluck(:state_id)
+        end
       end
     end
   end
