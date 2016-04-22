@@ -24,10 +24,10 @@ class GibbonService
     response
   end
 
-  def update_list
+  def update_list(members_emails = [])
     @list_uid = @list_uids.first
     unsubscribe_existing_members
-    subscribe_new_members
+    subscribe_members(members_emails)
     retrieve_members
   end
 
