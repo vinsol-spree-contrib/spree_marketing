@@ -14,7 +14,7 @@ module Spree
 
         def user_ids
           Spree::Order.joins(payments: :payment_method)
-                      .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time_frame)
+                      .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time)
                       .where("spree_payment_methods.id = ?", @payment_method_id)
                       .where.not(user_id: nil)
                       .group(:user_id)

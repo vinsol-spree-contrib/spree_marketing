@@ -18,7 +18,7 @@ module Spree
           Spree::Order.joins(ship_address: :state)
                       .where.not(user_id: nil)
                       .where("spree_states.id = ?", @state_id)
-                      .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time_frame)
+                      .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time)
                       .group(:user_id)
                       .order("COUNT(spree_orders.id)")
                       .pluck("spree_orders.user_id")

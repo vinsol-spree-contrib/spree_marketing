@@ -13,7 +13,7 @@ module Spree
 
         def user_ids
           Spree::PageEvent.where(search_keywords: @searched_keyword)
-                          .where("created_at >= :time_frame", time_frame: computed_time_frame)
+                          .where("created_at >= :time_frame", time_frame: computed_time)
                           .where.not(actor_id: nil)
                           .where(actor_type: Spree.user_class)
                           .group(:actor_id)
