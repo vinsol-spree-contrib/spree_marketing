@@ -5,7 +5,6 @@ module Spree
 
         TIME_FRAME = 1.month
         LEAST_ZONE_WISE_ORDER_COUNT = 5
-        MAXIMUM_ORDER_COUNT = 5
 
         def initialize state_id, list_uid = nil
           @state_id = state_id
@@ -21,7 +20,6 @@ module Spree
                       .where("spree_states.id = ?", @state_id)
                       .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time_frame)
                       .group(:user_id)
-                      .having("COUNT(spree_orders.id) < :maximum_count", maximum_count: MAXIMUM_ORDER_COUNT)
                       .order("COUNT(spree_orders.id)")
                       .pluck("spree_orders.user_id")
         end

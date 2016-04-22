@@ -4,7 +4,6 @@ module Spree
       class MostSearchedKeywordList < BaseList
 
         TIME_FRAME = 1.month
-        MINIMUM_COUNT = 5
         MOST_SEARCHRD_KEYWORD_COUNT = 5
 
         def initialize searched_keyword, list_uid = nil
@@ -18,7 +17,6 @@ module Spree
                           .where.not(actor_id: nil)
                           .where(actor_type: Spree.user_class)
                           .group(:actor_id)
-                          .having("COUNT(spree_page_events.id) > ?", MINIMUM_COUNT)
                           .pluck(:actor_id)
         end
 
