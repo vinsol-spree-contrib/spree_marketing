@@ -3,7 +3,7 @@ module Spree
     module SmartList
       class AbandonedCartList < BaseList
         def user_ids
-          # There is a case where guest user has an incomplete order and we
+          # FIXME: There is a case where guest user has an incomplete order and we
           # might have his email if he has processed address state successfully
           # right now we are leaving that case.
           Spree::Order.incomplete

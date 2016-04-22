@@ -27,7 +27,7 @@ module Spree
         end
 
         def user_ids
-          raise ::NotImplementedError, 'You must implement emails method for this smart list.'
+          raise ::NotImplementedError, 'You must implement user_ids method for this smart list.'
         end
 
         # def process

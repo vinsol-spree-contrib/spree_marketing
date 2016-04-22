@@ -12,7 +12,7 @@ module Spree
         end
 
         def user_ids
-          # There might be a case where a guest user have placed an order
+          # FIXME: There might be a case where a guest user have placed an order
           # And we also have his email but we are leaving those emails for now.
           Spree::Order.joins(line_items: { variant: :product })
                       .where.not(user_id: nil)
