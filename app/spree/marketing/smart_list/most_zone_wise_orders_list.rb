@@ -4,7 +4,6 @@ module Spree
       class MostZoneWiseOrdersList < BaseList
 
         TIME_FRAME = 1.month
-        MINIMUM_COUNT = 5
         MOST_ZONE_WISE_ORDERS_COUNT = 5
 
         def initialize state_id, list_uid = nil
@@ -18,7 +17,6 @@ module Spree
                       .where("spree_states.id = ?", @state_id)
                       .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time_frame)
                       .group(:user_id)
-                      .having("COUNT(spree_orders.id) > ?", MINIMUM_COUNT)
                       .order("COUNT(spree_orders.id) DESC")
                       .pluck(:user_id)
         end

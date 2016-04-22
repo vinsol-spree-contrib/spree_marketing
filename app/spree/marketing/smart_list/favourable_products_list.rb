@@ -4,7 +4,6 @@ module Spree
       class FavourableProductsList < BaseList
 
         TIME_FRAME = 1.month
-        MINIMUM_ORDER_COUNT = 5
         FAVOURABLE_PRODUCT_COUNT = 10
 
         def initialize product_id, list_uid = nil
@@ -20,7 +19,6 @@ module Spree
                       .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time_frame)
                       .where("spree_products.id = ?", @product_id)
                       .group(:user_id)
-                      .having("COUNT(spree_orders.id) > :minimum_count", minimum_count: MINIMUM_ORDER_COUNT)
                       .pluck(:user_id)
         end
 
