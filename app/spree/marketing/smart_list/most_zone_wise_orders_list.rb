@@ -12,10 +12,11 @@ module Spree
         end
 
         def user_ids
-          Spree::Order.joins(ship_address: [:country, :state])
+          # FIXME: There are some countries which do not have states, we are leaving those cases for now.
+          Spree::Order.joins(ship_address: :state)
                       .where.not(user_id: nil)
                       .where("spree_states.id = ?", @state_id)
-                      .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time_frame)
+                      .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time)
                       .group(:user_id)
                       .order("COUNT(spree_orders.id) DESC")
                       .pluck(:user_id)
