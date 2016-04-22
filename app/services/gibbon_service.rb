@@ -73,11 +73,11 @@ class GibbonService
     end
 
     def retrieve_members
-      @members = self.class.gibbon.lists(@list_uid).members.retrieve(DEFAULT_MEMBER_RETRIEVAL_PARAMS)
+      @members = self.class.gibbon.lists(@list_uid).members.retrieve(DEFAULT_MEMBER_RETRIEVAL_PARAMS)['members']
     end
 
     def members_uids
-      @members.map { |member| member[:uid] }
+      @members.map { |member| member[:id] }
     end
 
     def member_operations_list_to_unsubscribe
