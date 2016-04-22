@@ -10,7 +10,8 @@ class GibbonService
   TIME_DELAY                      = 500
 
   def self.gibbon
-    @gibbon ||= Gibbon::Request.new
+    @gibbon ||= Gibbon::Request.new(api_key: DEFAULT_LIST_GENERATION_PARAMS[:gibbon_api_key]
+                                    timeout: DEFAULT_LIST_GENERATION_PARAMS[:timeout].to_i)
   end
 
   def initialize(list_uid = nil)
