@@ -16,7 +16,7 @@ module Spree
           Spree::Order.joins(payments: :payment_method)
                       .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time)
                       .where("spree_payment_methods.id = ?", @payment_method_id)
-                      .where.not(user_id: nil)
+                      .of_registered_users
                       .group(:user_id)
                       .having("COUNT(spree_orders.id) > ?", MINIMUM_COUNT)
                       .order("COUNT(spree_orders.id) DESC")

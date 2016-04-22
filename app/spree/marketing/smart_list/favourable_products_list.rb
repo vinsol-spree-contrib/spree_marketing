@@ -15,7 +15,7 @@ module Spree
           # FIXME: There might be a case where a guest user have placed an order
           # And we also have his email but we are leaving those emails for now.
           Spree::Order.joins(line_items: { variant: :product })
-                      .where.not(user_id: nil)
+                      .of_registered_users
                       .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time)
                       .where("spree_products.id = ?", @product_id)
                       .group(:user_id)

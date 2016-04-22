@@ -13,6 +13,9 @@ module Spree
       validates :uid, :name, presence: true
       validates :uid, uniqueness: { case_sensitive: false }, allow_blank: true
 
+      # Scopes
+      scope :active, -> { where(active: true) }
+
     end
   end
 end
