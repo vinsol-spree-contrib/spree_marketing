@@ -3,7 +3,7 @@ module Spree
     class List < Spree::Base
 
       # Constants
-      LISTS = [AbondonedCartList, FavourableProductsList, LeastActiveUsersList, NewUsersList,
+      LISTS = [AbandonedCartList, FavourableProductsList, LeastActiveUsersList, NewUsersList,
                 LeastZoneWiseOrdersList, MostActiveUsersList, MostDiscountedOrdersList,
                 MostSearchedKeywordsList, MostUsedPaymentMethodsList, MostZoneWiseOrdersList
               ]
@@ -13,7 +13,7 @@ module Spree
       self.table_name = "spree_marketing_lists"
 
       # Associations
-      has_many :contacts_lists, class_name: "Spree::ContactsList", dependent: :restrict_with_error
+      has_many :contacts_lists, class_name: "Spree::Marketing::ContactsList", dependent: :restrict_with_error
       has_many :contacts, through: :contacts_lists
 
       # Validations
