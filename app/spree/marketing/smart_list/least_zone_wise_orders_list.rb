@@ -12,7 +12,7 @@ module Spree
         end
 
         def user_ids
-          # what if state id is not available, only country id is available. Should we use only zones.
+          # FIXME: what if state id is not available, only country id is available. Should we use only zones.
           # If yes then how?
           # Also leaving cases for guest users
           Spree::Order.joins(ship_address: :state)
