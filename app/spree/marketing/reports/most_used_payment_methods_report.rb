@@ -1,14 +1,14 @@
 module Spree
   module Marketing
     module Reports
-      class MostUsedPaymentMethods < Base
-        def query
-          Spree::Payment.includes(:payment_method, :order)
+      class MostUsedPaymentMethodsReport < BaseReport
+        def required_data
+          Spree::Payment.joins(:payment_method, :order)
                         .where(state: :completed)
                         .group("spree_payment_methods.id")
                         .order("COUNT(spree_orders.id) DESC")
-                        .limit(count)
-                        .map { |payment| payment.payment_method }
+                        .limit(@count)
+                        .pluck(:payment_method_id)
         end
       end
     end

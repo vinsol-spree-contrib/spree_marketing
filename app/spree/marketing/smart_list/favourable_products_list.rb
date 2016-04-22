@@ -1,7 +1,7 @@
 module Spree
   module Marketing
     module SmartList
-      class FavourableProducts < Base
+      class FavourableProductsList < BaseList
 
         TIME_FRAME = 1.month
         MINIMUM_COUNT = 1
@@ -11,23 +11,23 @@ module Spree
           super(TIME_FRAME, list_uid)
         end
 
-        def query
-          Spree::Order.includes(:user, line_items: { variant: :product })
+        def user_ids
+          # There might be a case where a guest user have placed an order
+          # And we also have his email but we are leaving those emails for now.
+          Spree::Order.joins(line_items: { variant: :product })
                       .where.not(user_id: nil)
                       .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time_frame)
                       .where("spree_products.id = ?", @product_id)
-                      .group(:email)
+                      .group(:user_id)
                       .having("COUNT(spree_orders.id) > ?", MINIMUM_COUNT)
-                      .order("COUNT(spree_orders.id)")
-                      .references(:line_items)
-                      .map { |order| order.user }
+                      .pluck(:user_id)
         end
 
-        def self.process
-          # Reports::MostBoughtProducts.new.query.each do
-            # self.new()
-          # end
-        end
+        # def self.process
+        #   # Reports::MostBoughtProducts.new.query.each do
+        #     # self.new()
+        #   # end
+        # end
       end
     end
   end

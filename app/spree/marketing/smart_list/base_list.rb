@@ -23,6 +23,10 @@ module Spree
         # end
 
         def emails
+          Spree.user_class.where(id: user_ids).pluck(:email)
+        end
+
+        def user_ids
           raise ::NotImplementedError, 'You must implement emails method for this smart list.'
         end
 
