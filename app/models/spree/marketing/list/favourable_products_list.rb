@@ -21,7 +21,17 @@ module Spree
 
       def self.generate
         data.each do |product_id|
-          new(product_id: product_id).generate self.class.humanize + Spree::Product.find_by(id: product_id).name.downcase.gsub(" ", "_")
+          new(product_id: product_id).generate self.class.humanize + self.product_name product_id
+        end
+      end
+
+      def self.product_name product_id
+        Spree::Product.find_by(id: product_id).name.downcase.gsub(" ", "_")
+      end
+
+      def self.update
+        data.each do |product_id|
+          Spree::Marketing::List.where(type: self).find_by(name: self.name.humanize + product_name(product_id)).update_list
         end
       end
 

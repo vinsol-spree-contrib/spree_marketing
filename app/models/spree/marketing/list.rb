@@ -13,7 +13,7 @@ module Spree
       self.table_name = "spree_marketing_lists"
 
       # Associations
-      has_many :contacts_lists, class_name: "Spree::Marketing::ContactsList", dependent: :restrict_with_error
+      has_many :contacts_lists, class_name: "Spree::Marketing::ContactsList", dependent: :destroy
       has_many :contacts, through: :contacts_lists
 
       # Validations
@@ -22,6 +22,15 @@ module Spree
 
       # Scopes
       scope :active, -> { where(active: true) }
+
+      def fetch_old_emails
+        gibbon_service = GibbonService.new(list_id: uid)
+        gibbon_service.members.map { |member| member["email_address"] }
+      end
+
+      def new_emails
+        emails - fetch_old_emails
+      end
 
       def emails
         Spree.user_class.where(id: user_ids).pluck(:email)
@@ -35,8 +44,17 @@ module Spree
         ListGenerationJob.perform_later class_name, emails
       end
 
+      def update_list
+        self.contacts.destroy_all
+        ListModificationJob.perform_later self, new_emails
+      end
+
+      def self.update
+        Spree::Marketing::List.where(type: self).find_by(name: self.name.humanize).update_list
+      end
+
       def self.generate
-        new.generate self.class.humanize
+        new.generate self.name.humanize
       end
 
       def computed_time
@@ -50,6 +68,12 @@ module Spree
       def self.generate_all
         LISTS.each do |list_type|
           list_type.generate
+        end
+      end
+
+      def self.update_all
+        LISTS.each do |list_type|
+          list_type.update
         end
       end
 

@@ -23,6 +23,12 @@ module Spree
         end
       end
 
+      def self.update
+        data.each do |searched_keyword|
+          Spree::Marketing::List.where(type: self).find_by(name: self.name.humanize + searched_keyword).update_list
+        end
+      end
+
       def self.data
         Spree::PageEvent.where(action: "search")
                         .group(:search_keywords)

@@ -22,8 +22,20 @@ module Spree
 
       def self.generate
         data.each do |payment_method_id|
-          new(payment_method_id: payment_method_id).generate(self.class.humanize + Spree::PaymentMethod.find_by(id: payment_method_id).name.downcase.gsub(" ", "_"))
+          new(payment_method_id: payment_method_id).generate(self.class.humanize + self.payment_method_name(payment_method_id))
         end
+      end
+
+      def self.update
+        data.each do |payment_method_id|
+          Spree::Marketing::List.where(type: self)
+                                .find_by(name: self.name.humanize + self.payment_method_name(payment_method_id))
+                                .update_list
+        end
+      end
+
+      def self.payment_method_name payment_method_id
+        Spree::PaymentMethod.find_by(id: payment_method_id).name.downcase.gsub(" ", "_")
       end
 
       def self.data
