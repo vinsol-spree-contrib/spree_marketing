@@ -31,12 +31,16 @@ class GibbonService
     retrieve_members
   end
 
+  def delete_lists(list_uids = [])
+    list_uids.each { |list_uid| self.class.gibbon.lists(list_uid).delete }
+  end
+
   def subscribe_members(members_emails = [])
     members_batches = members_emails.in_groups_of(BATCH_COUNT, false)
     members_batches.each do |members_batch|
       @new_members_emails = members_batch
       response = self.class.gibbon.batches.create(body: { operations: member_operations_list_to_generate })
-      tail_batch_response(response['batch_id'])
+      tail_batch_response(response['batch_id'], @new_members_emails, :subscribe)
     end
     retrieve_members
   end
@@ -45,15 +49,15 @@ class GibbonService
     members_batches = @members.in_groups_of(BATCH_COUNT, false)
     members_batches.each do |members_batch|
       response = self.class.gibbon.batches.create(body: { operations: member_operations_list_to_unsubscribe })
-      tail_batch_response(response['batch_id'])
+      tail_batch_response(response['batch_id'], members_batch, :unsubscribe)
     end
   end
 
   private
 
-    def tail_batch_response(batch_id)
+    def tail_batch_response(batch_id, members_data, title)
       unless check_batch_response(batch_id, RETRY_COUNT)
-        raise Gibbon::MailChimpError.new("Failed Batch #{ batch_id } --- #{ response.body }")
+        raise Gibbon::MailChimpError.new("Failed Batch #{ batch_id } --- #{ response.body }", { title: title, body: members_data })
       end
     end
 
