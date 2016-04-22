@@ -3,9 +3,9 @@ module Spree
     class List < Spree::Base
 
       # Constants
-      LISTS = [AbandonedCartList, FavourableProductsList, LeastActiveUsersList, NewUsersList,
-                LeastZoneWiseOrdersList, MostActiveUsersList, MostDiscountedOrdersList,
-                MostSearchedKeywordsList, MostUsedPaymentMethodsList, MostZoneWiseOrdersList
+      LISTS = [:AbandonedCartList, :FavourableProductsList, :LeastActiveUsersList, :NewUsersList,
+                :LeastZoneWiseOrdersList, :MostActiveUsersList, :MostDiscountedOrdersList,
+                :MostSearchedKeywordsList, :MostUsedPaymentMethodsList, :MostZoneWiseOrdersList
               ]
       TIME_FRAME = 1.week
 
@@ -23,14 +23,6 @@ module Spree
       # Scopes
       scope :active, -> { where(active: true) }
 
-      # def fetch_list_records
-      #   # @list_uid ? MailChimpApi::Call @list_uid || []
-      # end
-
-      # def new_emails
-      #   emails - fetch_list_records
-      # end
-
       def emails
         Spree.user_class.where(id: user_ids).pluck(:email)
       end
@@ -39,12 +31,13 @@ module Spree
         raise ::NotImplementedErrorList, 'You must implement user_ids method for this smart list.'
       end
 
-      # def process
-      # end
+      def generate class_name
+        ListGenerationJob.perform_later class_name, emails
+      end
 
-      # def self.process
-      #   new.process
-      # end
+      def self.generate
+        new.generate self.class.humanize
+      end
 
       def computed_time
         Time.current - time_frame
@@ -54,7 +47,7 @@ module Spree
         @time_frame ||= self.class::TIME_FRAME
       end
 
-      def self.generate
+      def self.generate_all
         LISTS.each do |list_type|
           list_type.generate
         end

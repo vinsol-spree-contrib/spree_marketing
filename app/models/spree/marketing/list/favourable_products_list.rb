@@ -19,13 +19,13 @@ module Spree
                     .pluck(:user_id)
       end
 
-      # def self.process
-      #   # Reports::MostBoughtProducts.new.query.each do
-      #     # self.new()
-      #   # end
-      # end
+      def self.generate
+        data.each do |product_id|
+          new(product_id: product_id).generate self.class.humanize + Spree::Product.find_by(id: product_id).name.downcase.gsub(" ", "_")
+        end
+      end
 
-      def data
+      def self.data
         Spree::InventoryUnit.joins(variant: :product)
                             .group("spree_variants.id")
                             .order("COUNT(spree_inventory_units.id) DESC")

@@ -19,11 +19,11 @@ module Spree
                     .pluck(:user_id)
       end
 
-      # def self.process
-      #   Reports::MostActiveZones.new.query.each do |state|
-
-      #   end
-      # end
+      def self.generate
+        data.each do |state_id|
+          new(state_id: state_id).generate(self.class.humanize + Spree::State.find_by(id: product_id).name.downcase.gsub(" ", "_"))
+        end
+      end
 
       def data
         Spree::Order.joins(ship_address: :state)
