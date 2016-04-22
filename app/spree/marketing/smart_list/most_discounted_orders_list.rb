@@ -16,7 +16,7 @@ module Spree
                       .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time)
                       .group(:user_id)
                       .having("COUNT(spree_orders.id) > ?", MINIMUM_COUNT)
-                      .without_guest_user
+                      .of_registered_users
                       .order("COUNT(spree_orders.id) DESC")
                       .pluck(:user_id)
         end
