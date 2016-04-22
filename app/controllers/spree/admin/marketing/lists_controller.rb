@@ -8,11 +8,11 @@ module Spree
         private
 
           def collection
-            Spree::Marketing::List.active
+            Spree::Marketing::List.active.order(updated_at: :desc)
           end
 
           def load_contacts
-            @contacts = @marketing_list.contacts.active
+            @contacts = @marketing_list.contacts.active.order(updated_at: :desc)
           end
 
       end
