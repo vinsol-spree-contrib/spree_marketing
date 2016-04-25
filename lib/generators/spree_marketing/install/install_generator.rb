@@ -22,6 +22,10 @@ module SpreeMarketing
         paths.flatten
       end
 
+      def install_spree_events_tracker
+        run 'bundle exec rails g spree_events_tracker:install'
+      end
+
       def config_spree_marketing_yml
         template 'spree_marketing.yml', 'config/spree_marketing.yml'
       end
