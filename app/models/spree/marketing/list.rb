@@ -19,19 +19,6 @@ module Spree
       # Scopes
       scope :active, -> { where(active: true) }
 
-      def fetch_old_emails
-        gibbon_service = GibbonService.new(list_id: uid)
-        gibbon_service.members.map { |member| member["email_address"] }
-      end
-
-      def new_emails
-        emails - fetch_old_emails
-      end
-
-      def emails
-        Spree.user_class.where(id: user_ids).pluck(:email)
-      end
-
       def user_ids
         raise ::NotImplementedErrorList, 'You must implement user_ids method for this smart list.'
       end
@@ -42,7 +29,7 @@ module Spree
 
       def update_list
         self.contacts.destroy_all
-        ListModificationJob.perform_later self, new_emails
+        ListModificationJob.perform_later self, new_emails, removable_uids
       end
 
       def self.update
@@ -51,18 +38,6 @@ module Spree
 
       def self.generate
         new.generate humanized_name
-      end
-
-      def self.humanized_name
-        self.name.demodulize.underscore
-      end
-
-      def computed_time
-        Time.current - time_frame
-      end
-
-      def time_frame
-        @time_frame ||= self.class::TIME_FRAME
       end
 
       def self.generate_all
@@ -77,6 +52,40 @@ module Spree
         end
       end
 
+      private
+
+        def removable_emails
+          fetch_old_emails - emails
+        end
+
+        def self.humanized_name
+          self.name.demodulize.underscore
+        end
+
+        def computed_time
+          Time.current - time_frame
+        end
+
+        def time_frame
+          @time_frame ||= self.class::TIME_FRAME
+        end
+
+        def emails
+          Spree.user_class.where(id: user_ids).pluck(:email)
+        end
+
+        def removable_uids
+          Spree::Marketing::Contact.where(email: removable_emails).pluck(:uid)
+        end
+
+        def fetch_old_emails
+          gibbon_service = GibbonService.new(list_id: uid)
+          gibbon_service.members.map { |member| member["email_address"] }
+        end
+
+        def new_emails
+          emails - fetch_old_emails
+        end
     end
   end
 end
