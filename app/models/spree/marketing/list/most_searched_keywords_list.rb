@@ -32,7 +32,7 @@ module Spree
         ListCleanupJob.perform_later self.where.not(uid: lists.map(&:uid)).pluck(:uid)
       end
 
-      def name_text searched_keyword
+      def self.name_text searched_keyword
         humanized_name + "_" + searched_keyword
       end
 
