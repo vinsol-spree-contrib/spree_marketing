@@ -69,8 +69,7 @@ module Spree
         end
 
         def fetch_old_emails
-          gibbon_service = GibbonService.new(list_id: uid)
-          gibbon_service.members.map { |member| member["email_address"] }
+          contacts.pluck(:emails)
         end
 
         def new_emails
