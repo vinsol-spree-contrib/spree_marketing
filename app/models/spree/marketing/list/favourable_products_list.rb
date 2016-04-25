@@ -19,22 +19,26 @@ module Spree
                     .pluck(:user_id)
       end
 
-      def self.generate
-        data.each do |product_id|
-          new(product_id: product_id).generate(humanized_name + "_" + product_name(product_id))
-        end
-      end
-
       def self.product_name product_id
         Spree::Product.find_by(id: product_id).name.downcase.gsub(" ", "_")
       end
 
-      def self.update
+      def self.generator
+        lists = []
         data.each do |product_id|
-          Spree::Marketing::List.where(type: self)
-                                .find_by(name: humanized_name + "_" + product_name(product_id))
-                                .update_list
+          list = find_by(name: name_text(product_id))
+          if list
+            list.update_list
+          else
+            list = new(product_id: product_id).generate(name_text(product_id))
+          end
+          lists << list
         end
+        ListCleanupJob.perform_later self.where.not(uid: lists.map(:uid))
+      end
+
+      def self.name_text product_id
+        humanized_name + "_" + product_name(product_id)
       end
 
       def self.data

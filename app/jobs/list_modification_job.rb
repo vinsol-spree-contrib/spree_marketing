@@ -14,5 +14,6 @@ class ListModificationJob < ActiveJob::Base
                                             mailchimp_id: contact_data['unique_email_id'])
     end
     list.save
+    list
   end
 end

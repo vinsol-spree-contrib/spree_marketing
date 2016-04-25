@@ -17,18 +17,22 @@ module Spree
                         .pluck(:actor_id)
       end
 
-      def self.generate
+      def self.generator
+        lists = []
         data.each do |searched_keyword|
-          new(searched_keyword: searched_keyword).generate(humanized_name + "_" + searched_keyword)
+          list = find_by(name: name_text(searched_keyword))
+          if list
+            list.update_list
+          else
+            list = new(searched_keyword: searched_keyword).generate(name_text(searched_keyword))
+          end
+          lists << list
         end
+        ListCleanupJob.perform_later self.where.not(uid: lists.map(:uid))
       end
 
-      def self.update
-        data.each do |searched_keyword|
-          Spree::Marketing::List.where(type: self)
-                                .find_by(name: humanized_name + "_" + searched_keyword)
-                                .update_list
-        end
+      def name_text searched_keyword
+        humanized_name + "_" + searched_keyword
       end
 
       def self.data

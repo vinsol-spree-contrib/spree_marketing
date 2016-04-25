@@ -19,22 +19,26 @@ module Spree
                     .pluck(:user_id)
       end
 
-      def self.generate
+      def self.generator
+        lists = []
         data.each do |state_id|
-          new(state_id: state_id).generate(humanized_name + "_" + state_name(state_id))
+          list = find_by(name: name_text(state_id))
+          if list
+            list.update_list
+          else
+            list = new(state_id: state_id).generate(name_text(state_id))
+          end
+          lists << list
         end
+        ListCleanupJob.perform_later self.where.not(uid: lists.map(:uid))
       end
 
-      def self.update
-        data.each do |state_id|
-          Spree::Marketing::List.where(type: self)
-                                .find_by(name: humanized_name + "_" + state_name(state_id))
-                                .update_list
-        end
-      end
-
-      def state_name state_id
+      def self.state_name state_id
         Spree::State.find_by(id: state_id).name.downcase.gsub(" ", "_")
+      end
+
+      def self.name_text state_id
+        humanized_name + "_" + state_name(state_id)
       end
 
       def data

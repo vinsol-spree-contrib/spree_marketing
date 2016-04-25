@@ -24,31 +24,21 @@ module Spree
       end
 
       def generate list_name
-        ListGenerationJob.perform_later list_name, emails
+        ListGenerationJob.perform_later list_name, emails, self.class.name
       end
 
       def update_list
-        self.contacts.destroy_all
         ListModificationJob.perform_later self, new_emails, removable_uids
       end
 
-      def self.update
-        Spree::Marketing::List.where(type: self).find_by(name: humanized_name).update_list
-      end
-
-      def self.generate
-        new.generate humanized_name
+      def self.generator
+        list = self.find_by(name: humanized_name)
+        list ? list.update_list : new.generate humanized_name
       end
 
       def self.generate_all
         subclasses.each do |list_type|
-          list_type.generate
-        end
-      end
-
-      def self.update_all
-        subclasses.each do |list_type|
-          list_type.update
+          list_type.generator
         end
       end
 

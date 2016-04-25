@@ -20,18 +20,22 @@ module Spree
                     .pluck(:user_id)
       end
 
-      def self.generate
+      def self.generator
+        lists = []
         data.each do |payment_method_id|
-          new(payment_method_id: payment_method_id).generate(humanized_name + "_" + payment_method_name(payment_method_id))
+          list = find_by(name: name_text(payment_method_id))
+          if list
+            list.update_list
+          else
+            list = new(payment_method_id: payment_method_id).generate(name_text(payment_method_id))
+          end
+          lists << list
         end
+        ListCleanupJob.perform_later self.where.not(uid: lists.map(:uid))
       end
 
-      def self.update
-        data.each do |payment_method_id|
-          Spree::Marketing::List.where(type: self)
-                                .find_by(name: humanized_name + "_" + payment_method_name(payment_method_id))
-                                .update_list
-        end
+      def self.name_text payment_method_id
+        humanized_name + "_" + payment_method_name(payment_method_id)
       end
 
       def self.payment_method_name payment_method_id
