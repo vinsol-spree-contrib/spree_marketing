@@ -6,7 +6,7 @@ class ListModificationJob < ActiveJob::Base
 
   def perform(list, subscribable_emails, unsubscribable_uids)
     gibbon_service = GibbonService.new(list.uid)
-    contacts_data = gibbon_service.update_list(subscribable_emails, unsubscribable_uids)
+    contacts_data = gibbon_service.update_list(subscribable_emails, unsubscribable_uids) || []
     list.contacts_lists.destroy_all
     contacts_data.each do |contact_data|
       list.contacts << Spree::Marketing::Contact.new(email: contact_data['email_address'],

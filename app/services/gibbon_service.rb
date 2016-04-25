@@ -7,7 +7,7 @@ class GibbonService
   LIST_ATTRIBUTES                 = [:permission_reminder, :email_type_option, :campaign_defaults, :contact]
   BATCH_COUNT                     = 50
   RETRY_COUNT                     = 5
-  TIME_DELAY                      = 500
+  TIME_DELAY                      = 0.5
   DEFAULT_LIST_GENERATION_PARAMS  = SpreeMarketing::CONFIG[Rails.env].slice(*LIST_ATTRIBUTES)
 
   def self.gibbon
@@ -19,14 +19,17 @@ class GibbonService
   end
 
   def generate_list(list_name = '')
+    p "Generating List #{ list_name }"
     response = gibbon.lists.create(body: { name: list_name }.merge(DEFAULT_LIST_GENERATION_PARAMS))
     @list_uid = response['id'] if response['id'].present?
+    p "Generated List #{ list_name } -- #{ @list_uid }"
     response
   end
 
   def update_list(subscribable_emails = [], unsubscribable_uids = [])
-    unsubscribe_members(unsubscribable_uids)
-    subscribe_members(subscribable_emails)
+    p "Updating List #{ @list_uid }"
+    unsubscribe_members(unsubscribable_uids) if unsubscribable_uids.present?
+    subscribe_members(subscribable_emails) if subscribable_emails.any?
   end
 
   def delete_lists(list_uids = [])
@@ -36,8 +39,11 @@ class GibbonService
   def subscribe_members(subscribable_emails = [])
     members_batches = subscribable_emails.in_groups_of(BATCH_COUNT, false)
     members_batches.each do |members_batch|
+      p "Starting subscribe on mailchimp for members with emails #{ members_batch.join(', ') }"
       response = gibbon.batches.create(body: { operations: member_operations_list_to_generate(members_batch) })
+      p response
       tail_batch_response(response['batch_id'], @new_members_emails, :subscribe)
+      p "Finished subscribe on mailchimp for members with emails #{ members_batch.join(', ') }"
     end
     retrieve_members
   end
@@ -45,8 +51,11 @@ class GibbonService
   def unsubscribe_members(unsubscribable_uids = [])
     members_batches = unsubscribable_uids.in_groups_of(BATCH_COUNT, false)
     members_batches.each do |members_batch|
+      p "Starting unsubscribe on mailchimp for members with uids #{ members_batch.join('-') }"
       response = gibbon.batches.create(body: { operations: member_operations_list_to_unsubscribe(members_batch) })
+      p response
       tail_batch_response(response['batch_id'], members_batch, :unsubscribe)
+      p "Finished unsubscribe on mailchimp for members with uids #{ members_batch.join(', ') }"
     end
   end
 
@@ -64,13 +73,14 @@ class GibbonService
 
     def check_batch_response(batch_id, retry_count)
       batch_response = gibbon.batches(batch_id).retrieve
-
-      if batch_response['status'] == 'finished'
+      p "checking batch response ---- \n #{ batch_response }"
+      if batch_response['batches'] && (batch_response['batches'][0]['status'] == 'finished')
         true
       else
         if retry_count > 0
+          p "retrying #{ retry_count }"
           sleep(TIME_DELAY)
-          check_batch_response(batch_id, --retry_count)
+          check_batch_response(batch_id, retry_count - 1)
         else
           false
         end
@@ -82,7 +92,7 @@ class GibbonService
     end
 
     def member_operations_list_to_unsubscribe(unsubscribable_uids = [])
-      unsubscribable_uids.select do |uid|
+      unsubscribable_uids.collect do |uid|
         {
           method: "PATCH",
           path: "lists/#{ @list_uid }/members/#{ uid }",
@@ -92,7 +102,7 @@ class GibbonService
     end
 
     def member_operations_list_to_generate(subscribable_emails = [])
-      subscribable_emails.select do |email_address|
+      subscribable_emails.collect do |email_address|
         {
           method: "POST",
           path: "lists/#{ @list_uid }/members",
