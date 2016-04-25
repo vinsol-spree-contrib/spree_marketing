@@ -11,8 +11,7 @@ class GibbonService
   DEFAULT_LIST_GENERATION_PARAMS  = SpreeMarketing::CONFIG[Rails.env].slice(*LIST_ATTRIBUTES)
 
   def self.gibbon
-    @gibbon ||= Gibbon::Request.new(api_key: SpreeMarketing::CONFIG[:gibbon_api_key],
-                                    timeout: SpreeMarketing::CONFIG[:timeout].to_i)
+    @gibbon ||= ::Gibbon::Request.new(api_key: SpreeMarketing::CONFIG[Rails.env][:gibbon_api_key])
   end
 
   def initialize(list_uid = nil)
