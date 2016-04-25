@@ -69,7 +69,7 @@ module Spree
         end
 
         def fetch_old_emails
-          contacts.pluck(:emails)
+          contacts.pluck(:email)
         end
 
         def new_emails
