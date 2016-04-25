@@ -33,7 +33,7 @@ module Spree
 
       def self.generator
         list = self.find_by(name: humanized_name)
-        list ? list.update_list : new.generate humanized_name
+        list ? list.update_list : new.generate(humanized_name)
       end
 
       def self.generate_all
