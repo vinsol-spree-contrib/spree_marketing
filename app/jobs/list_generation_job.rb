@@ -10,7 +10,7 @@ class ListGenerationJob < ActiveJob::Base
     list = list_class_name.constantize.create(uid: list_data['id'], name: list_data['name'])
     contacts_data = gibbon_service.subscribe_members(emails)['members']
     contacts_data.each do |contact_data|
-      list.contacts << Spree::Contact.build(email: contact_data['email_address'],
+      list.contacts << Spree::Marketing::Contact.new(email: contact_data['email_address'],
                                             uid: contact_data['id'],
                                             mailchimp_id: contact_data['unique_email_id'])
     end
