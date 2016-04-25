@@ -27,6 +27,7 @@ module Spree
             list.update_list
           else
             list = new(state_id: state_id).generate(name_text(state_id))
+            p list
           end
           lists << list
         end
