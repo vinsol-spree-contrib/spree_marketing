@@ -34,7 +34,7 @@ module Spree
           end
           lists << list
         end
-        ListCleanupJob.perform_later self.where.not(uid: lists.map(:uid))
+        ListCleanupJob.perform_later self.where.not(uid: lists.map(&:uid))
       end
 
       def self.name_text product_id
