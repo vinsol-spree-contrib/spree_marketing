@@ -14,6 +14,35 @@ module SpreeMarketing
         inject_into_file 'vendor/assets/stylesheets/spree/backend/all.css', " *= require spree/backend/spree_marketing\n", :before => /\*\//, :verbose => true
       end
 
+      def config_spree_marketing_yml
+        create_file "config/spree_marketing.yml" do
+          settings = {
+                        development: {
+                          gibbon_api_key: 'your_api_key',
+                          gibbon_timeout: '15',
+                          permission_reminder: 'your_permission_reminder',
+                          email_type_option: true,
+                          campaign_defaults: {
+                            from_name: 'test name',
+                            from_email: 'test@marketing.com',
+                            subject: 'test subject',
+                            language: 'english'
+                          },
+                          contact: {
+                            company: 'marketing',
+                            address1: '123',
+                            city: 'city',
+                            state: 'state',
+                            zip: '123456',
+                            country: 'country'
+                          }
+                        }
+                     }
+
+          settings.to_yaml
+        end
+      end
+
       def add_migrations
         run 'bundle exec rake railties:install:migrations FROM=spree_marketing'
       end
