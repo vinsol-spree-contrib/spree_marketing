@@ -14,33 +14,16 @@ module SpreeMarketing
         inject_into_file 'vendor/assets/stylesheets/spree/backend/all.css', " *= require spree/backend/spree_marketing\n", :before => /\*\//, :verbose => true
       end
 
-      def config_spree_marketing_yml
-        create_file "config/spree_marketing.yml" do
-          settings = {
-                        development: {
-                          gibbon_api_key: 'your_api_key',
-                          gibbon_timeout: '15',
-                          permission_reminder: 'your_permission_reminder',
-                          email_type_option: true,
-                          campaign_defaults: {
-                            from_name: 'test name',
-                            from_email: 'test@marketing.com',
-                            subject: 'test subject',
-                            language: 'english'
-                          },
-                          contact: {
-                            company: 'marketing',
-                            address1: '123',
-                            city: 'city',
-                            state: 'state',
-                            zip: '123456',
-                            country: 'country'
-                          }
-                        }
-                     }
+      def self.source_paths
+        paths = self.superclass.source_paths
+        paths << File.expand_path('../templates', "../../#{__FILE__}")
+        paths << File.expand_path('../templates', "../#{__FILE__}")
+        paths << File.expand_path('../templates', __FILE__)
+        paths.flatten
+      end
 
-          settings.to_yaml
-        end
+      def config_spree_marketing_yml
+        template 'spree_marketing.yml', 'config/spree_marketing.yml'
       end
 
       def add_migrations

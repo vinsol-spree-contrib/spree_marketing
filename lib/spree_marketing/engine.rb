@@ -14,7 +14,7 @@ module SpreeMarketing
         SpreeMarketing::CONFIG = YAML.load_file(app_config)
       else
         #Unless file found with correct format, there would be definite exceptional cases
-        SpreeMarketing.log "Please create the yml file spree_marketing.yml"
+        Rails.logger.info "Please create the yml file spree_marketing.yml"
       end
     end
 
