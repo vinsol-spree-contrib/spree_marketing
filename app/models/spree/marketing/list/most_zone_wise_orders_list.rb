@@ -41,7 +41,7 @@ module Spree
         humanized_name + "_" + state_name(state_id)
       end
 
-      def data
+      def self.data
         Spree::Order.joins(ship_address: :state)
           .group("spree_states.id")
           .order("COUNT(spree_orders.id) DESC")
