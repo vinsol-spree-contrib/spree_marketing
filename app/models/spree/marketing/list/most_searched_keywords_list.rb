@@ -24,7 +24,8 @@ module Spree
           if list
             list.update_list
           else
-            list = new(searched_keyword: searched_keyword).generate(name_text(searched_keyword))
+            new(searched_keyword: searched_keyword).generate(name_text(searched_keyword))
+            list = find_by(name: name_text(searched_keyword))
           end
           lists << list
         end

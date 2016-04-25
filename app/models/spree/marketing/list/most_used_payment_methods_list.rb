@@ -27,7 +27,8 @@ module Spree
           if list
             list.update_list
           else
-            list = new(payment_method_id: payment_method_id).generate(name_text(payment_method_id))
+            new(payment_method_id: payment_method_id).generate(name_text(payment_method_id))
+            list = find_by(name: name_text(payment_method_id))
           end
           lists << list
         end

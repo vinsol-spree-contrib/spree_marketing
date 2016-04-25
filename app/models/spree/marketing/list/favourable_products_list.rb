@@ -30,7 +30,8 @@ module Spree
           if list
             list.update_list
           else
-            list = new(product_id: product_id).generate(name_text(product_id))
+            new(product_id: product_id).generate(name_text(product_id))
+            list = find_by(name: name_text(product_id))
           end
           lists << list
         end

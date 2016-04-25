@@ -26,7 +26,8 @@ module Spree
           if list
             list.update_list
           else
-            list = new(state_id: state_id).generate(name_text(state_id))
+            new(state_id: state_id).generate(name_text(state_id))
+            list = find_by(name: name_text(state_id))
           end
           lists << list
         end
