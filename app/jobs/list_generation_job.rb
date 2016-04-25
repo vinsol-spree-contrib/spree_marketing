@@ -4,10 +4,9 @@ class ListGenerationJob < ActiveJob::Base
   # rescue_from(Gibbon::MailChimpError) do |exception|
   # end
 
-  def perform(list_name, emails, list_type = nil)
+  def perform(list_name, emails, list_class)
     gibbon_service = GibbonService.new
     list_data = gibbon_service.generate_list(list_name)
-    list_class = "spree/marketing/#{ list_type || list_name }".classify.constantize
     list = list_class.create(uid: list_data['id'], name: list_data['name'])
     contacts_data = gibbon_service.subscribe_members(emails)['members']
     contacts_data.each do |contact_data|

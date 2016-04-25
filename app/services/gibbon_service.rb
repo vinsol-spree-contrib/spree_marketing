@@ -8,50 +8,51 @@ class GibbonService
   BATCH_COUNT                     = 50
   RETRY_COUNT                     = 5
   TIME_DELAY                      = 500
+  DEFAULT_LIST_GENERATION_PARAMS  = SpreeMarketing::CONFIG[Rails.env].slice(*LIST_ATTRIBUTES)
 
   def self.gibbon
-    @gibbon ||= Gibbon::Request.new(api_key: SpreeMarketing::DEFAULT_LIST_GENERATION_PARAMS[:gibbon_api_key]
-                                    timeout: SpreeMarketing::DEFAULT_LIST_GENERATION_PARAMS[:timeout].to_i)
+    @gibbon ||= Gibbon::Request.new(api_key: SpreeMarketing::CONFIG[:gibbon_api_key]
+                                    timeout: SpreeMarketing::CONFIG[:timeout].to_i)
   end
 
   def initialize(list_uid = nil)
     @list_uid = list_uid
-    retrieve_members if @list_uid
   end
 
   def generate_list(list_name = '')
-    response = self.class.gibbon.lists.create(body: { name: list_name }.merge(default_list_generation_params))
+    response = gibbon.lists.create(body: { name: list_name }.merge(DEFAULT_LIST_GENERATION_PARAMS))
     @list_uid = response['id'] if response['id'].present?
     response
   end
 
-  def update_list(members_emails = [])
-    @list_uid = @list_uids.first
-    unsubscribe_existing_members
-    subscribe_members(members_emails)
-    retrieve_members
+  def update_list(subscribable_emails = [], unsubscribable_uids = [])
+    unsubscribe_members(unsubscribable_uids)
+    subscribe_members(subscribable_emails)
   end
 
   def delete_lists(list_uids = [])
-    list_uids.each { |list_uid| self.class.gibbon.lists(list_uid).delete }
+    list_uids.each { |list_uid| gibbon.lists(list_uid).delete }
   end
 
-  def subscribe_members(members_emails = [])
-    members_batches = members_emails.in_groups_of(BATCH_COUNT, false)
+  def subscribe_members(subscribable_emails = [])
+    members_batches = subscribable_emails.in_groups_of(BATCH_COUNT, false)
     members_batches.each do |members_batch|
-      @new_members_emails = members_batch
-      response = self.class.gibbon.batches.create(body: { operations: member_operations_list_to_generate })
+      response = gibbon.batches.create(body: { operations: member_operations_list_to_generate(members_batch) })
       tail_batch_response(response['batch_id'], @new_members_emails, :subscribe)
     end
     retrieve_members
   end
 
-  def unsubscribe_members(list_uid = nil)
-    members_batches = @members.in_groups_of(BATCH_COUNT, false)
+  def unsubscribe_members(unsubscribable_uids = [])
+    members_batches = unsubscribable_uids.in_groups_of(BATCH_COUNT, false)
     members_batches.each do |members_batch|
-      response = self.class.gibbon.batches.create(body: { operations: member_operations_list_to_unsubscribe })
+      response = gibbon.batches.create(body: { operations: member_operations_list_to_unsubscribe(members_batch) })
       tail_batch_response(response['batch_id'], members_batch, :unsubscribe)
     end
+  end
+
+  def gibbon
+    self.class.gibbon
   end
 
   private
@@ -63,7 +64,7 @@ class GibbonService
     end
 
     def check_batch_response(batch_id, retry_count)
-      batch_response = self.class.gibbon.batches(batch_id).retrieve
+      batch_response = gibbon.batches(batch_id).retrieve
 
       if batch_response['status'] == 'finished'
         true
@@ -78,15 +79,11 @@ class GibbonService
     end
 
     def retrieve_members
-      @members = self.class.gibbon.lists(@list_uid).members.retrieve(DEFAULT_MEMBER_RETRIEVAL_PARAMS)['members']
+      @members = gibbon.lists(@list_uid).members.retrieve(DEFAULT_MEMBER_RETRIEVAL_PARAMS)['members']
     end
 
-    def members_uids
-      @members.map { |member| member[:id] }
-    end
-
-    def member_operations_list_to_unsubscribe
-      members_uids.select do |uid|
+    def member_operations_list_to_unsubscribe(unsubscribable_uids = [])
+      unsubscribable_uids.select do |uid|
         {
           method: "PATCH",
           path: "lists/#{ @list_uid }/members/#{ uid }",
@@ -95,17 +92,13 @@ class GibbonService
       end
     end
 
-    def member_operations_list_to_generate
-      @new_members_emails.select do |email_address|
+    def member_operations_list_to_generate(subscribable_emails = [])
+      subscribable_emails.select do |email_address|
         {
           method: "POST",
           path: "lists/#{ @list_uid }/members",
           body: "{\"email_address\": \"#{ email_address }\",\"status\":\"#{ MEMBER_STATUS[:subscribe] }\"}"
         }
       end
-    end
-
-    def default_list_generation_params
-      SpreeMarketing::DEFAULT_LIST_GENERATION_PARAMS[Rails.env].slice(*LIST_ATTRIBUTES)
     end
 end

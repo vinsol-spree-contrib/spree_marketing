@@ -4,9 +4,9 @@ class ListModificationJob < ActiveJob::Base
   # rescue_from(Gibbon::MailChimpError) do |exception|
   # end
 
-  def perform(list, emails, list_type = nil)
+  def perform(list, subscribable_emails, unsubscribable_uids)
     gibbon_service = GibbonService.new(list.uid)
-    contacts_data = gibbon_service.update_list(emails)
+    contacts_data = gibbon_service.update_list(subscribable_emails, unsubscribable_uids)
     list.contacts_lists.destroy_all
     contacts_data.each do |contact_data|
       list.contacts << Spree::Contact.build(email: contact_data['email_address'],
