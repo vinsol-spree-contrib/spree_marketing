@@ -21,6 +21,7 @@ class GibbonService
   def generate_list(list_name = '')
     p "Generating List #{ list_name }"
     response = gibbon.lists.create(body: { name: list_name }.merge(DEFAULT_LIST_GENERATION_PARAMS))
+    p response
     @list_uid = response['id'] if response['id'].present?
     p "Generated List #{ list_name } -- #{ @list_uid }"
     response
@@ -88,6 +89,7 @@ class GibbonService
     end
 
     def retrieve_members
+      p "retrieving members for list #{ @list_uid }"
       @members = gibbon.lists(@list_uid).members.retrieve(DEFAULT_MEMBER_RETRIEVAL_PARAMS)['members']
     end
 
