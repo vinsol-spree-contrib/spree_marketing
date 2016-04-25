@@ -36,7 +36,7 @@ module Spree
       end
 
       def self.data
-        Spree::PageEvent.where(action: "search")
+        Spree::PageEvent.where(activity: "search")
                         .group(:search_keywords)
                         .order("COUNT(spree_page_events.id) DESC")
                         .limit(MOST_SEARCHRD_KEYWORD_COUNT)
