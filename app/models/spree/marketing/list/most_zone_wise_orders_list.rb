@@ -30,7 +30,7 @@ module Spree
           end
           lists << list
         end
-        ListCleanupJob.perform_later lists.map(&:uid)
+        ListCleanupJob.perform_later self.where.not(uid: lists.map(&:uid)).pluck(:uid)
       end
 
       def self.state_name state_id
