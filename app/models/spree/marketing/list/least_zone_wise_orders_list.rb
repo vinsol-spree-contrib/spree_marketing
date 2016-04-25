@@ -21,13 +21,25 @@ module Spree
                     .pluck("spree_orders.user_id")
       end
 
-      # def self.process
-      #   # Reports::MostActiveZones.new.query.each do |zone|
+      def self.generate
+        data.each do |state_id|
+          new(state_id: state_id).generate(humanized_name + "_" + state_name(state_id))
+        end
+      end
 
-      #   # end
-      # end
+      def self.update
+        data.each do |state_id|
+          Spree::Marketing::List.where(type: self)
+                                .find_by(name: humanized_name + "_" + state_name(state_id))
+                                .update_list
+        end
+      end
 
-      def data
+      def state_name state_id
+        Spree::State.find_by(id: state_id).name.downcase.gsub(" ", "_")
+      end
+
+      def self.data
         Spree::Order.joins(ship_address: :state)
           .group("spree_states.id")
           .order("COUNT(spree_orders.id)")

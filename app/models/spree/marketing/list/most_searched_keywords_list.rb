@@ -9,7 +9,7 @@ module Spree
       attr_accessor :searched_keyword
 
       def user_ids
-        Spree::PageEvent.where(search_keywords: @searched_keyword)
+        Spree::PageEvent.where(search_keywords: searched_keyword)
                         .where("created_at >= :time_frame", time_frame: computed_time)
                         .of_registered_users
                         .where(actor_type: Spree.user_class)
@@ -17,13 +17,21 @@ module Spree
                         .pluck(:actor_id)
       end
 
-      # def self.process
-      #   Reports::MostSearchedKeyword.new.query.each do |keyword|
+      def self.generate
+        data.each do |searched_keyword|
+          new(searched_keyword: searched_keyword).generate(humanized_name + "_" + searched_keyword)
+        end
+      end
 
-      #   end
-      # end
+      def self.update
+        data.each do |searched_keyword|
+          Spree::Marketing::List.where(type: self)
+                                .find_by(name: humanized_name + "_" + searched_keyword)
+                                .update_list
+        end
+      end
 
-      def data
+      def self.data
         Spree::PageEvent.where(action: "search")
                         .group(:search_keywords)
                         .order("COUNT(spree_page_events.id) DESC")

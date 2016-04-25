@@ -20,13 +20,25 @@ module Spree
                     .pluck(:user_id)
       end
 
-      # def self.process
-      #   Reports::MostUsedPaymentMethod.new.query.each do |payment_method|
+      def self.generate
+        data.each do |payment_method_id|
+          new(payment_method_id: payment_method_id).generate(humanized_name + "_" + payment_method_name(payment_method_id))
+        end
+      end
 
-      #   end
-      # end
+      def self.update
+        data.each do |payment_method_id|
+          Spree::Marketing::List.where(type: self)
+                                .find_by(name: humanized_name + "_" + payment_method_name(payment_method_id))
+                                .update_list
+        end
+      end
 
-      def data
+      def self.payment_method_name payment_method_id
+        Spree::PaymentMethod.find_by(id: payment_method_id).name.downcase.gsub(" ", "_")
+      end
+
+      def self.data
         Spree::Payment.joins(:payment_method, :order)
                       .where(state: :completed)
                       .group("spree_payment_methods.id")

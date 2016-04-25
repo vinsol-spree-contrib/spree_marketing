@@ -19,13 +19,25 @@ module Spree
                     .pluck(:user_id)
       end
 
-      # def self.process
-      #   # Reports::MostBoughtProducts.new.query.each do
-      #     # self.new()
-      #   # end
-      # end
+      def self.generate
+        data.each do |product_id|
+          new(product_id: product_id).generate(humanized_name + "_" + product_name(product_id))
+        end
+      end
 
-      def data
+      def self.product_name product_id
+        Spree::Product.find_by(id: product_id).name.downcase.gsub(" ", "_")
+      end
+
+      def self.update
+        data.each do |product_id|
+          Spree::Marketing::List.where(type: self)
+                                .find_by(name: humanized_name + "_" + product_name(product_id))
+                                .update_list
+        end
+      end
+
+      def self.data
         Spree::InventoryUnit.joins(variant: :product)
                             .group("spree_variants.id")
                             .order("COUNT(spree_inventory_units.id) DESC")
