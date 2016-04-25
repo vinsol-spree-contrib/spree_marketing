@@ -22,14 +22,14 @@ module Spree
 
       def self.generate
         data.each do |payment_method_id|
-          new(payment_method_id: payment_method_id).generate(self.class.humanize + self.payment_method_name(payment_method_id))
+          new(payment_method_id: payment_method_id).generate(humanized_name + "_" + payment_method_name(payment_method_id))
         end
       end
 
       def self.update
         data.each do |payment_method_id|
           Spree::Marketing::List.where(type: self)
-                                .find_by(name: self.name.humanize + self.payment_method_name(payment_method_id))
+                                .find_by(name: humanized_name + "_" + payment_method_name(payment_method_id))
                                 .update_list
         end
       end

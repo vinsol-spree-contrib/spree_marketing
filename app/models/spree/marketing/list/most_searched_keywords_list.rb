@@ -19,13 +19,15 @@ module Spree
 
       def self.generate
         data.each do |searched_keyword|
-          new(searched_keyword: searched_keyword).generate self.class.humanize + searched_keyword
+          new(searched_keyword: searched_keyword).generate(humanized_name + "_" + searched_keyword)
         end
       end
 
       def self.update
         data.each do |searched_keyword|
-          Spree::Marketing::List.where(type: self).find_by(name: self.name.humanize + searched_keyword).update_list
+          Spree::Marketing::List.where(type: self)
+                                .find_by(name: humanized_name + "_" + searched_keyword)
+                                .update_list
         end
       end
 

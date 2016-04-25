@@ -23,13 +23,15 @@ module Spree
 
       def self.generate
         data.each do |state_id|
-          new(state_id: state_id).generate(self.class.humanize + self.state_name(state_id))
+          new(state_id: state_id).generate(humanized_name + "_" + state_name(state_id))
         end
       end
 
       def self.update
         data.each do |state_id|
-          Spree::Marketing::List.where(type: self).find_by(name: self.name.humanize + state_name(state_id)).update_list
+          Spree::Marketing::List.where(type: self)
+                                .find_by(name: humanized_name + "_" + state_name(state_id))
+                                .update_list
         end
       end
 

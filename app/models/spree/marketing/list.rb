@@ -3,10 +3,6 @@ module Spree
     class List < Spree::Base
 
       # Constants
-      LISTS = [:AbandonedCartList, :FavourableProductsList, :LeastActiveUsersList, :NewUsersList,
-                :LeastZoneWiseOrdersList, :MostActiveUsersList, :MostDiscountedOrdersList,
-                :MostSearchedKeywordsList, :MostUsedPaymentMethodsList, :MostZoneWiseOrdersList
-              ]
       TIME_FRAME = 1.week
 
       # Configurations
@@ -40,8 +36,8 @@ module Spree
         raise ::NotImplementedErrorList, 'You must implement user_ids method for this smart list.'
       end
 
-      def generate class_name
-        ListGenerationJob.perform_later class_name, emails
+      def generate list_name
+        ListGenerationJob.perform_later list_name, emails
       end
 
       def update_list
@@ -50,11 +46,15 @@ module Spree
       end
 
       def self.update
-        Spree::Marketing::List.where(type: self).find_by(name: self.name.humanize).update_list
+        Spree::Marketing::List.where(type: self).find_by(name: humanized_name).update_list
       end
 
       def self.generate
-        new.generate self.name.humanize
+        new.generate humanized_name
+      end
+
+      def self.humanized_name
+        self.name.demodulize.underscore
       end
 
       def computed_time
@@ -66,15 +66,14 @@ module Spree
       end
 
       def self.generate_all
-        LISTS.each do |list_type|
-          debugger
-          list_type.constantize.generate
+        subclasses.each do |list_type|
+          list_type.generate
         end
       end
 
       def self.update_all
-        LISTS.each do |list_type|
-          list_type.constantize.update
+        subclasses.each do |list_type|
+          list_type.update
         end
       end
 

@@ -21,7 +21,7 @@ module Spree
 
       def self.generate
         data.each do |product_id|
-          new(product_id: product_id).generate(self.class.humanize + self.product_name(product_id))
+          new(product_id: product_id).generate(humanized_name + "_" + product_name(product_id))
         end
       end
 
@@ -31,7 +31,9 @@ module Spree
 
       def self.update
         data.each do |product_id|
-          Spree::Marketing::List.where(type: self).find_by(name: self.name.humanize + product_name(product_id)).update_list
+          Spree::Marketing::List.where(type: self)
+                                .find_by(name: humanized_name + "_" + product_name(product_id))
+                                .update_list
         end
       end
 
