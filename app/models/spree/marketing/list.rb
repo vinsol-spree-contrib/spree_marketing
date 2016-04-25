@@ -67,13 +67,14 @@ module Spree
 
       def self.generate_all
         LISTS.each do |list_type|
-          list_type.generate
+          debugger
+          list_type.constantize.generate
         end
       end
 
       def self.update_all
         LISTS.each do |list_type|
-          list_type.update
+          list_type.constantize.update
         end
       end
 

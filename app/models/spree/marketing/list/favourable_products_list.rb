@@ -21,7 +21,7 @@ module Spree
 
       def self.generate
         data.each do |product_id|
-          new(product_id: product_id).generate self.class.humanize + self.product_name product_id
+          new(product_id: product_id).generate(self.class.humanize + self.product_name(product_id))
         end
       end
 
