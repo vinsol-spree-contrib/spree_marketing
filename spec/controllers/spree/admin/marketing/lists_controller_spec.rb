@@ -4,9 +4,9 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
 
   stub_authorization!
 
-  let(:valid_list) { create(:valid_list) }
-  let(:valid_contact) { create(:valid_contact) }
-  let(:contacts) { [valid_contact] }
+  let(:list) { create(:list) }
+  let(:contact) { create(:contact) }
+  let(:contacts) { [contact] }
 
   describe "Method Overrides" do
     context "#collection" do
@@ -33,20 +33,20 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
 
   describe "callbacks" do
     def do_show
-      spree_get :show, id: valid_list.id
+      spree_get :show, id: list.id
     end
 
     let(:contacts) { double(ActiveRecord::Relation) }
 
     before do
-      allow(Spree::Marketing::List).to receive(:find).and_return(valid_list)
-      allow(valid_list).to receive(:contacts).and_return(contacts)
+      allow(Spree::Marketing::List).to receive(:find).and_return(list)
+      allow(list).to receive(:contacts).and_return(contacts)
       allow(contacts).to receive(:order).and_return(contacts)
     end
 
     context "expects to receive" do
-      it { expect(Spree::Marketing::List).to receive(:find).with(valid_list.id.to_s).and_return(valid_list) }
-      it { expect(valid_list).to receive(:contacts).and_return(contacts) }
+      it { expect(Spree::Marketing::List).to receive(:find).with(list.id.to_s).and_return(list) }
+      it { expect(list).to receive(:contacts).and_return(contacts) }
       it { expect(contacts).to receive(:order).with(updated_at: :desc).and_return(contacts) }
       after { do_show }
     end
