@@ -2,6 +2,7 @@ require "spec_helper"
 
 describe Spree::Marketing::Contact, type: :model do
 
+  let(:valid_contact) { create(:valid_contact) }
   let(:active_contact) { create(:valid_contact, active: true) }
   let(:inactive_contact) { create(:valid_contact, active: false) }
 
@@ -27,6 +28,13 @@ describe Spree::Marketing::Contact, type: :model do
     context ".active" do
       it { expect(Spree::Marketing::Contact.active).to include active_contact }
       it { expect(Spree::Marketing::Contact.active).to_not include inactive_contact }
+    end
+  end
+
+  describe "methods" do
+    context "#load" do
+      let(:data) { { "email_address" => valid_contact.email, "id" => valid_contact.uid, "unique_email_id" => valid_contact.mailchimp_id } }
+      it { expect(Spree::Marketing::Contact.load data).to eq valid_contact }
     end
   end
 
