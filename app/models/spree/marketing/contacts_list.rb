@@ -10,7 +10,7 @@ module Spree
       belongs_to :list, class_name: "Spree::Marketing::List"
 
       #scopes
-      scope :unsubscribable, ->(uids) { joins(:contact).where("spree_marketing_contacts.uid IN (?)", uids) }
+      scope :with_contact_ids, ->(contact_ids) { where(contact_id: contact_ids) }
     end
   end
 end

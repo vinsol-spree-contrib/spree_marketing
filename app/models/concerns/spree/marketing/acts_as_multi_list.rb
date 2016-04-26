@@ -11,12 +11,16 @@ module Spree
             if list = load_list(entity_id)
               list.update_list
             else
-              new("#{ entity_key }" => entity_id).generate(name_text(entity_id))
+              new("#{ self.class::ENTITY_KEY }" => entity_id).generate(name_text(entity_id))
               list = load_list(entity_id)
             end
             lists << list
           end
-          ListCleanupJob.perform_later self.where.not(uid: lists.map(&:uid)).pluck(:uid)
+          delete_lists(lists)
+        end
+
+        def delete_lists(lists)
+          ListCleanupJob.perform_later where.not(uid: lists.map(&:uid)).pluck(:uid)
         end
 
         private

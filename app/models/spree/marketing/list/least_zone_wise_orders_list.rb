@@ -5,6 +5,7 @@ module Spree
       include Spree::Marketing::ActsAsMultiList
 
       # Constants
+      ENTITY_KEY = 'state_id'
       TIME_FRAME = 1.month
       LEAST_ZONE_WISE_ORDER_COUNT = 5
 
@@ -23,27 +24,24 @@ module Spree
                     .pluck("spree_orders.user_id")
       end
 
-      private
+      def self.state_name state_id
+        Spree::State.find_by(id: state_id).name.downcase.gsub(" ", "_")
+      end
+      private_class_method :state_name
 
-        def self.state_name state_id
-          Spree::State.find_by(id: state_id).name.downcase.gsub(" ", "_")
-        end
+      def self.name_text state_id
+        humanized_name + "_" + state_name(state_id)
+      end
+      private_class_method :name_text
 
-        def self.name_text state_id
-          humanized_name + "_" + state_name(state_id)
-        end
-
-        def self.data
-          Spree::Order.joins(ship_address: :state)
-            .group("spree_states.id")
-            .order("COUNT(spree_orders.id)")
-            .limit(LEAST_ZONE_WISE_ORDER_COUNT)
-            .pluck(:state_id)
-        end
-
-        def self.entity_key
-          'state_id'
-        end
+      def self.data
+        Spree::Order.joins(ship_address: :state)
+          .group("spree_states.id")
+          .order("COUNT(spree_orders.id)")
+          .limit(LEAST_ZONE_WISE_ORDER_COUNT)
+          .pluck(:state_id)
+      end
+      private_class_method :data
     end
   end
 end

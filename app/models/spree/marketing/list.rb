@@ -28,11 +28,13 @@ module Spree
       end
 
       def update_list
-        ListModificationJob.perform_later self, new_emails, removable_uids
+        emails = emails()
+        old_emails = old_emails()
+        ListModificationJob.perform_later self.id, (emails - old_emails), removable_contact_uids(old_emails - emails)
       end
 
       def self.generator
-        list = self.find_by(name: humanized_name)
+        list = find_by(name: humanized_name)
         list ? list.update_list : new.generate(humanized_name)
       end
 
@@ -42,15 +44,19 @@ module Spree
         end
       end
 
+      def self.humanized_name
+        @humanized_name ||= name.demodulize.underscore
+      end
+      private_class_method :humanized_name
+
+      def populate(contacts_data)
+        contacts_data.each do |contact_data|
+          contact = Spree::Marketing::Contact.load(contact_data.slice('email_address', 'id', 'unique_email_id'))
+          contacts << contact
+        end
+      end
+
       private
-
-        def removable_emails
-          fetch_old_emails - emails
-        end
-
-        def self.humanized_name
-          self.name.demodulize.underscore
-        end
 
         def computed_time
           Time.current - time_frame
@@ -64,16 +70,12 @@ module Spree
           Spree.user_class.where(id: user_ids).pluck(:email)
         end
 
-        def removable_uids
+        def removable_contact_uids(removable_emails)
           Spree::Marketing::Contact.where(email: removable_emails).pluck(:uid)
         end
 
-        def fetch_old_emails
+        def old_emails
           contacts.pluck(:email)
-        end
-
-        def new_emails
-          emails - fetch_old_emails
         end
     end
   end

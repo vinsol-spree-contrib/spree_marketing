@@ -10,15 +10,7 @@ class ListGenerationJob < ActiveJob::Base
     list = list_class_name.constantize.create(uid: list_data['id'], name: list_data['name'])
     if emails.present?
       contacts_data = gibbon_service.subscribe_members(emails)
-      p contacts_data
-      if contacts_data.present?
-        contacts_data.each do |contact_data|
-          contact = Spree::Marketing::Contact.find_or_create_by(email: contact_data['email_address'],
-                                                uid: contact_data['id'],
-                                                mailchimp_id: contact_data['unique_email_id'])
-          list.contacts << contact
-        end
-      end
+      list.populate(contacts_data) if contacts_data.present?
     end
   end
 end
