@@ -2,7 +2,7 @@ class GibbonService
 
   attr_reader :members, :list_uid
 
-  MEMBER_STATUS                   = { unsubscribe: 'unsubscribe', subscribe: 'subscribe' }
+  MEMBER_STATUS                   = { unsubscribe: 'unsubscribed', subscribe: 'subscribed' }
   DEFAULT_MEMBER_RETRIEVAL_PARAMS = { params: { 'status': MEMBER_STATUS[:subscribe] } }
   LIST_ATTRIBUTES                 = [:permission_reminder, :email_type_option, :campaign_defaults, :contact]
   BATCH_COUNT                     = 50
@@ -16,6 +16,7 @@ class GibbonService
 
   def initialize(list_uid = nil)
     @list_uid = list_uid
+    @members = []
   end
 
   def generate_list(list_name = '')
@@ -41,21 +42,34 @@ class GibbonService
     members_batches = subscribable_emails.in_groups_of(BATCH_COUNT, false)
     members_batches.each do |members_batch|
       p "Starting subscribe on mailchimp for members with emails #{ members_batch.join(', ') }"
-      response = gibbon.batches.create(body: { operations: member_operations_list_to_generate(members_batch) })
-      p response
-      tail_batch_response(response['batch_id'], @new_members_emails, :subscribe)
+      members_batch.each do |email|
+      # response = gibbon.batches.create(body: { operations: member_operations_list_to_generate(members_batch) })
+        if member_uid = Spree::Marketing::Contact.find_by(email: email).try(:uid)
+          response = gibbon.lists(@list_uid).members(member_uid).upsert(body: { email_address: email, status: 'subscribed' })
+        else
+          response = gibbon.lists(@list_uid).members.create(body: { email_address: email, status: 'subscribed' })
+        end
+        if response['id']
+          @members << response
+        end
+        p response
+      end
+      # tail_batch_response(response['batch_id'], @new_members_emails, :subscribe)
       p "Finished subscribe on mailchimp for members with emails #{ members_batch.join(', ') }"
     end
-    retrieve_members
+    @members
   end
 
   def unsubscribe_members(unsubscribable_uids = [])
     members_batches = unsubscribable_uids.in_groups_of(BATCH_COUNT, false)
     members_batches.each do |members_batch|
       p "Starting unsubscribe on mailchimp for members with uids #{ members_batch.join('-') }"
-      response = gibbon.batches.create(body: { operations: member_operations_list_to_unsubscribe(members_batch) })
-      p response
-      tail_batch_response(response['batch_id'], members_batch, :unsubscribe)
+      members_batch.each do |uid|
+      # response = gibbon.batches.create(body: { operations: member_operations_list_to_unsubscribe(members_batch) })
+        response = gibbon.lists(@list_uid).members(uid).update(body: { status: 'unsubscribed' })
+        p response
+      end
+      # tail_batch_response(response['batch_id'], members_batch, :unsubscribe)
       p "Finished unsubscribe on mailchimp for members with uids #{ members_batch.join(', ') }"
     end
   end

@@ -14,7 +14,7 @@
         <tr>
           <td><%= link_to list.name, admin_marketing_list_path(list) %></td>
           <td><%= list.uid %></td>
-          <td><%= list.contacts.active.count %></td>
+          <td><%= list.contacts.count %></td>
         </tr>
       <% end %>
     </tbody>

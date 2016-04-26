@@ -8,7 +8,7 @@ module Spree
         private
 
           def collection
-            Spree::Marketing::List.order(updated_at: :desc)
+            Spree::Marketing::List.includes(:contacts).order(updated_at: :desc)
           end
 
           def load_contacts

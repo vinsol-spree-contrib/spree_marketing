@@ -9,6 +9,8 @@ module Spree
       belongs_to :contact, class_name: "Spree::Marketing::Contact"
       belongs_to :list, class_name: "Spree::Marketing::List"
 
+      #scopes
+      scope :unsubscribable, ->(uids) { joins(:contact).where("spree_marketing_contacts.uid IN (?)", uids) }
     end
   end
 end
