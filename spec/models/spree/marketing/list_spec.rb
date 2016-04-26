@@ -149,4 +149,11 @@ describe Spree::Marketing::List, type: :model do
 
     it { expect(active_list.send(:old_emails)).to include(contact.email) }
   end
+
+  describe '#removable_contact_uids' do
+    let(:contact) { create(:valid_contact) }
+    let(:contacts_list) { create(:contacts_list, list: active_list, contact: contact) }
+
+    it { expect(active_list.send(:removable_contact_uids, [contact.email])).to include(contact.uid) }
+  end
 end
