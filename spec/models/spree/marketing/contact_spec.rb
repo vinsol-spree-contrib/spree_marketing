@@ -1,0 +1,18 @@
+require "spec_helper"
+
+describe Spree::Marketing::Contact, type: :model do
+
+  describe "Validations" do
+    it { is_expected.to validate_presence_of(:uid) }
+    it { is_expected.to validate_presence_of(:mailchimp_id) }
+    it { is_expected.to validate_presence_of(:email) }
+    it { is_expected.to validate_uniqueness_of(:uid).case_insensitive.allow_nil }
+    it { is_expected.to validate_uniqueness_of(:email).case_insensitive.allow_nil }
+  end
+
+  describe "Associations" do
+    it { is_expected.to have_many(:contacts_lists).class_name("Spree::Marketing::ContactsList").dependent(:restrict_with_error) }
+    it { is_expected.to have_many(:lists).through(:contacts_lists) }
+  end
+
+end
