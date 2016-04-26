@@ -2,7 +2,10 @@ module Spree
   module Marketing
     class FavourableProductsList < List
 
+      include Spree::Marketing::ActsAsMultiList
+
       # Constants
+      ENTITY_KEY = 'product_id'
       TIME_FRAME = 1.month
       FAVOURABLE_PRODUCT_COUNT = 10
 
@@ -19,19 +22,24 @@ module Spree
                     .pluck(:user_id)
       end
 
-      # def self.process
-      #   # Reports::MostBoughtProducts.new.query.each do
-      #     # self.new()
-      #   # end
-      # end
+      def self.product_name product_id
+        Spree::Product.find_by(id: product_id).name.downcase.gsub(" ", "_")
+      end
+      private_class_method :product_name
 
-      def data
+      def self.name_text product_id
+        humanized_name + "_" + product_name(product_id)
+      end
+      private_class_method :name_text
+
+      def self.data
         Spree::InventoryUnit.joins(variant: :product)
                             .group("spree_variants.id")
                             .order("COUNT(spree_inventory_units.id) DESC")
                             .limit(FAVOURABLE_PRODUCT_COUNT)
                             .pluck(:product_id)
       end
+      private_class_method :data
     end
   end
 end

@@ -11,7 +11,7 @@ module Spree
         Spree::Order.joins(:promotions)
                     .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time)
                     .group(:user_id)
-                    .having("COUNT(spree_orders.id) > ?", MINIMUM_COUNT)
+                    .having("COUNT(spree_orders.id) > :minimum_count", minimum_count: MINIMUM_COUNT)
                     .of_registered_users
                     .order("COUNT(spree_orders.id) DESC")
                     .pluck(:user_id)

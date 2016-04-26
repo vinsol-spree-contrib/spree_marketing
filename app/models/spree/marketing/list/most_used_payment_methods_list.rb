@@ -2,7 +2,10 @@ module Spree
   module Marketing
     class MostUsedPaymentMethodList < List
 
+      include Spree::Marketing::ActsAsMultiList
+
       # Constants
+      ENTITY_KEY = 'payment_method_id'
       TIME_FRAME = 1.month
       MINIMUM_COUNT = 5
       MOST_USED_PAYMENT_METHODS_COUNT = 5
@@ -20,13 +23,17 @@ module Spree
                     .pluck(:user_id)
       end
 
-      # def self.process
-      #   Reports::MostUsedPaymentMethod.new.query.each do |payment_method|
+      def self.name_text payment_method_id
+        humanized_name + "_" + payment_method_name(payment_method_id)
+      end
+      private_class_method :name_text
 
-      #   end
-      # end
+      def self.payment_method_name payment_method_id
+        Spree::PaymentMethod.find_by(id: payment_method_id).name.downcase.gsub(" ", "_")
+      end
+      private_class_method :payment_method_name
 
-      def data
+      def self.data
         Spree::Payment.joins(:payment_method, :order)
                       .where(state: :completed)
                       .group("spree_payment_methods.id")
@@ -34,6 +41,7 @@ module Spree
                       .limit(MOST_USED_PAYMENT_METHODS_COUNT)
                       .pluck(:payment_method_id)
       end
+      private_class_method :data
     end
   end
 end

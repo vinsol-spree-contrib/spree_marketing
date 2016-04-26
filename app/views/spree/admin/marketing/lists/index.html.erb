@@ -2,25 +2,32 @@
   <%= "Lists" %>
 <% end %>
 
-<% if @lists.present? %>
-  <table class="table">
-    <thead>
-      <th><%= Spree::Marketing::List.human_attribute_name :name %></th>
-      <th><%= Spree::Marketing::List.human_attribute_name :uid %></th>
-      <th><%= Spree.t(:no_of_contacts) %></th>
-    </thead>
-    <tbody>
-      <% @lists.each do |list| %>
-        <tr>
-          <td><%= link_to list.name, admin_marketing_list_path(list) %></td>
-          <td><%= list.uid %></td>
-          <td><%= list.contacts.active.count %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <div class="alert alert-info no-objects-found">
-    <%= Spree.t(:no_resource_found, resource: "Lists") %>,
-  </div>
+
+<% @lists.each do |sub_class_lists| %>
+  <% lists = sub_class_lists %>
+  <% sub_class_name = sub_class_lists.class.to_s.deconstantize.demodulize.underscore.humanize %>
+  <h4><%= sub_class_name %></h4>
+  <% if lists.present? %>
+    <table class="table">
+      <thead>
+        <th class="col-md-5"><%= Spree::Marketing::List.human_attribute_name :name %></th>
+        <th class="col-md-4"><%= Spree::Marketing::List.human_attribute_name :uid %></th>
+        <th class="col-md-3 text-center"><%= Spree.t(:no_of_contacts) %></th>
+      </thead>
+      <tbody>
+        <% lists.each do |list| %>
+          <tr>
+            <td class="col-md-5"><%= link_to list.name.humanize, admin_marketing_list_path(list) %></td>
+            <td class="col-md-4"><%= list.uid %></td>
+            <td class="col-md-3 text-center"><%= list.contacts.count %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="alert alert-info no-objects-found">
+      <%= Spree.t(:no_resource_found, resource: sub_class_name) %>
+    </div>
+  <% end %>
+  <br>
 <% end %>

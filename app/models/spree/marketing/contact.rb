@@ -16,6 +16,11 @@ module Spree
       # Scopes
       scope :active, -> { where(active: true) }
 
+      def self.load(data)
+        find_or_create_by(email: data['email_address'],
+                          uid: data['id'],
+                          mailchimp_id: data['unique_email_id'])
+      end
     end
   end
 end

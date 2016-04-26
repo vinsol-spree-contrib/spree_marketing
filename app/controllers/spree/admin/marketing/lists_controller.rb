@@ -8,7 +8,8 @@ module Spree
         private
 
           def collection
-            Spree::Marketing::List.order(updated_at: :desc)
+            Spree::Marketing::List.subclasses
+                                  .map { |sub_class| sub_class.includes(:contacts).order(updated_at: :desc).all }
           end
 
           def load_contacts
