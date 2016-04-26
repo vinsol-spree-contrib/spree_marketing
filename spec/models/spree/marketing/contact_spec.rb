@@ -20,7 +20,8 @@ describe Spree::Marketing::Contact, type: :model do
 
   describe "Scopes" do
     context ".active" do
-      it { expect(Spree::Marketing::Contact.ative).to include active_contact }
+      it { expect(Spree::Marketing::Contact.active).to include active_contact }
+      it { expect(Spree::Marketing::Contact.active).to_not include inactive_contact }
     end
   end
 
