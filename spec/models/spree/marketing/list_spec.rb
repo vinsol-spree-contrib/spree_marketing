@@ -108,4 +108,45 @@ describe Spree::Marketing::List, type: :model do
     after { Spree::Marketing::List.generate_all }
   end
 
+  describe '.humanized_name' do
+    it { expect(Spree::Marketing::List.send(:humanized_name)).to eq(Spree::Marketing::List.name.demodulize.underscore) }
+  end
+
+  describe '#populate' do
+    let(:contacts_data) { [{ email_address: 'test@a.com',
+                             id: '12344567',
+                             unique_email_id: '12345678900000987654322222221' }.with_indifferent_access] }
+
+    before { active_list.populate(contacts_data) }
+
+    it { expect(active_list.contacts.count).to eq(1) }
+    it { expect(active_list.contacts.first.email).to eq(contacts_data.first[:email_address]) }
+  end
+
+  describe '#computed_time' do
+    it { expect(active_list.send(:computed_time).day).to eq((Time.current - active_list.send(:time_frame)).day) }
+  end
+
+  describe '#time_frame' do
+    it { expect(active_list.send(:time_frame)).to eq(Spree::Marketing::List::TIME_FRAME) }
+  end
+
+  describe '#emails' do
+    let(:user) { create(:user) }
+
+    before do
+      allow(active_list).to receive(:user_ids).and_return([user.id])
+    end
+
+    it { expect(active_list.send(:emails)).to include(user.email) }
+  end
+
+  describe '#old_emails' do
+    let(:contact) { create(:valid_contact) }
+    let(:contacts_list) { create(:contacts_list, list: active_list, contact: contact) }
+
+    before { active_list.contacts << contact }
+
+    it { expect(active_list.send(:old_emails)).to include(contact.email) }
+  end
 end
