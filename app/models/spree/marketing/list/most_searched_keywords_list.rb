@@ -21,8 +21,8 @@ module Spree
 
       private
 
-        def self.name_text searched_keyword
-          humanized_name + "_" + searched_keyword
+        def self.entity_name searched_keyword
+          searched_keyword
         end
 
         def self.data

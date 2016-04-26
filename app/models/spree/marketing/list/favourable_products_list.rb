@@ -27,8 +27,8 @@ module Spree
           Spree::Product.find_by(id: product_id).name.downcase.gsub(" ", "_")
         end
 
-        def self.name_text product_id
-          humanized_name + "_" + product_name(product_id)
+        def self.entity_name product_id
+          product_name(product_id)
         end
 
         def self.data

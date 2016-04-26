@@ -28,6 +28,10 @@ module Spree
           humanized_name + "_" + payment_method_name(payment_method_id)
         end
 
+        def self.entity_name payment_method_id
+          payment_method_name(payment_method_id)
+        end
+
         def self.payment_method_name payment_method_id
           Spree::PaymentMethod.find_by(id: payment_method_id).name.downcase.gsub(" ", "_")
         end

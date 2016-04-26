@@ -29,8 +29,8 @@ module Spree
           Spree::State.find_by(id: state_id).name.downcase.gsub(" ", "_")
         end
 
-        def self.name_text state_id
-          humanized_name + "_" + state_name(state_id)
+        def self.entity_name state_id
+          state_name(state_id)
         end
 
         def self.data

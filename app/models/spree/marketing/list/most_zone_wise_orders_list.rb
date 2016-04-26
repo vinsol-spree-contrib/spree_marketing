@@ -31,6 +31,10 @@ module Spree
           humanized_name + "_" + state_name(state_id)
         end
 
+        def self.entity_name state_id
+          state_name(state_id)
+        end
+
         def self.data
           Spree::Order.joins(ship_address: :state)
             .group("spree_states.id")

@@ -24,6 +24,10 @@ module Spree
           def load_list(entity_id)
             find_by(name: name_text(entity_id))
           end
+
+          def name_text entity_id
+            humanized_name + "_" + entity_name(entity_id)
+          end
       end
     end
   end
