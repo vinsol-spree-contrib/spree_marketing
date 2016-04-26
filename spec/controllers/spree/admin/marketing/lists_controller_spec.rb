@@ -6,7 +6,8 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
 
   let(:list) { create(:list) }
   let(:contact) { create(:contact) }
-  let(:contacts) { [contact] }
+  let(:contacts) { double(ActiveRecord::Relation) }
+  let(:lists) { double(ActiveRecord::Relation) }
 
   describe "Method Overrides" do
     context "#collection" do
@@ -19,14 +20,21 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
       let(:grouped_lists) { [lists, lists] }
 
       before do
-        allow(Spree::Marketing::List).to receive(:subclasses).and_return(list_classes)
-        allow(list_classes).to receive(:map).and_return(grouped_lists)
+        Spree::Marketing::List.subclasses.each do |subclass|
+          allow(subclass).to receive(:includes).and_return(lists)
+          allow(lists).to receive(:order).and_return(lists)
+          allow(lists).to receive(:all).and_return(lists)
+        end
       end
 
       context "expects to receive" do
         after { do_index }
-        it { expect(Spree::Marketing::List).to receive(:subclasses).and_return(list_classes) }
-        it { expect(list_classes).to receive(:map).and_return(grouped_lists) }
+        it { expect(Spree::Marketing::List).to receive(:subclasses).and_return(Spree::Marketing::List.subclasses) }
+        Spree::Marketing::List.subclasses.each do |subclass|
+          it { expect(subclass).to receive(:includes).with(:contacts).and_return(lists) }
+          it { expect(lists).to receive(:order).with(updated_at: :desc).and_return(lists) }
+          it { expect(lists).to receive(:all).and_return(lists) }
+        end
       end
     end
   end
