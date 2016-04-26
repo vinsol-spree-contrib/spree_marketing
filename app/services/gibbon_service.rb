@@ -42,8 +42,8 @@ class GibbonService
     members_batches = subscribable_emails.in_groups_of(BATCH_COUNT, false)
     members_batches.each do |members_batch|
       p "Starting subscribe on mailchimp for members with emails #{ members_batch.join(', ') }"
-      params ={ body: { email_address: email, status: MEMBER_STATUS[:subscribe] } }
       members_batch.each do |email|
+        params ={ body: { email_address: email, status: MEMBER_STATUS[:subscribe] } }
         if member_uid = Spree::Marketing::Contact.find_by(email: email).try(:uid)
           response = gibbon.lists(@list_uid).members(member_uid).upsert(params)
         else
