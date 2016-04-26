@@ -30,7 +30,7 @@ require "spree/testing_support/controller_requests"
 require 'spree/testing_support/preferences'
 require 'spree/testing_support/shoulda_matcher_configuration'
 require 'rspec/active_model/mocks'
-require 'spree_items_subscriptions/factories'
+require 'spree_marketing/factories'
 
 RSpec.configure do |config|
   config.mock_with :rspec
