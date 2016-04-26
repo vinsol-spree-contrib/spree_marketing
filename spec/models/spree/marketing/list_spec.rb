@@ -12,7 +12,7 @@ describe Spree::Marketing::List, type: :model do
   end
 
   describe "Associations" do
-    it { is_expected.to have_many(:contacts_lists).class_name("Spree::Marketing::ContactsList").dependent(:restrict_with_error) }
+    it { is_expected.to have_many(:contacts_lists).class_name("Spree::Marketing::ContactsList").dependent(:destroy) }
     it { is_expected.to have_many(:contacts).through(:contacts_lists) }
   end
 
