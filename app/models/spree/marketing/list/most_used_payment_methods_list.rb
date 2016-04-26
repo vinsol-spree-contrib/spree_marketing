@@ -24,10 +24,6 @@ module Spree
 
       private
 
-        def self.name_text payment_method_id
-          humanized_name + "_" + payment_method_name(payment_method_id)
-        end
-
         def self.entity_name payment_method_id
           payment_method_name(payment_method_id)
         end
