@@ -17,6 +17,7 @@ FactoryGirl.define do
   end
 
   factory :page_event, class: Spree::PageEvent do
+    actor_type Spree.user_class
     actor_id 1
     session_id "session_md5_hash"
     activity "index"
