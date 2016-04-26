@@ -3,10 +3,10 @@ module Spree
     class List < Spree::Base
 
       # Constants
-      LISTS = [AbandonedCartList, FavourableProductsList, LeastActiveUsersList, NewUsersList,
-                LeastZoneWiseOrdersList, MostActiveUsersList, MostDiscountedOrdersList,
-                MostSearchedKeywordsList, MostUsedPaymentMethodsList, MostZoneWiseOrdersList
-              ]
+      # LISTS = [AbandonedCartList, FavourableProductsList, LeastActiveUsersList, NewUsersList,
+      #           LeastZoneWiseOrdersList, MostActiveUsersList, MostDiscountedOrdersList,
+      #           MostSearchedKeywordsList, MostUsedPaymentMethodsList, MostZoneWiseOrdersList
+      #         ]
       TIME_FRAME = 1.week
 
       # Configurations

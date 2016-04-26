@@ -9,6 +9,9 @@ module Spree
       belongs_to :contact, class_name: "Spree::Marketing::Contact"
       belongs_to :list, class_name: "Spree::Marketing::List"
 
+      # Validations
+      validates :contact, :list, presence: true
+
     end
   end
 end
