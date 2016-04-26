@@ -2,6 +2,8 @@ module Spree
   module Marketing
     class MostUsedPaymentMethodList < List
 
+      include Spree::Marketing::ActsAsMultiList
+
       # Constants
       TIME_FRAME = 1.month
       MINIMUM_COUNT = 5
@@ -20,37 +22,28 @@ module Spree
                     .pluck(:user_id)
       end
 
-      def self.generator
-        lists = []
-        data.each do |payment_method_id|
-          list = find_by(name: name_text(payment_method_id))
-          if list
-            list.update_list
-          else
-            new(payment_method_id: payment_method_id).generate(name_text(payment_method_id))
-            list = find_by(name: name_text(payment_method_id))
-          end
-          lists << list
+      private
+
+        def self.name_text payment_method_id
+          humanized_name + "_" + payment_method_name(payment_method_id)
         end
-        ListCleanupJob.perform_later self.where.not(uid: lists.map(&:uid)).pluck(:uid)
-      end
 
-      def self.name_text payment_method_id
-        humanized_name + "_" + payment_method_name(payment_method_id)
-      end
+        def self.payment_method_name payment_method_id
+          Spree::PaymentMethod.find_by(id: payment_method_id).name.downcase.gsub(" ", "_")
+        end
 
-      def self.payment_method_name payment_method_id
-        Spree::PaymentMethod.find_by(id: payment_method_id).name.downcase.gsub(" ", "_")
-      end
+        def self.data
+          Spree::Payment.joins(:payment_method, :order)
+                        .where(state: :completed)
+                        .group("spree_payment_methods.id")
+                        .order("COUNT(spree_orders.id) DESC")
+                        .limit(MOST_USED_PAYMENT_METHODS_COUNT)
+                        .pluck(:payment_method_id)
+        end
 
-      def self.data
-        Spree::Payment.joins(:payment_method, :order)
-                      .where(state: :completed)
-                      .group("spree_payment_methods.id")
-                      .order("COUNT(spree_orders.id) DESC")
-                      .limit(MOST_USED_PAYMENT_METHODS_COUNT)
-                      .pluck(:payment_method_id)
-      end
+        def self.entity_key
+          'payment_method_id'
+        end
     end
   end
 end

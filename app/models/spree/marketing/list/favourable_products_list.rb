@@ -2,6 +2,8 @@ module Spree
   module Marketing
     class FavourableProductsList < List
 
+      include Spree::Marketing::ActsAsMultiList
+
       # Constants
       TIME_FRAME = 1.month
       FAVOURABLE_PRODUCT_COUNT = 10
@@ -19,36 +21,27 @@ module Spree
                     .pluck(:user_id)
       end
 
-      def self.product_name product_id
-        Spree::Product.find_by(id: product_id).name.downcase.gsub(" ", "_")
-      end
+      private
 
-      def self.generator
-        lists = []
-        data.each do |product_id|
-          list = find_by(name: name_text(product_id))
-          if list
-            list.update_list
-          else
-            new(product_id: product_id).generate(name_text(product_id))
-            list = find_by(name: name_text(product_id))
-          end
-          lists << list
+        def self.product_name product_id
+          Spree::Product.find_by(id: product_id).name.downcase.gsub(" ", "_")
         end
-        ListCleanupJob.perform_later self.where.not(uid: lists.map(&:uid)).pluck(:uid)
-      end
 
-      def self.name_text product_id
-        humanized_name + "_" + product_name(product_id)
-      end
+        def self.name_text product_id
+          humanized_name + "_" + product_name(product_id)
+        end
 
-      def self.data
-        Spree::InventoryUnit.joins(variant: :product)
-                            .group("spree_variants.id")
-                            .order("COUNT(spree_inventory_units.id) DESC")
-                            .limit(FAVOURABLE_PRODUCT_COUNT)
-                            .pluck(:product_id)
-      end
+        def self.data
+          Spree::InventoryUnit.joins(variant: :product)
+                              .group("spree_variants.id")
+                              .order("COUNT(spree_inventory_units.id) DESC")
+                              .limit(FAVOURABLE_PRODUCT_COUNT)
+                              .pluck(:product_id)
+        end
+
+        def self.entity_key
+          'product_id'
+        end
     end
   end
 end
