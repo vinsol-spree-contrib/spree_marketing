@@ -2,17 +2,17 @@ require "spec_helper"
 
 describe Spree::Marketing::Contact, type: :model do
 
-  let(:valid_contact) { create(:valid_contact) }
-  let(:active_contact) { create(:valid_contact, active: true) }
-  let(:inactive_contact) { create(:valid_contact, active: false) }
+  let(:contact) { create(:contact) }
+  let(:active_contact) { create(:contact, active: true) }
+  let(:inactive_contact) { create(:contact, active: false) }
 
   describe "Validations" do
     it { is_expected.to validate_presence_of(:uid) }
     it { is_expected.to validate_presence_of(:mailchimp_id) }
     it { is_expected.to validate_presence_of(:email) }
     context "validates uniqueness of" do
-      let!(:contact1) { create(:valid_contact) }
-      let(:contact2) { build(:valid_contact, uid: contact1.uid, email: contact1.email) }
+      let!(:contact1) { create(:contact) }
+      let(:contact2) { build(:contact, uid: contact1.uid, email: contact1.email) }
       before { contact2.save }
       it { expect(contact2.errors[:uid]).to include I18n.t "errors.messages.taken" }
       it { expect(contact2.errors[:email]).to include I18n.t "errors.messages.taken" }
@@ -33,8 +33,8 @@ describe Spree::Marketing::Contact, type: :model do
 
   describe "methods" do
     context "#load" do
-      let(:data) { { "email_address" => valid_contact.email, "id" => valid_contact.uid, "unique_email_id" => valid_contact.mailchimp_id } }
-      it { expect(Spree::Marketing::Contact.load data).to eq valid_contact }
+      let(:data) { { "email_address" => contact.email, "id" => contact.uid, "unique_email_id" => contact.mailchimp_id } }
+      it { expect(Spree::Marketing::Contact.load data).to eq contact }
     end
   end
 

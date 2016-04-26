@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'coffee-rails', '4.1.1'
   s.add_development_dependency 'database_cleaner', '1.5.1'
   s.add_development_dependency 'factory_girl', '~> 4.5'
-  s.add_development_dependency 'ffaker', '1.32.1'
+  s.add_development_dependency 'faker', '1.2.0'
   s.add_development_dependency 'pry-rails', '0.3.4'
   s.add_development_dependency 'rspec-rails',  '~> 3.1'
   s.add_development_dependency 'rspec-activemodel-mocks', '1.0.3'

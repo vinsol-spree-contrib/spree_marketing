@@ -2,15 +2,15 @@ require "spec_helper"
 
 describe Spree::Marketing::List, type: :model do
 
-  let(:active_list) { create(:valid_list, active: true) }
-  let(:inactive_list) { create(:valid_list, active: false) }
+  let(:active_list) { create(:list, active: true) }
+  let(:inactive_list) { create(:list, active: false) }
 
   describe "Validations" do
     it { is_expected.to validate_presence_of(:uid) }
     it { is_expected.to validate_presence_of(:name) }
     context "validates uniqueness of" do
-      let!(:list1) { create(:valid_list) }
-      let(:list2) { build(:valid_list, uid: list1.uid) }
+      let!(:list1) { create(:list) }
+      let(:list2) { build(:list, uid: list1.uid) }
       before { list2.save }
       it { expect(list2.errors[:uid]).to include I18n.t "errors.messages.taken" }
     end
@@ -142,7 +142,7 @@ describe Spree::Marketing::List, type: :model do
   end
 
   describe '#old_emails' do
-    let(:contact) { create(:valid_contact) }
+    let(:contact) { create(:contact) }
     let(:contacts_list) { create(:contacts_list, list: active_list, contact: contact) }
 
     before { active_list.contacts << contact }
@@ -151,7 +151,7 @@ describe Spree::Marketing::List, type: :model do
   end
 
   describe '#removable_contact_uids' do
-    let(:contact) { create(:valid_contact) }
+    let(:contact) { create(:contact) }
     let(:contacts_list) { create(:contacts_list, list: active_list, contact: contact) }
 
     it { expect(active_list.send(:removable_contact_uids, [contact.email])).to include(contact.uid) }

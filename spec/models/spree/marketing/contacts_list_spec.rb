@@ -2,9 +2,9 @@ require "spec_helper"
 
 describe Spree::Marketing::ContactsList, type: :model do
 
-  let(:active_contact) { create(:valid_contact, active: true) }
-  let(:another_contact) { create(:valid_contact, active: true, email: 'test@a.com') }
-  let(:active_list) { create(:valid_list, active: true) }
+  let(:active_contact) { create(:contact, active: true) }
+  let(:another_contact) { create(:contact, active: true, email: 'test@a.com') }
+  let(:active_list) { create(:list, active: true) }
   let(:contacts_list) { create(:contacts_list, list: active_list, contact: active_contact) }
 
   describe "Validations" do

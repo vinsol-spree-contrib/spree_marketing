@@ -19,7 +19,7 @@ end
 require 'rspec/rails'
 require 'database_cleaner'
 require 'factory_girl'
-require 'ffaker'
+require 'faker'
 require 'shoulda-matchers'
 require 'shoulda-callback-matchers'
 require 'pry'
