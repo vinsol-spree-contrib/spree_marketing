@@ -9,8 +9,13 @@ describe Spree::Marketing::Contact, type: :model do
     it { is_expected.to validate_presence_of(:uid) }
     it { is_expected.to validate_presence_of(:mailchimp_id) }
     it { is_expected.to validate_presence_of(:email) }
-    it { is_expected.to validate_uniqueness_of(:uid).case_insensitive.allow_nil }
-    it { is_expected.to validate_uniqueness_of(:email).case_insensitive.allow_nil }
+    context "validates uniqueness of" do
+      let!(:contact1) { create(:valid_contact) }
+      let(:contact2) { build(:valid_contact) }
+      before { contact2.save }
+      it { expect(contact2.errors[:uid]).to include I18n.t "errors.messages.taken" }
+      it { expect(contact2.errors[:email]).to include I18n.t "errors.messages.taken" }
+    end
   end
 
   describe "Associations" do

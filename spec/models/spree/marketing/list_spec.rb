@@ -8,7 +8,12 @@ describe Spree::Marketing::List, type: :model do
   describe "Validations" do
     it { is_expected.to validate_presence_of(:uid) }
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_uniqueness_of(:uid).case_insensitive.allow_nil }
+    context "validates uniqueness of" do
+      let!(:list1) { create(:valid_list) }
+      let(:list2) { build(:valid_list) }
+      before { list2.save }
+      it { expect(list2.errors[:uid]).to include I18n.t "errors.messages.taken" }
+    end
   end
 
   describe "Associations" do
