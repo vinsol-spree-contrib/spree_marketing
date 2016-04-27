@@ -20,7 +20,7 @@ module Spree
       scope :active, -> { where(active: true) }
 
       def user_ids
-        raise ::NotImplementedErrorList, 'You must implement user_ids method for this smart list.'
+        raise ::NotImplementedError, 'You must implement user_ids method for this smart list.'
       end
 
       def generate list_name
