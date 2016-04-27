@@ -1,6 +1,6 @@
 module Spree
   module Marketing
-    class MostSearchedKeywordList < List
+    class MostSearchedKeywordsList < List
 
       include Spree::Marketing::ActsAsMultiList
 
