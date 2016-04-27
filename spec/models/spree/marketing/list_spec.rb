@@ -9,10 +9,10 @@ describe Spree::Marketing::List, type: :model do
     it { is_expected.to validate_presence_of(:uid) }
     it { is_expected.to validate_presence_of(:name) }
     context "validates uniqueness of" do
-      let!(:list1) { create(:marketing_list) }
-      let(:list2) { build(:marketing_list, uid: list1.uid) }
-      before { list2.save }
-      it { expect(list2.errors[:uid]).to include I18n.t "errors.messages.taken" }
+      let!(:first_list) { create(:marketing_list) }
+      let(:another_list) { build(:marketing_list, uid: first_list.uid) }
+      before { another_list.save }
+      it { expect(another_list.errors[:uid]).to include I18n.t "errors.messages.taken" }
     end
   end
 
