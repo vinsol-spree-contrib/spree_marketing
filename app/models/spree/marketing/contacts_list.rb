@@ -11,6 +11,10 @@ module Spree
 
       #scopes
       scope :with_contact_ids, ->(contact_ids) { where(contact_id: contact_ids) }
+
+      # Validations
+      validates :contact, :list, presence: true
+
     end
   end
 end
