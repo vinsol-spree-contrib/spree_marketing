@@ -15,7 +15,6 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
         spree_get :index
       end
 
-      let(:lists) { double(ActiveRecord::Relation) }
       let(:list_classes) { Spree::Marketing::List.subclasses }
       let(:grouped_lists) { [lists, lists] }
 
