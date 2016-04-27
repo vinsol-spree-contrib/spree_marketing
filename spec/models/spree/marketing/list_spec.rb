@@ -5,6 +5,10 @@ describe Spree::Marketing::List, type: :model do
   let(:active_list) { create(:marketing_list, active: true) }
   let(:inactive_list) { create(:marketing_list, active: false) }
 
+  describe "Constants" do
+    it { expect(Spree::Marketing::List::TIME_FRAME).to eq(1.week) }
+  end
+
   describe "Validations" do
     it { is_expected.to validate_presence_of(:uid) }
     it { is_expected.to validate_presence_of(:name) }
