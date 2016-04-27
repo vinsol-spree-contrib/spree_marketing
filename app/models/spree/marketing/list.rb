@@ -28,9 +28,9 @@ module Spree
       end
 
       def update_list
-        emails = emails()
-        old_emails = old_emails()
-        ListModificationJob.perform_later self.id, (emails - old_emails), removable_contact_uids(old_emails - emails)
+        _emails = emails
+        _old_emails = old_emails
+        ListModificationJob.perform_later self.id, (_emails - _old_emails), removable_contact_uids(_old_emails - _emails)
       end
 
       def self.generator
