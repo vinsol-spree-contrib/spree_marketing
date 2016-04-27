@@ -1,6 +1,6 @@
 FactoryGirl.define do
 
-  factory :list, class: Spree::Marketing::List do
+  factory :marketing_list, class: Spree::Marketing::List do
     uid { Faker::Number.number(8) }
     name { Faker::Name.name }
   end
@@ -9,4 +9,5 @@ FactoryGirl.define do
     uid { Faker::Number.number(8) }
     name { Faker::Name.name }
   end
+
 end
