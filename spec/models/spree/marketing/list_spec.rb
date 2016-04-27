@@ -63,7 +63,7 @@ describe Spree::Marketing::List, type: :model do
   end
 
   describe '.generator' do
-    context 'list.persisted?' do
+    context 'when list is persisted' do
       let(:humanized_name) { Spree::Marketing::List.send(:humanized_name) }
 
       before do
@@ -79,7 +79,7 @@ describe Spree::Marketing::List, type: :model do
       after { Spree::Marketing::List.generator }
     end
 
-    context '!list.persisted?' do
+    context 'when list is not persisted' do
       let(:humanized_name) { Spree::Marketing::List.send(:humanized_name) }
       let(:new_list) { Spree::Marketing::List.new }
 
