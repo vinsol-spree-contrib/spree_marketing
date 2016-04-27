@@ -31,7 +31,7 @@ describe Spree::Marketing::Contact, type: :model do
   end
 
   describe "methods" do
-    context "#load" do
+    context ".load" do
       let(:data) { { "email_address" => contact.email, "id" => contact.uid, "unique_email_id" => contact.mailchimp_id } }
       it { expect(Spree::Marketing::Contact.load data).to eq contact }
     end
