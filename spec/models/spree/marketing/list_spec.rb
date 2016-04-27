@@ -32,7 +32,7 @@ describe Spree::Marketing::List, type: :model do
   end
 
   describe "#user_ids" do
-    it { expect {active_list.user_ids}.to raise_error(::NotImplementedError) }
+    it { expect {active_list.user_ids}.to raise_error(::NotImplementedError, 'You must implement user_ids method for this smart list.') }
   end
 
   describe "#generate" do
