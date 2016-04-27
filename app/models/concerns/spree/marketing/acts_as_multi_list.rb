@@ -11,7 +11,7 @@ module Spree
             if list = load_list(entity_id)
               list.update_list
             else
-              new("#{ self.class::ENTITY_KEY }" => entity_id).generate(name_text(entity_id))
+              new("#{ self::ENTITY_KEY }" => entity_id).generate(name_text(entity_id))
               list = load_list(entity_id)
             end
             lists << list
