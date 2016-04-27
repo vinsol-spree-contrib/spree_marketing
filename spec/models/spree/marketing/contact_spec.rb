@@ -12,7 +12,7 @@ describe Spree::Marketing::Contact, type: :model do
     it { is_expected.to validate_presence_of(:email) }
     #Spec would fail without subject assignment at db level
     context "validates uniqueness of" do
-      subject { create(:marketing_contact) }
+      subject { contact }
       it { is_expected.to validate_uniqueness_of(:uid).case_insensitive }
       it { is_expected.to validate_uniqueness_of(:email).case_insensitive }
     end
@@ -32,7 +32,7 @@ describe Spree::Marketing::Contact, type: :model do
 
   describe "methods" do
     context ".load" do
-      let(:data) { { "email_address" => contact.email, "id" => contact.uid, "unique_email_id" => contact.mailchimp_id } }
+      let(:data) { { email_address: contact.email, id: contact.uid, unique_email_id: contact.mailchimp_id }.with_indifferent_access }
       it { expect(Spree::Marketing::Contact.load data).to eq contact }
     end
   end
