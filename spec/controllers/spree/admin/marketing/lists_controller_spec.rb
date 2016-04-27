@@ -15,7 +15,6 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
         spree_get :index
       end
 
-      let(:lists) { double(ActiveRecord::Relation) }
       let(:list_classes) { Spree::Marketing::List.subclasses }
       let(:grouped_lists) { [lists, lists] }
 
@@ -27,10 +26,10 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
         end
       end
 
-      context "expects to receive" do
+      context "with correct method flow" do
         after { do_index }
         it { expect(Spree::Marketing::List).to receive(:subclasses).and_return(Spree::Marketing::List.subclasses) }
-        Spree::Marketing::List.subclasses.each do |subclass|
+              Spree::Marketing::List.subclasses.each do |subclass|
           it { expect(subclass).to receive(:includes).with(:contacts).and_return(lists) }
           it { expect(lists).to receive(:order).with(updated_at: :desc).and_return(lists) }
           it { expect(lists).to receive(:all).and_return(lists) }
@@ -52,7 +51,7 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
       allow(contacts).to receive(:order).and_return(contacts)
     end
 
-    context "expects to receive" do
+    context "with correct method flow" do
       it { expect(Spree::Marketing::List).to receive(:find).with(list.id.to_s).and_return(list) }
       it { expect(list).to receive(:contacts).and_return(contacts) }
       it { expect(contacts).to receive(:order).with(updated_at: :desc).and_return(contacts) }
