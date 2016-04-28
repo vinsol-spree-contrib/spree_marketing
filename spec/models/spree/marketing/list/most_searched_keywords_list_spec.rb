@@ -19,27 +19,28 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
 
   describe "Methods" do
     describe "#user_ids" do
-      context "completed at is before TIME_FRAME" do
-        let!(:another_search_page_event) { create(:marketing_search_page_event, search_keywords: searched_keyword, actor_id: second_user.id, created_at: Time.current - 2.month) }
+      context "with search events created before TIME_FRAME" do
+        let(:timestamp) { Time.current - 2.month }
+        let!(:another_search_page_event) { create(:marketing_search_page_event, search_keywords: searched_keyword, actor_id: second_user.id, created_at: timestamp) }
 
         it { expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).user_ids).to include first_user.id }
         it { expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).user_ids).to_not include second_user.id }
       end
 
-      context "guest user page event" do
+      context "when user is not registered" do
         let!(:guest_user_search_page_event) { create(:marketing_search_page_event, search_keywords: searched_keyword, actor_id: nil, actor_type: nil) }
 
         xit { expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).send :emails) }
       end
 
-      context "other user type page event" do
+      context "with search events created by users of type other than Spree.user_class" do
         let(:other_user_type_id) { 9 }
         let!(:other_type_user_page_event) { create(:marketing_search_page_event, actor_id: other_user_type_id, actor_type: nil) }
 
         it { expect(Spree::Marketing::LeastActiveUsersList.new.send :user_ids).to_not include other_user_type_id }
       end
 
-      context "searched keyword is same" do
+      context "with users having search events of selected keyword" do
         let(:another_searched_keyword) { "Sample" }
         let!(:another_search_page_event) { create(:marketing_search_page_event, search_keywords: another_searched_keyword, actor_id: second_user.id) }
 
@@ -48,7 +49,7 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
       end
     end
 
-    describe "#self.data" do
+    describe ".data" do
       context "method flow" do
         it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to include searched_keyword }
       end
@@ -64,7 +65,7 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
       end
     end
 
-    context "#self.name_text" do
+    context ".name_text" do
       it { expect(Spree::Marketing::MostSearchedKeywordsList.send :name_text, searched_keyword).to eq "most_searched_keywords_list_Test" }
     end
   end
