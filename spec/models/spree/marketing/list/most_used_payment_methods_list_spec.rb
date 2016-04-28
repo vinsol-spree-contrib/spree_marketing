@@ -104,7 +104,7 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
       end
     end
 
-    describe  "#.data" do
+    describe  ".data" do
       context "only completed payment" do
         let(:other_payment_method) { create(:check_payment_method) }
         let(:other_payment) { create(:payment, state: :pending, payment_method: other_payment_method) }
@@ -126,11 +126,11 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
       end
     end
 
-    context "#.payment_method_name" do
+    context ".payment_method_name" do
       it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :payment_method_name, payment_method.id).to eq "credit_card" }
     end
 
-    context "#.name_text" do
+    context ".name_text" do
       it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :name_text, payment_method.id).to eq "most_used_payment_methods_list_credit_card" }
     end
   end
