@@ -24,8 +24,7 @@ FactoryGirl.define do
 
     trait :incomplete_payment do
       after(:create) do |order, evaluator|
-        payment = create(:payment, amount: order.total, state: :pending, payment_method: evaluator.payment_method)
-        order.payments << payment
+        order.payments.update_all(state: :pending)
       end
     end
   end
