@@ -21,6 +21,13 @@ FactoryGirl.define do
         order.update_columns(completed_at: evaluator.completed_at)
       end
     end
+
+    trait :incomplete_payment do
+      after(:create) do
+        payment = create(:payment, amount: order.total, state: :pending, payment_method: evaluator.payment_method)
+        order.payments << payment
+      end
+    end
   end
 
   factory :guest_user_order_with_given_payment_method, parent: :completed_order_with_totals, class: Spree::Order do

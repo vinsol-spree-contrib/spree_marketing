@@ -8,7 +8,7 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
   let!(:second_user) { create(:user) }
   let!(:user_with_more_than_5_completed_orders) { create(:user_with_completed_orders, payment_method: payment_method, orders_count: 6) }
 
-  # it_behaves_like "acts_as_multilist", Spree::Marketing::MostUsedPaymentMethodsList
+  it_behaves_like "acts_as_multilist", Spree::Marketing::MostUsedPaymentMethodsList
 
   describe "Constants" do
     it { expect(Spree::Marketing::MostUsedPaymentMethodsList::ENTITY_KEY).to eq "payment_method_id" }
@@ -54,8 +54,7 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
       let(:other_payment_method) { create(:check_payment_method) }
 
       context "with completed orders having completed payment" do
-        let(:other_payment) { create(:payment, state: :pending, payment_method: other_payment_method) }
-        let!(:order_with_incomplete_payment) { create(:completed_order_with_totals, payments: [other_payment], user_id: second_user.id) }
+        let!(:order_with_incomplete_payment) { create(:order_with_given_payment_method, :incomplete_payment, payment_method: other_payment_method) }
 
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to include payment_method.id }
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to_not include other_payment_method.id }
