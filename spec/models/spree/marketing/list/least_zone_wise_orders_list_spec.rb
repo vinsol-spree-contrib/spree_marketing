@@ -19,15 +19,15 @@ describe Spree::Marketing::LeastZoneWiseOrdersList, type: :model do
   end
 
   describe "methods" do
-    context "#.state_name" do
+    context ".state_name" do
       it { expect(Spree::Marketing::LeastZoneWiseOrdersList.send :state_name, state.id).to eq "alabama" }
     end
 
-    context "#.name_text" do
+    context ".name_text" do
       it { expect(Spree::Marketing::LeastZoneWiseOrdersList.send :name_text, state.id).to eq "least_zone_wise_orders_list_alabama" }
     end
 
-    describe "#.data" do
+    describe ".data" do
       context "method flow" do
         it { expect(Spree::Marketing::LeastZoneWiseOrdersList.send :data).to include state.id }
       end
