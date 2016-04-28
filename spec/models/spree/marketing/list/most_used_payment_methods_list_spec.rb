@@ -5,7 +5,7 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
   let(:payment_method) { create(:credit_card_payment_method) }
   let(:entity_key) { payment_method.id }
   let(:entity_name) { payment_method.name.downcase.gsub(" ", "_") }
-  let!(:user_with_more_than_5_completed_orders) { create(:user_with_completed_orders, payment_method: payment_method, orders_count: 6) }
+  let!(:user_with_more_than_5_completed_orders) { create(:user_with_completed_orders, :with_given_payment_method, payment_method: payment_method, orders_count: 6) }
 
   it_behaves_like "acts_as_multilist", Spree::Marketing::MostUsedPaymentMethodsList
 
@@ -19,7 +19,7 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
   describe "methods" do
     describe "#user_ids" do
       context "with users having greater than 5 orders" do
-        let!(:user_with_less_than_5_completed_orders) { create(:user_with_completed_orders, orders_count: 4, payment_method: payment_method) }
+        let!(:user_with_less_than_5_completed_orders) { create(:user_with_completed_orders, :with_given_payment_method, orders_count: 4, payment_method: payment_method) }
 
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.new(payment_method_id: payment_method.id).user_ids).to include user_with_more_than_5_completed_orders.id }
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.new(payment_method_id: payment_method.id).user_ids).to_not include user_with_less_than_5_completed_orders.id }
@@ -27,7 +27,7 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
 
       context "with users having greater than 5 orders orders with selected payment method" do
         let(:other_payment_method) { create(:check_payment_method) }
-        let!(:user_with_more_than_5_completed_orders_with_other_payment_method) { create(:user_with_completed_orders, orders_count: 6, payment_method: other_payment_method) }
+        let!(:user_with_more_than_5_completed_orders_with_other_payment_method) { create(:user_with_completed_orders, :with_given_payment_method, orders_count: 6, payment_method: other_payment_method) }
 
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.new(payment_method_id: payment_method.id).user_ids).to include user_with_more_than_5_completed_orders.id }
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.new(payment_method_id: payment_method.id).user_ids).to_not include user_with_more_than_5_completed_orders_with_other_payment_method.id }
@@ -35,7 +35,7 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
 
       context "with users having greater than 5 orders completed before TIME_FRAME" do
         let(:timestamp) { Time.current - 2.months }
-        let(:user_having_more_than_5_old_completed_orders) { create(:user_with_completed_orders, :with_custom_completed_at, completed_at: timestamp, orders_count: 6, payment_method: payment_method) }
+        let(:user_having_more_than_5_old_completed_orders) { create(:user_with_completed_orders, :with_given_payment_method, :with_custom_completed_at, completed_at: timestamp, orders_count: 6, payment_method: payment_method) }
 
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.new(payment_method_id: payment_method.id).user_ids).to include user_with_more_than_5_completed_orders.id }
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.new(payment_method_id: payment_method.id).user_ids).to_not include user_having_more_than_5_old_completed_orders.id }
