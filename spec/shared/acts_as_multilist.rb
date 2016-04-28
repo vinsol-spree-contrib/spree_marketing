@@ -14,6 +14,8 @@ RSpec.shared_examples "acts_as_multilist" do |list_type|
     end
 
     let(:gibbon_service) { GibbonServiceTest.new }
+    let(:emails) { ['test@example.com'] }
+    let(:contacts_data) { [{ id: '12345678', email_address: emails.first, unique_email_id: 'test' }.with_indifferent_access] }
 
     before do
       allow(GibbonService).to receive(:new).and_return(gibbon_service)
@@ -22,8 +24,6 @@ RSpec.shared_examples "acts_as_multilist" do |list_type|
 
     context "if list already exists" do
 
-      let(:emails) { ['test@example.com'] }
-      let(:contacts_data) { [{ id: '12345678', email_address: emails.first, unique_email_id: 'test' }.with_indifferent_access] }
       let(:list) { create(list_type.to_s.demodulize.underscore.to_sym, name: list_type.to_s.demodulize.underscore + "_" + entity_name) }
 
       before do
@@ -39,8 +39,6 @@ RSpec.shared_examples "acts_as_multilist" do |list_type|
 
       let(:list_name) { 'test' }
       let(:list_data) { { id: '12345678', name: list_name }.with_indifferent_access }
-      let(:emails) { ['test@example.com'] }
-      let(:contacts_data) { [{ id: '12345678', email_address: emails.first, unique_email_id: 'test' }.with_indifferent_access] }
 
       before do
         allow(list_type).to receive(:find_by).and_return(nil)
