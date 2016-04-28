@@ -50,16 +50,15 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
     end
 
     describe  ".data" do
-      let(:other_payment_method) { create(:check_payment_method) }
-
       context "with completed orders having completed payment" do
+        let(:other_payment_method) { create(:check_payment_method) }
         let!(:order_with_incomplete_payment) { create(:order_with_given_payment_method, :incomplete_payment, payment_method: other_payment_method) }
 
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to include payment_method.id }
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to_not include other_payment_method.id }
       end
 
-      context "method flow" do
+      context "limit to MOST_USED_PAYMENT_METHODS_COUNT" do
         let(:second_payment_method) { create(:credit_card_payment_method) }
         let(:third_payment_method) { create(:credit_card_payment_method) }
         let(:fourth_payment_method) { create(:credit_card_payment_method) }
@@ -77,15 +76,6 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to include fourth_payment_method.id }
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to include fifth_payment_method.id }
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to_not include sixth_payment_method.id }
-      end
-
-      context "limit to MOST_USED_PAYMENT_METHODS_COUNT" do
-        let!(:order_with_other_payment) { create(:order_with_given_payment_method, payment_method: other_payment_method) }
-
-        before { Spree::Marketing::MostUsedPaymentMethodsList::MOST_USED_PAYMENT_METHODS_COUNT = 1 }
-
-        it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to include payment_method.id }
-        it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to_not include other_payment_method.id }
       end
     end
 
