@@ -16,7 +16,7 @@ module Spree
             end
             lists << list
           end
-          delete_lists(lists)
+          delete_lists(lists) if lists.any?
         end
 
         def delete_lists(lists)
