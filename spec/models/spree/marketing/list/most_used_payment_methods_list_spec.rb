@@ -31,15 +31,15 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
 
   describe "methods" do
     describe "#user_ids" do
-      context "less than 5 orders" do
-        let(:seventh_payment) { create(:payment, state: 'completed', payment_method: payment_method) }
-        let!(:seventh_order) { create(:completed_order_with_totals, payments: [seventh_payment], user_id: second_user.id) }
+      context "with users having greater than 5 orders" do
+        let(:second_user_payment) { create(:payment, state: 'completed', payment_method: payment_method) }
+        let!(:second_user_order) { create(:completed_order_with_totals, payments: [second_user_payment], user_id: second_user.id) }
 
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.new(payment_method_id: payment_method.id).user_ids).to include first_user.id }
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.new(payment_method_id: payment_method.id).user_ids).to_not include second_user.id }
       end
 
-      context "same payment method is used" do
+      context "with users having greater than 5 orders orders with selected payment method" do
         let(:other_payment_method) { create(:check_payment_method) }
         let(:first_other_payment) { create(:payment, state: :completed, payment_method: other_payment_method) }
         let(:second_other_payment) { create(:payment, state: :completed, payment_method: other_payment_method) }
@@ -58,7 +58,8 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.new(payment_method_id: payment_method.id).user_ids).to_not include second_user.id }
       end
 
-      context "completed at before TIME_FRAME" do
+      context "with users having greater than 5 orders completed before TIME_FRAME" do
+        let(:timestamp) { Time.current - 2.months }
         let(:first_other_payment) { create(:payment, state: :completed, payment_method: payment_method) }
         let(:second_other_payment) { create(:payment, state: :completed, payment_method: payment_method) }
         let(:third_other_payment) { create(:payment, state: :completed, payment_method: payment_method) }
@@ -73,19 +74,19 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
         let!(:sixth_other_order) { create(:completed_order_with_totals, payments: [sixth_other_payment], user_id: second_user.id) }
 
         before do
-          first_other_order.update_columns(completed_at: Time.current - 2.months)
-          second_other_order.update_columns(completed_at: Time.current - 2.months)
-          third_other_order.update_columns(completed_at: Time.current - 2.months)
-          fourth_other_order.update_columns(completed_at: Time.current - 2.months)
-          fifth_other_order.update_columns(completed_at: Time.current - 2.months)
-          sixth_other_order.update_columns(completed_at: Time.current - 2.months)
+          first_other_order.update_columns(completed_at: timestamp)
+          second_other_order.update_columns(completed_at: timestamp)
+          third_other_order.update_columns(completed_at: timestamp)
+          fourth_other_order.update_columns(completed_at: timestamp)
+          fifth_other_order.update_columns(completed_at: timestamp)
+          sixth_other_order.update_columns(completed_at: timestamp)
         end
 
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.new(payment_method_id: payment_method.id).user_ids).to include first_user.id }
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.new(payment_method_id: payment_method.id).user_ids).to_not include second_user.id }
       end
 
-      context "guest user orders" do
+      context "when user is not registered having greater than 5 orders" do
         let(:guest_user_email) { "spree@example.com" }
         let(:first_guest_payment) { create(:payment, state: :completed, payment_method: payment_method) }
         let(:second_guest_payment) { create(:payment, state: :completed, payment_method: payment_method) }
@@ -105,7 +106,7 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
     end
 
     describe  ".data" do
-      context "only completed payment" do
+      context "with completed orders having completed payment" do
         let(:other_payment_method) { create(:check_payment_method) }
         let(:other_payment) { create(:payment, state: :pending, payment_method: other_payment_method) }
         let!(:order_with_incomplete_payment) { create(:completed_order_with_totals, payments: [other_payment], user_id: second_user.id) }
