@@ -5,9 +5,10 @@ FactoryGirl.define do
     name { Faker::Name.name }
   end
 
-  factory :marketing_most_searched_keywords_list, class: Spree::Marketing::MostSearchedKeywordsList do
-    uid { Faker::Number.number(8) }
-    name { Faker::Name.name }
+  Spree::Marketing::List.subclasses.each do |sub_class|
+    factory_name = sub_class.to_s.demodulize.underscore.to_sym
+    factory factory_name, parent: :marketing_list, class: sub_class do
+    end
   end
 
 end

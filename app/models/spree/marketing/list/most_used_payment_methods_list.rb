@@ -1,6 +1,6 @@
 module Spree
   module Marketing
-    class MostUsedPaymentMethodList < List
+    class MostUsedPaymentMethodsList < List
 
       include Spree::Marketing::ActsAsMultiList
 
