@@ -24,15 +24,15 @@ describe Spree::Marketing::MostZoneWiseOrdersList, type: :model do
   end
 
   describe "methods" do
-    context "#self.state_name" do
+    context "#.state_name" do
       it { expect(Spree::Marketing::MostZoneWiseOrdersList.send :state_name, state.id).to eq "alabama" }
     end
 
-    context "#self.name_text" do
+    context "#.name_text" do
       it { expect(Spree::Marketing::MostZoneWiseOrdersList.send :name_text, state.id).to eq "most_zone_wise_orders_list_alabama" }
     end
 
-    describe "#self.data" do
+    describe "#.data" do
       context "method flow" do
         it { expect(Spree::Marketing::MostZoneWiseOrdersList.send :data).to include state.id }
       end
