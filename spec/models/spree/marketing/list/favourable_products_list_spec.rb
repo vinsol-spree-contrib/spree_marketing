@@ -20,15 +20,15 @@ describe Spree::Marketing::FavourableProductsList, type: :model do
   end
 
   describe "methods" do
-    context "#self.product_name" do
+    context ".product_name" do
       it { expect(Spree::Marketing::FavourableProductsList.send :product_name, product.id).to eq "ruby_on_rails_tote" }
     end
 
-    context "#.name_text" do
+    context ".name_text" do
       it { expect(Spree::Marketing::FavourableProductsList.send :name_text, product.id).to eq "favourable_products_list_ruby_on_rails_tote" }
     end
 
-    context "#.data" do
+    context ".data" do
       context "method flow" do
         it { expect(Spree::Marketing::FavourableProductsList.send :data).to include product.id }
       end
