@@ -67,6 +67,28 @@ FactoryGirl.define do
     end
   end
 
+  factory :order_with_given_product, parent: :completed_order_with_totals, class: Spree::Order do
+    transient do
+      product nil
+    end
+
+    after(:create) do |order, evaluator|
+      variant = create(:base_variant, product: evaluator.product)
+      line_item = create(:line_item, variant: variant)
+      order.line_items << line_item
+    end
+
+    trait :with_custom_completed_at do
+      transient do
+        completed_at nil
+      end
+
+      after(:create) do |order, evaluator|
+        order.update_columns(completed_at: evaluator.completed_at)
+      end
+    end
+  end
+
   factory :guest_user_order_with_given_payment_method, parent: :completed_order_with_totals, class: Spree::Order do
     transient do
       payment_method nil
