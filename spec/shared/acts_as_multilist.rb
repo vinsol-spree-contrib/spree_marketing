@@ -2,13 +2,13 @@ RSpec.shared_examples "acts_as_multilist" do |list_type|
 
   SpreeMarketing::CONFIG ||= { Rails.env => {} }
 
-  context "#self.load_list" do
+  context ".load_list" do
     let!(:list) { create(list_type.to_s.demodulize.underscore.to_sym, name: list_type.to_s.demodulize.underscore + "_" + entity_name) }
 
     it { expect(list_type.send :load_list, entity_key).to eq list }
   end
 
-  context "#self.generator" do
+  context ".generator" do
 
     class GibbonServiceTest
     end
