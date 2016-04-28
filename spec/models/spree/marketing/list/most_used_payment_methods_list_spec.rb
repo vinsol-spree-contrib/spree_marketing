@@ -59,6 +59,26 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to_not include other_payment_method.id }
       end
 
+      context "method flow" do
+        let(:second_payment_method) { create(:credit_card_payment_method) }
+        let(:third_payment_method) { create(:credit_card_payment_method) }
+        let(:fourth_payment_method) { create(:credit_card_payment_method) }
+        let(:fifth_payment_method) { create(:credit_card_payment_method) }
+        let(:sixth_payment_method) { create(:credit_card_payment_method) }
+        let!(:completed_orders_with_second_payment_method) { create_list(:order_with_given_payment_method, 6, payment_method: second_payment_method) }
+        let!(:completed_orders_with_third_payment_method) { create_list(:order_with_given_payment_method, 6, payment_method: third_payment_method) }
+        let!(:completed_orders_with_fourth_payment_method) { create_list(:order_with_given_payment_method, 6, payment_method: fourth_payment_method) }
+        let!(:completed_orders_with_fifth_payment_method) { create_list(:order_with_given_payment_method, 6, payment_method: fifth_payment_method) }
+        let!(:completed_orders_with_sixth_payment_method) { create_list(:order_with_given_payment_method, 1, payment_method: sixth_payment_method) }
+
+        it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to include payment_method.id }
+        it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to include second_payment_method.id }
+        it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to include third_payment_method.id }
+        it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to include fourth_payment_method.id }
+        it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to include fifth_payment_method.id }
+        it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to_not include sixth_payment_method.id }
+      end
+
       context "limit to MOST_USED_PAYMENT_METHODS_COUNT" do
         let!(:order_with_other_payment) { create(:order_with_given_payment_method, payment_method: other_payment_method) }
 
