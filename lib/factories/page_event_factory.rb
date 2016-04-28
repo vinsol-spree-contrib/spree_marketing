@@ -12,7 +12,7 @@ FactoryGirl.define do
     actor_id 1
     session_id { Faker::Number.number(16) }
     activity "search"
-    search_keywords { Faker::String.string(5) }
+    search_keywords { Faker::Name.name }
   end
 
 end
