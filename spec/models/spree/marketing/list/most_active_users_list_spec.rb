@@ -2,51 +2,40 @@ require "spec_helper"
 
 describe Spree::Marketing::MostActiveUsersList, type: :model do
 
-  let!(:first_user) { create(:user) }
-  let!(:second_user) { create(:user) }
-  let!(:first_page_event) { create(:marketing_page_event, actor_id: first_user.id) }
-  let!(:second_page_event) { create(:marketing_page_event, actor_id: first_user.id) }
-  let!(:third_page_event) { create(:marketing_page_event, actor_id: first_user.id) }
-  let!(:fourth_page_event) { create(:marketing_page_event, actor_id: first_user.id) }
-  let!(:fifth_page_event) { create(:marketing_page_event, actor_id: first_user.id) }
-  let!(:sixth_page_event) { create(:marketing_page_event, actor_id: first_user.id) }
-  let!(:seventh_page_event) { create(:marketing_page_event, actor_id: second_user.id) }
+  let!(:user_with_6_page_events) { create(:user_with_page_events, page_events_count: 6) }
+
+  describe "Constants" do
+    it { expect(Spree::Marketing::LeastActiveUsersList::MAXIMUM_PAGE_EVENT_COUNT).to eq 5 }
+  end
 
   describe "methods" do
     describe "#user_ids" do
-      context "user having more than 5 page events" do
-        it { expect(Spree::Marketing::MostActiveUsersList.new.user_ids).to include first_user.id }
-        it { expect(Spree::Marketing::MostActiveUsersList.new.user_ids).to_not include second_user.id }
+      context "user having more than or less than 5 page events" do
+        let!(:user_with_4_page_events) { create(:user_with_page_events, page_events_count: 4) }
+
+        it { expect(Spree::Marketing::MostActiveUsersList.new.user_ids).to include user_with_6_page_events.id }
+        it { expect(Spree::Marketing::MostActiveUsersList.new.user_ids).to_not include user_with_4_page_events.id }
       end
 
-      context "only registered users" do
+      context "with guest users page events" do
         let!(:guest_user_page_event) { create(:marketing_page_event, actor_id: nil, actor_type: nil) }
 
         xit { expect(Spree::Marketing::MostActiveUsersList.new.send :emails) }
       end
 
-      context "other user type page events" do
+      context "with other user type page events" do
         let(:other_user_type_id) { 9 }
-        let!(:other_type_user_page_event) { create(:marketing_page_event, actor_id: other_user_type_id, actor_type: nil) }
-        let!(:first_other_type_user_page_event) { create(:marketing_page_event, actor_id: other_user_type_id, actor_type: nil) }
-        let!(:second_other_type_user_page_event) { create(:marketing_page_event, actor_id: other_user_type_id, actor_type: nil) }
-        let!(:third_other_type_user_page_event) { create(:marketing_page_event, actor_id: other_user_type_id, actor_type: nil) }
-        let!(:fourth_other_type_user_page_event) { create(:marketing_page_event, actor_id: other_user_type_id, actor_type: nil) }
-        let!(:fifth_other_type_user_page_event) { create(:marketing_page_event, actor_id: other_user_type_id, actor_type: nil) }
-        let!(:sixth_other_type_user_page_event) { create(:marketing_page_event, actor_id: other_user_type_id, actor_type: nil) }
+        let!(:other_user_type_page_events) { create_list(:marketing_page_event, 6, actor_id: other_user_type_id, actor_type: nil) }
 
-        it { expect(Spree::Marketing::MostActiveUsersList.new.send :user_ids).to_not include other_user_type_id }
+        it { expect(Spree::Marketing::MostActiveUsersList.new.user_ids).to_not include other_user_type_id }
       end
 
-      context "where page event is before TIME FRAME" do
-        let!(:first_old_page_event) { create(:marketing_page_event, actor_id: second_user.id, created_at: Time.current - 10.days) }
-        let!(:second_old_page_event) { create(:marketing_page_event, actor_id: second_user.id, created_at: Time.current - 10.days) }
-        let!(:third_old_page_event) { create(:marketing_page_event, actor_id: second_user.id, created_at: Time.current - 10.days) }
-        let!(:fourth_old_page_event) { create(:marketing_page_event, actor_id: second_user.id, created_at: Time.current - 10.days) }
-        let!(:fifth_old_page_event) { create(:marketing_page_event, actor_id: second_user.id, created_at: Time.current - 10.days) }
-        let!(:sixth_old_page_event) { create(:marketing_page_event, actor_id: second_user.id, created_at: Time.current - 10.days) }
+      context "with users having page events is before TIME FRAME" do
+        let(:timestamp) { Time.current - 10.days }
+        let!(:user_with_6_old_page_events) { create(:user_with_page_events, page_events_count: 6, created_at: timestamp) }
 
-        it { expect(Spree::Marketing::MostActiveUsersList.new.send :user_ids).to_not include second_user.id }
+        it { expect(Spree::Marketing::MostActiveUsersList.new.user_ids).to include user_with_6_page_events.id }
+        it { expect(Spree::Marketing::MostActiveUsersList.new.user_ids).to_not include user_with_6_old_page_events.id }
       end
     end
   end
