@@ -67,11 +67,7 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
         let!(:search_page_events_for_fifth_searched_keyword) { create_list(:marketing_search_page_event, 6, search_keywords: fifth_searched_keyword) }
         let!(:search_page_events_for_sixth_searched_keyword) { create_list(:marketing_search_page_event, 1, search_keywords: sixth_searched_keyword) }
 
-        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to include searched_keyword }
-        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to include second_searched_keyword }
-        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to include third_searched_keyword }
-        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to include fourth_searched_keyword }
-        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to include fifth_searched_keyword }
+        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to include *[searched_keyword, second_searched_keyword, third_searched_keyword, fourth_searched_keyword, fifth_searched_keyword] }
         it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to_not include sixth_searched_keyword }
       end
     end
