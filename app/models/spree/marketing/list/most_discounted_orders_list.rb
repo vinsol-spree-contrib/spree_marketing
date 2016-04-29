@@ -6,6 +6,7 @@ module Spree
       TIME_FRAME = 1.month
       MINIMUM_COUNT = 5
       NAME_PRESENTER = "Discounts Savy"
+      TOOLTIP_CONTENT = "View the contact list of users who are part of the purchase family for most discounted orders"
 
       def user_ids
         # FIXME: there is a case where guest user email is available but we are leaving that now.

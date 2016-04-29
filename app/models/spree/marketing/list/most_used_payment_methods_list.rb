@@ -10,6 +10,7 @@ module Spree
       MINIMUM_COUNT = 5
       MOST_USED_PAYMENT_METHODS_COUNT = 5
       NAME_PRESENTER = "Most Used Payment Methods"
+      TOOLTIP_CONTENT = "View the contact list of users corresponding to most used payment methods"
 
       attr_accessor :payment_method_id
 

@@ -9,6 +9,7 @@ module Spree
       TIME_FRAME = 1.month
       LEAST_ZONE_WISE_ORDER_COUNT = 5
       NAME_PRESENTER = "Cold Zone"
+      TOOLTIP_CONTENT = "View the contact list of users in 5 lowest ordering Zone"
 
       attr_accessor :state_id
 

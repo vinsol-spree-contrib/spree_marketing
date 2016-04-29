@@ -9,6 +9,7 @@ module Spree
       TIME_FRAME = 1.month
       MOST_ZONE_WISE_ORDERS_COUNT = 5
       NAME_PRESENTER = "Hot Zone"
+      TOOLTIP_CONTENT = "View the contact list of users in 5 most ordering Zone"
 
       attr_accessor :state_id
 

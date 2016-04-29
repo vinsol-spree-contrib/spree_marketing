@@ -56,6 +56,10 @@ module Spree
         end
       end
 
+      def presents
+        Spree::Marketing::ListPresenter.new self
+      end
+
       private
 
         def computed_time

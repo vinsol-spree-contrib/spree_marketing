@@ -4,6 +4,7 @@ module Spree
 
       # Constants
       NAME_PRESENTER = "Abandoned Cart"
+      TOOLTIP_CONTENT = "View the contact list of users who have abandoned the cart"
 
       def user_ids
         # FIXME: There is a case where guest user has an incomplete order and we
