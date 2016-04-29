@@ -53,7 +53,7 @@ describe Spree::Marketing::FavourableProductsList, type: :model do
         let!(:orders_having_tenth_product) { create_list(:order_with_given_product, 2, product: tenth_product) }
         let!(:orders_having_eleventh_product) { create_list(:order_with_given_product, 1, product: eleventh_product) }
 
-        it { expect(Spree::Marketing::FavourableProductsList.send :data).to eq [product.id, second_product.id, third_product.id, fourth_product.id, fifth_product.id, sixth_product.id, seventh_product.id, eighth_product.id, ninth_product.id, tenth_product.id] }
+        it { expect(Spree::Marketing::FavourableProductsList.send :data).to include *[product.id, second_product.id, third_product.id, fourth_product.id, fifth_product.id, sixth_product.id, seventh_product.id, eighth_product.id, ninth_product.id, tenth_product.id] }
         it { expect(Spree::Marketing::FavourableProductsList.send :data).to_not include eleventh_product.id }
       end
     end
