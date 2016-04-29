@@ -1,5 +1,5 @@
 <% content_for :page_title do %>
-  <% list_presenter = @marketing_list.presents %>
+  <% list_presenter = @marketing_list.presenter %>
   <%= @marketing_list.class::NAME_PRESENTER + list_presenter.show_page_name %>
 <% end %>
 

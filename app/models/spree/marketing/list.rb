@@ -56,7 +56,7 @@ module Spree
         end
       end
 
-      def presents
+      def presenter
         Spree::Marketing::ListPresenter.new self
       end
 

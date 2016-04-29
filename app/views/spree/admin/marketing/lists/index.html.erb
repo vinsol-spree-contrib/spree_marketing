@@ -18,7 +18,7 @@
       </thead>
       <tbody>
         <% lists.each do |list| %>
-          <% list_presenter = list.presents %>
+          <% list_presenter = list.presenter %>
           <tr>
             <td class="col-md-5"><%= link_to list_presenter.name, admin_marketing_list_path(list) %></td>
             <td class="col-md-4"><%= list.uid %></td>
