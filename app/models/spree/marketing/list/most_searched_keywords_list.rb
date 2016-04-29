@@ -8,6 +8,7 @@ module Spree
       ENTITY_KEY = 'searched_keyword'
       TIME_FRAME = 1.month
       MOST_SEARCHRD_KEYWORD_COUNT = 5
+      NAME_PRESENTER = "Most Searched Keywords"
 
       attr_accessor :searched_keyword
 

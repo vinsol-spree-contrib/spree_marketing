@@ -5,8 +5,9 @@
 
 <% @lists.each do |sub_class_lists| %>
   <% lists = sub_class_lists %>
+  <% sub_class = sub_class_lists.class.to_s.deconstantize.constantize %>
   <% sub_class_name = sub_class_lists.class.to_s.deconstantize.demodulize.underscore.humanize %>
-  <h4><%= sub_class_name %></h4>
+  <h4><%= sub_class::NAME_PRESENTER %></h4>
   <% if lists.present? %>
     <table class="table">
       <thead>
@@ -16,8 +17,10 @@
       </thead>
       <tbody>
         <% lists.each do |list| %>
+          <% list_name = list.name.humanize.remove(sub_class_name).titleize %>
+          <% presenter_list_name = list_name.present? ? list_name : "Contacts" %>
           <tr>
-            <td class="col-md-5"><%= link_to list.name.humanize, admin_marketing_list_path(list) %></td>
+            <td class="col-md-5"><%= link_to presenter_list_name, admin_marketing_list_path(list) %></td>
             <td class="col-md-4"><%= list.uid %></td>
             <td class="col-md-3 text-center"><%= list.contacts.count %></td>
           </tr>
@@ -26,7 +29,7 @@
     </table>
   <% else %>
     <div class="alert alert-info no-objects-found">
-      <%= Spree.t(:no_resource_found, resource: sub_class_name) %>
+      <%= Spree.t(:no_resource_found, resource: sub_class_name.remove(" list")) %>
     </div>
   <% end %>
   <br>

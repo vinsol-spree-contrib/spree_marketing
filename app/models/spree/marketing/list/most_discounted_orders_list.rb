@@ -5,6 +5,7 @@ module Spree
       # Constants
       TIME_FRAME = 1.month
       MINIMUM_COUNT = 5
+      NAME_PRESENTER = "Discounts Savy"
 
       def user_ids
         # FIXME: there is a case where guest user email is available but we are leaving that now.

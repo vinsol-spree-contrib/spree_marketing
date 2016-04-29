@@ -4,6 +4,7 @@ module Spree
 
       # Constants
       MAXIMUM_PAGE_EVENT_COUNT = 5
+      NAME_PRESENTER = "Least Active Users"
 
       def user_ids
         Spree::PageEvent.group(:actor_id)

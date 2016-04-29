@@ -8,6 +8,7 @@ module Spree
       ENTITY_KEY = 'state_id'
       TIME_FRAME = 1.month
       LEAST_ZONE_WISE_ORDER_COUNT = 5
+      NAME_PRESENTER = "Cold Zone"
 
       attr_accessor :state_id
 
