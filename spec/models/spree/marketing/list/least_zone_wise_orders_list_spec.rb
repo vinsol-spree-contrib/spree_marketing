@@ -12,7 +12,7 @@ describe Spree::Marketing::LeastZoneWiseOrdersList, type: :model do
   describe "Constants" do
     it { expect(Spree::Marketing::LeastZoneWiseOrdersList::ENTITY_KEY).to eq 'state_id' }
     it { expect(Spree::Marketing::LeastZoneWiseOrdersList::TIME_FRAME).to eq 1.month }
-    it { expect(Spree::Marketing::LeastZoneWiseOrdersList::MOST_ZONE_WISE_ORDERS_COUNT).to eq 5 }
+    it { expect(Spree::Marketing::LeastZoneWiseOrdersList::LEAST_ZONE_WISE_ORDER_COUNT).to eq 5 }
   end
 
   describe "methods" do
@@ -21,7 +21,7 @@ describe Spree::Marketing::LeastZoneWiseOrdersList, type: :model do
     end
 
     context "#.name_text" do
-      it { expect(Spree::Marketing::LeastZoneWiseOrdersList.send :name_text, state.id).to eq "most_zone_wise_orders_list_alabama" }
+      it { expect(Spree::Marketing::LeastZoneWiseOrdersList.send :name_text, state.id).to eq "least_zone_wise_orders_list_alabama" }
     end
 
     describe "#.data" do
@@ -29,7 +29,7 @@ describe Spree::Marketing::LeastZoneWiseOrdersList, type: :model do
         it { expect(Spree::Marketing::LeastZoneWiseOrdersList.send :data).to include state.id }
       end
 
-      context "limit to MOST_ZONE_WISE_ORDERS_COUNT" do
+      context "limit to LEAST_ZONE_WISE_ORDER_COUNT" do
         let(:second_state) { create(:state, name: "State 2") }
         let(:third_state) { create(:state, name: "State 3") }
         let(:fourth_state) { create(:state, name: "State 4") }
@@ -50,7 +50,7 @@ describe Spree::Marketing::LeastZoneWiseOrdersList, type: :model do
       context "with orders not having selected state" do
         let(:registered_user) { create(:user) }
         let(:other_state) { create(:state, name: "Other state") }
-        let!(:orders_in_other_state) { create_list(:order_with_given_shipping_state, 6, state: other_state, user_id: registered_user.id) }
+        let!(:orders_in_other_state) { create_list(:order_with_given_shipping_state, 1, state: other_state, user_id: registered_user.id) }
 
         it { expect(Spree::Marketing::LeastZoneWiseOrdersList.new(state_id: state.id).user_ids).to include user_with_completed_orders_with_shipping_address_having_given_state.id }
         it { expect(Spree::Marketing::LeastZoneWiseOrdersList.new(state_id: state.id).user_ids).to_not include registered_user.id }
@@ -58,7 +58,7 @@ describe Spree::Marketing::LeastZoneWiseOrdersList, type: :model do
 
       context "when user is not registered" do
         let(:guest_user_email) { "spree@example.com" }
-        let!(:guest_user_orders) { create_list(:order_with_given_shipping_state, user_id: nil, email: guest_user_email, state: state) }
+        let!(:guest_user_orders) { create_list(:order_with_given_shipping_state, 1, user_id: nil, email: guest_user_email, state: state) }
 
         it { expect(Spree::Marketing::LeastZoneWiseOrdersList.new(state_id: state.id).send :emails).to_not include guest_user_email }
       end
@@ -66,7 +66,7 @@ describe Spree::Marketing::LeastZoneWiseOrdersList, type: :model do
       context "when orders are completed before TIME_FRAME" do
         let(:timestamp) { Time.current - 2.months }
         let(:registered_user) { create(:user) }
-        let!(:old_completed_orders) { create_list(:order_with_given_shipping_state, :with_custom_completed_at, user_id: registered_user.id, state: state, completed_at: timestamp) }
+        let!(:old_completed_orders) { create_list(:order_with_given_shipping_state, 1, :with_custom_completed_at, user_id: registered_user.id, state: state, completed_at: timestamp) }
 
         it { expect(Spree::Marketing::LeastZoneWiseOrdersList.new(state_id: state.id).send :user_ids).to_not include registered_user.id }
       end
