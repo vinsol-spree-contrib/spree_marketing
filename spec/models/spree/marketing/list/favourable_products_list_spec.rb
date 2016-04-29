@@ -53,26 +53,17 @@ describe Spree::Marketing::FavourableProductsList, type: :model do
         let!(:orders_having_tenth_product) { create_list(:order_with_given_product, 2, product: tenth_product) }
         let!(:orders_having_eleventh_product) { create_list(:order_with_given_product, 1, product: eleventh_product) }
 
-        it { expect(Spree::Marketing::FavourableProductsList.send :data).to include product.id }
-        it { expect(Spree::Marketing::FavourableProductsList.send :data).to include second_product.id }
-        it { expect(Spree::Marketing::FavourableProductsList.send :data).to include third_product.id }
-        it { expect(Spree::Marketing::FavourableProductsList.send :data).to include fourth_product.id }
-        it { expect(Spree::Marketing::FavourableProductsList.send :data).to include fifth_product.id }
-        it { expect(Spree::Marketing::FavourableProductsList.send :data).to include sixth_product.id }
-        it { expect(Spree::Marketing::FavourableProductsList.send :data).to include seventh_product.id }
-        it { expect(Spree::Marketing::FavourableProductsList.send :data).to include eighth_product.id }
-        it { expect(Spree::Marketing::FavourableProductsList.send :data).to include ninth_product.id }
-        it { expect(Spree::Marketing::FavourableProductsList.send :data).to include tenth_product.id }
+        it { expect(Spree::Marketing::FavourableProductsList.send :data).to eq [product.id, second_product.id, third_product.id, fourth_product.id, fifth_product.id, sixth_product.id, seventh_product.id, eighth_product.id, ninth_product.id, tenth_product.id] }
         it { expect(Spree::Marketing::FavourableProductsList.send :data).to_not include eleventh_product.id }
       end
     end
 
     describe "#user_ids" do
       context "method flow" do
-        let!(:another_user) { create(:user) }
+        let!(:user_with_no_orders) { create(:user) }
 
         it { expect(Spree::Marketing::FavourableProductsList.new(product_id: product.id).user_ids).to include user_with_orders_having_given_product.id }
-        it { expect(Spree::Marketing::FavourableProductsList.new(product_id: product.id).user_ids).to_not include another_user.id }
+        it { expect(Spree::Marketing::FavourableProductsList.new(product_id: product.id).user_ids).to_not include user_with_no_orders.id }
       end
 
       context "when user is not registered" do
