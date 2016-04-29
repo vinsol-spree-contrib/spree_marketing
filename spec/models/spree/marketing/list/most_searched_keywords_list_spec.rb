@@ -2,12 +2,11 @@ require "spec_helper"
 
 describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
 
-  let!(:first_user) { create(:user) }
-  let!(:second_user) { create(:user) }
+  let!(:user_with_search_event_for_searched_keyword) { create(:user) }
   let!(:searched_keyword) { "Test" }
   let(:entity_name) { searched_keyword }
   let(:entity_key) { searched_keyword }
-  let!(:first_search_page_event) { create(:marketing_search_page_event, search_keywords: searched_keyword, actor_id: first_user.id) }
+  let!(:search_page_events_for_search_keywords) { create_list(:marketing_search_page_event, 6, search_keywords: searched_keyword, actor_id: user_with_search_event_for_searched_keyword.id) }
 
   it_behaves_like "acts_as_multilist", Spree::Marketing::MostSearchedKeywordsList
 
@@ -21,10 +20,11 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
     describe "#user_ids" do
       context "with search events created before TIME_FRAME" do
         let(:timestamp) { Time.current - 2.month }
-        let!(:another_search_page_event) { create(:marketing_search_page_event, search_keywords: searched_keyword, actor_id: second_user.id, created_at: timestamp) }
+        let(:user_with_old_search_event) { create(:user) }
+        let!(:another_search_page_event) { create(:marketing_search_page_event, search_keywords: searched_keyword, actor_id: user_with_old_search_event.id, created_at: timestamp) }
 
-        it { expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).user_ids).to include first_user.id }
-        it { expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).user_ids).to_not include second_user.id }
+        it { expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).user_ids).to include user_with_search_event_for_searched_keyword.id }
+        it { expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).user_ids).to_not include user_with_old_search_event.id }
       end
 
       context "when user is not registered" do
@@ -42,10 +42,11 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
 
       context "with users having search events of selected keyword" do
         let(:another_searched_keyword) { "Sample" }
-        let!(:another_search_page_event) { create(:marketing_search_page_event, search_keywords: another_searched_keyword, actor_id: second_user.id) }
+        let(:user_with_search_event_for_another_searched_keyword) { create(:user) }
+        let!(:another_search_page_event) { create(:marketing_search_page_event, search_keywords: another_searched_keyword, actor_id: user_with_search_event_for_another_searched_keyword.id) }
 
-        it { expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).user_ids).to include first_user.id }
-        it { expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).user_ids).to_not include second_user.id }
+        it { expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).user_ids).to include user_with_search_event_for_searched_keyword.id }
+        it { expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).user_ids).to_not include user_with_search_event_for_another_searched_keyword.id }
       end
     end
 
@@ -55,13 +56,23 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
       end
 
       context "limit to MOST_SEARCHRD_KEYWORD_COUNT" do
-        let(:another_searched_keyword) { "Sample" }
-        let!(:another_search_page_event) { create(:marketing_search_page_event, search_keywords: another_searched_keyword, actor_id: second_user.id) }
+        let(:second_searched_keyword) { "Sample 2" }
+        let(:third_searched_keyword) { "Sample 3" }
+        let(:fourth_searched_keyword) { "Sample 4" }
+        let(:fifth_searched_keyword) { "Sample 5" }
+        let(:sixth_searched_keyword) { "Sample 6" }
+        let!(:search_page_events_for_second_searched_keyword) { create_list(:marketing_search_page_event, 6, search_keywords: second_searched_keyword) }
+        let!(:search_page_events_for_third_searched_keyword) { create_list(:marketing_search_page_event, 6, search_keywords: third_searched_keyword) }
+        let!(:search_page_events_for_fourth_searched_keyword) { create_list(:marketing_search_page_event, 6, search_keywords: fourth_searched_keyword) }
+        let!(:search_page_events_for_fifth_searched_keyword) { create_list(:marketing_search_page_event, 6, search_keywords: fifth_searched_keyword) }
+        let!(:search_page_events_for_sixth_searched_keyword) { create_list(:marketing_search_page_event, 1, search_keywords: sixth_searched_keyword) }
 
-        before { Spree::Marketing::MostSearchedKeywordsList::MOST_SEARCHRD_KEYWORD_COUNT = 1 }
-
-        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to include another_searched_keyword }
-        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to_not include searched_keyword }
+        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to include searched_keyword }
+        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to include second_searched_keyword }
+        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to include third_searched_keyword }
+        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to include fourth_searched_keyword }
+        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to include fifth_searched_keyword }
+        it { expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to_not include sixth_searched_keyword }
       end
     end
 
