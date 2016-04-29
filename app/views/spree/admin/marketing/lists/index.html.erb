@@ -5,7 +5,6 @@
 <% @lists.each do |sub_class_lists| %>
   <% lists = sub_class_lists %>
   <% sub_class = sub_class_lists.class.to_s.deconstantize.constantize %>
-  <% sub_class_name = sub_class_lists.class.to_s.deconstantize.demodulize.underscore.humanize %>
   <h4>
     <%= sub_class::NAME_PRESENTER %>
     <span class="icon icon-question-sign" data-toggle="tooltip" title="<%= sub_class::TOOLTIP_CONTENT %>"></span>
@@ -30,7 +29,7 @@
     </table>
   <% else %>
     <div class="alert alert-info no-objects-found">
-      <%= Spree.t(:no_resource_found, resource: sub_class_name.remove(" list")) %>
+      <%= Spree.t(:no_resource_found, resource: sub_class::NAME_PRESENTER) %>
     </div>
   <% end %>
   <br>
