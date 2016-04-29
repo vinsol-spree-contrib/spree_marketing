@@ -42,11 +42,7 @@ describe Spree::Marketing::MostZoneWiseOrdersList, type: :model do
         let!(:orders_in_fifth_state) { create_list(:order_with_given_shipping_state, 6, state: fifth_state) }
         let!(:orders_in_sixth_state) { create_list(:order_with_given_shipping_state, 1, state: sixth_state) }
 
-        it { expect(Spree::Marketing::MostZoneWiseOrdersList.send :data).to include state.id }
-        it { expect(Spree::Marketing::MostZoneWiseOrdersList.send :data).to include second_state.id }
-        it { expect(Spree::Marketing::MostZoneWiseOrdersList.send :data).to include third_state.id }
-        it { expect(Spree::Marketing::MostZoneWiseOrdersList.send :data).to include fourth_state.id }
-        it { expect(Spree::Marketing::MostZoneWiseOrdersList.send :data).to include fifth_state.id }
+        it { expect(Spree::Marketing::MostZoneWiseOrdersList.send :data).to include *[state.id, second_state.id, third_state.id, fourth_state.id, fifth_state.id] }
         it { expect(Spree::Marketing::MostZoneWiseOrdersList.send :data).to_not include sixth_state.id }
       end
     end
