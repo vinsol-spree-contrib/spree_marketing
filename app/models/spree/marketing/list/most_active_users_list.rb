@@ -4,8 +4,6 @@ module Spree
 
       # Constants
       MINIMUM_PAGE_EVENT_COUNT = 5
-      NAME_PRESENTER = "Most Active Users"
-      TOOLTIP_CONTENT = "View the contact list of users corresponding to most activities"
 
       def user_ids
         Spree::PageEvent.group(:actor_id)

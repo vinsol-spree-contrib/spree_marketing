@@ -8,8 +8,6 @@ module Spree
       ENTITY_KEY = 'product_id'
       TIME_FRAME = 1.month
       FAVOURABLE_PRODUCT_COUNT = 10
-      NAME_PRESENTER = "Most Selling Products"
-      TOOLTIP_CONTENT = "View the contact list of users who are part of the purchase family for top 10 most selling products"
 
       attr_accessor :product_id
 

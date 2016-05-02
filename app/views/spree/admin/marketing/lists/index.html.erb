@@ -4,10 +4,10 @@
 
 <% @lists.each do |sub_class_lists| %>
   <% lists = sub_class_lists %>
-  <% sub_class = sub_class_lists.class.to_s.deconstantize.constantize %>
+  <% sub_class_name = sub_class_lists.class.to_s.deconstantize.demodulize %>
   <h4>
-    <%= sub_class::NAME_PRESENTER %>
-    <span class="icon icon-question-sign" data-toggle="tooltip" title="<%= sub_class::TOOLTIP_CONTENT %>"></span>
+    <%= Spree::Marketing::ListPresenter::PRESENTER_NAME_HASH[sub_class_name] %>
+    <span class="icon icon-question-sign" data-toggle="tooltip" title="<%= Spree::Marketing::ListPresenter::TOOLTIP_CONTENT_HASH[sub_class_name] %>"></span>
   </h4>
   <% if lists.present? %>
     <table class="table">
@@ -29,7 +29,7 @@
     </table>
   <% else %>
     <div class="alert alert-info no-objects-found">
-      <%= Spree.t(:no_resource_found, resource: sub_class::NAME_PRESENTER) %>
+      <%= Spree.t(:no_resource_found, resource: Spree::Marketing::ListPresenter::PRESENTER_NAME_HASH[sub_class_name]) %>
     </div>
   <% end %>
   <br>
