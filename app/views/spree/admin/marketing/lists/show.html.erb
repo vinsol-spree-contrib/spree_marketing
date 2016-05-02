@@ -1,6 +1,7 @@
 <% content_for :page_title do %>
   <% list_presenter = @marketing_list.presenter %>
-  <%= @marketing_list.class::NAME_PRESENTER + list_presenter.show_page_name %>
+  <% sub_class_name = sub_class_lists.class.to_s.deconstantize.demodulize %>
+  <%= Spree::Marketing::ListPresenter::VIEW_NAMES_HASH[sub_class_name][:presenter_name] + list_presenter.show_page_name %>
 <% end %>
 
 <h3>Contacts</h3>
