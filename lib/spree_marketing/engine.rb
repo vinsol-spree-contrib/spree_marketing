@@ -22,7 +22,6 @@ module SpreeMarketing
       [
         Dir[config.root.join('app/models/spree/marketing/*.rb')],
         Dir[config.root.join('app/models/spree/marketing/list/*.rb')],
-        Dir[config.root.join('app/presenters/spree/marketing/*.rb')],
         Dir.glob(File.join(File.dirname(__FILE__), '../../app/**/*_decorator*.rb'))
       ].flatten.each do |c|
         Rails.configuration.cache_classes ? require(c) : load(c)
