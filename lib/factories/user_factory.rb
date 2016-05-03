@@ -45,5 +45,15 @@ FactoryGirl.define do
 
   end
 
+  factory :user_with_page_events, parent: :user, class: Spree.user_class do
+    transient do
+      page_events_count 5
+      created_at Time.current
+    end
+
+    after(:create) do |user, evaluator|
+      FactoryGirl.create_list(:marketing_page_event, evaluator.page_events_count, actor: user, created_at: evaluator.created_at)
+    end
+  end
 
 end
