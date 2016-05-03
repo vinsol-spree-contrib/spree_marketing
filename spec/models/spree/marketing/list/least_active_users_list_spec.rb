@@ -5,36 +5,48 @@ describe Spree::Marketing::LeastActiveUsersList, type: :model do
   let!(:user_with_6_page_events) { create(:user_with_page_events, page_events_count: 6) }
 
   describe "Constants" do
-    it { expect(Spree::Marketing::LeastActiveUsersList::MAXIMUM_PAGE_EVENT_COUNT).to eq 5 }
+    it "user should have lesser page events than MAXIMUM_PAGE_EVENT_COUNT" do
+      expect(Spree::Marketing::LeastActiveUsersList::MAXIMUM_PAGE_EVENT_COUNT).to eq 5
+    end
   end
 
   describe "methods" do
     describe "#user_ids" do
-      context "user having greater than and less than 5 page events" do
+      context "when there are users having greater 5 page events" do
         let!(:user_with_4_page_events) { create(:user_with_page_events, page_events_count: 4) }
 
-        it { expect(Spree::Marketing::LeastActiveUsersList.new.user_ids).to_not include user_with_6_page_events.id }
-        it { expect(Spree::Marketing::LeastActiveUsersList.new.user_ids).to include user_with_4_page_events.id }
+        it "include users who have less than 5 page events" do
+          expect(Spree::Marketing::LeastActiveUsersList.new.user_ids).to_not include user_with_6_page_events.id
+        end
+        it "doesn't include users who have more than 5 page events" do
+          expect(Spree::Marketing::LeastActiveUsersList.new.user_ids).to include user_with_4_page_events.id
+        end
       end
 
-      context "with guest user" do
-        let!(:guest_user_page_events) { create_list(:marketing_page_event, actor_id: nil, actor_type: nil) }
+      context "with guest user page events" do
+        let!(:guest_user_page_events) { create_list(:marketing_page_event, 1, actor: nil) }
 
-        xit { expect(Spree::Marketing::LeastActiveUsersList.new.send :emails) }
+        it "doesn't include guest users" do
+          expect(Spree::Marketing::LeastActiveUsersList.new.user_ids).to_not include nil
+        end
       end
 
-      context "with page events of other user type page events" do
+      context "with page events of users other than Spree.user_class type" do
         let(:other_user_type_id) { 9 }
         let(:other_user_type_page_events) { create_list(:marketing_page_event, 3, actor_id: other_user_type_id, actor_type: nil) }
 
-        it { expect(Spree::Marketing::LeastActiveUsersList.new.send :user_ids).to_not include other_user_type_id }
+        it "doesn't include users other than Spree.user_class type" do
+          expect(Spree::Marketing::LeastActiveUsersList.new.send :user_ids).to_not include other_user_type_id
+        end
       end
 
-      context "where page event is done before TIME FRAME" do
+      context "where page events are created before TIME FRAME" do
         let(:timestamp) { Time.current - 10.days }
         let!(:user_with_4_old_page_events) { create(:user_with_page_events, page_events_count: 4, created_at: timestamp) }
 
-        it { expect(Spree::Marketing::LeastActiveUsersList.new.send :user_ids).to_not include user_with_4_old_page_events.id }
+        it "doesn't include users who have page events before time frame" do
+          expect(Spree::Marketing::LeastActiveUsersList.new.send :user_ids).to_not include user_with_4_old_page_events.id
+        end
       end
     end
   end
