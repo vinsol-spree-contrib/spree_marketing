@@ -14,6 +14,7 @@ module Spree
       has_many :contacts_lists, class_name: "Spree::Marketing::ContactsList", dependent: :destroy
       has_many :contacts, through: :contacts_lists
       has_many :campaigns, class_name: "Spree::Marketing::Campaign", dependent: :restrict_with_error
+      belongs_to :entity, polymorphic: true
 
       # Validations
       validates :uid, :name, presence: true
@@ -26,19 +27,19 @@ module Spree
         raise ::NotImplementedError, 'You must implement user_ids method for this smart list.'
       end
 
-      def generate list_name
-        ListGenerationJob.perform_later list_name, emails, self.class.name
+      def generate
+        ListGenerationJob.perform_later name, emails, self.class.name, entity_data
       end
 
       def update_list
         _emails = emails
         _old_emails = old_emails
-        ListModificationJob.perform_later self.id, (_emails - _old_emails), removable_contact_uids(_old_emails - _emails)
+        ListModificationJob.perform_later id, (_emails - _old_emails), removable_contact_uids(_old_emails - _emails)
       end
 
       def self.generator
         list = find_by(name: humanized_name)
-        list ? list.update_list : new.generate(humanized_name)
+        list ? list.update_list : new(name: humanized_name).generate
       end
 
       def self.generate_all
@@ -83,6 +84,10 @@ module Spree
 
         def old_emails
           contacts.pluck(:email)
+        end
+
+        def entity_data
+          { entity_id: entity_id, entity_type: entity_type, searched_keyword: searched_keyword }
         end
     end
   end

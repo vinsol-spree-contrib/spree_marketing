@@ -6,10 +6,9 @@ module Spree
 
       # Constants
       ENTITY_KEY = 'searched_keyword'
+      ENTITY_TYPE = nil
       TIME_FRAME = 1.month
       MOST_SEARCHRD_KEYWORD_COUNT = 5
-
-      attr_accessor :searched_keyword
 
       def user_ids
         Spree::PageEvent.where(search_keywords: searched_keyword)
@@ -21,7 +20,7 @@ module Spree
       end
 
       def self.name_text searched_keyword
-        humanized_name + "_" + searched_keyword
+        humanized_name + "_" + entity_name(searched_keyword)
       end
       private_class_method :name_text
 

@@ -7,12 +7,16 @@ module Spree
       class_methods do
         def generator
           lists = []
-          data.each do |entity_id|
-            if list = load_list(entity_id)
+          #data returns polymorphic entities or searched keywords
+          data.each do |entity|
+            if list = load_list_by_entity(entity)
               list.update_list
             else
-              new("#{ self::ENTITY_KEY }" => entity_id).generate(name_text(entity_id))
-              list = load_list(entity_id)
+              #ENTITY_KEY constant defines the attribute we are updating(searched_keyword/entity_id)
+              new("#{ self::ENTITY_KEY }" => entity,
+                  entity_type: self::ENTITY_TYPE,
+                  name: name_text(entity)).generate
+              list = load_list_by_entity(entity)
             end
             lists << list
           end
@@ -25,12 +29,16 @@ module Spree
 
         private
 
-          def load_list(entity_id)
-            find_by(name: name_text(entity_id))
+          def name_text(entity)
+            humanized_name + "_" + entity_name(entity.name)
           end
 
-          def name_text entity_id
-            humanized_name + "_" + entity_name(entity_id)
+          def entity_name(name)
+            name.downcase.gsub(" ", "_")
+          end
+
+          def load_list_by_entity(entity)
+            find_by("#{ self::ENTITY_KEY }" => entity)
           end
       end
     end
