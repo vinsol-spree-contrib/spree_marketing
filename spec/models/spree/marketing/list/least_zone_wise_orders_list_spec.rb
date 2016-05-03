@@ -38,7 +38,8 @@ describe Spree::Marketing::LeastZoneWiseOrdersList, type: :model do
     describe ".data" do
       context "method flow" do
         it "includes entity state id" do
-          expect(Spree::Marketing::LeastZoneWiseOrdersList.send :data).to include state.id }
+          expect(Spree::Marketing::LeastZoneWiseOrdersList.send :data).to include state.id
+        end
       end
 
       context "limit to LEAST_ZONE_WISE_ORDER_COUNT" do
