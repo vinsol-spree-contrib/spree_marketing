@@ -74,7 +74,8 @@ describe Spree::Marketing::ListPresenter do
       end
 
       context "when list is of single list type" do
-        it "returns 'Contacts' string" do expect(list_presenter.name).to eq "Contacts"
+        it "returns 'Contacts' string" do
+          expect(list_presenter.name).to eq "Contacts"
         end
       end
     end
