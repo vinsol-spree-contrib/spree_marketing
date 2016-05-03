@@ -32,7 +32,7 @@ describe Spree::Marketing::MostZoneWiseOrdersList, type: :model do
 
     describe ".name_text" do
       it "returns the name_text of list to be used as name of list" do
-        expect(Spree::Marketing::MostZoneWiseOrdersList.send :name_text, state.id).to eq "most_zone_wise_orders_list_alabama"
+        expect(Spree::Marketing::MostZoneWiseOrdersList.send :name_text, state.id).to eq "most_zone_wise_orders_list_" + state_name
       end
     end
 
