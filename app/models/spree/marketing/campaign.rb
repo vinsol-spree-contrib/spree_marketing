@@ -11,8 +11,8 @@ module Spree
 
       # Associations
       belongs_to :list, class_name: "Spree::Marketing::List"
-      has_many :campaigns_recepients, class_name: "Spree::Marketing::Recepient", dependent: :restrict_with_error
-      has_many :recepients, through: :campaigns_recepients, source: :contact
+      has_many :recepients, class_name: "Spree::Marketing::Recepient", dependent: :restrict_with_error
+      has_many :contacts, through: :recepients
 
     end
   end
