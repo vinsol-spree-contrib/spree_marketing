@@ -24,15 +24,15 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
 
   describe "Methods" do
     describe "#user_ids" do
-      context "with search events created before TIME_FRAME" do
+      context "when search events were created before TIME_FRAME" do
         let(:timestamp) { Time.current - 2.month }
         let(:user_with_old_search_event) { create(:user) }
         let!(:another_search_page_event) { create(:marketing_search_page_event, search_keywords: searched_keyword, actor_id: user_with_old_search_event.id, created_at: timestamp) }
 
-        it "includes user with search event for the entity keyword" do
+        it "includes users with search event for the entity keyword" do
           expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).user_ids).to include user_with_search_event_for_searched_keyword.id
         end
-        it "doesn't include user with search event for the entity keyword created before time frame" do
+        it "doesn't include users with search event for the entity keyword created before time frame" do
           expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).user_ids).to_not include user_with_old_search_event.id
         end
       end
@@ -45,7 +45,7 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
         end
       end
 
-      context "with search events created by users of type other than Spree.user_class" do
+      context "when actor of search events is not a type of Spree.user_class" do
         let(:other_user_type_id) { 9 }
         let!(:other_type_user_page_event) { create(:marketing_search_page_event, actor_id: other_user_type_id, actor_type: nil) }
 
