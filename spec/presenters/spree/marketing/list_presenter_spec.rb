@@ -54,31 +54,42 @@ describe Spree::Marketing::ListPresenter do
   }
 
   describe "Constant" do
-    it { expect(Spree::Marketing::ListPresenter::VIEW_NAMES_HASH).to eq view_names_hash }
+    it "equals to VIEW_NAMES_HASH constant" do
+      expect(Spree::Marketing::ListPresenter::VIEW_NAMES_HASH).to eq view_names_hash
+    end
   end
 
   describe "methods" do
-    context "#initialize" do
-      it { expect((Spree::Marketing::ListPresenter.new list).instance_variable_get(:@list)).to eq list }
-    end
-
-    context "#name" do
-      context "when list is of multilist type" do
-        it { expect(multilist_presenter.name).to eq product_name }
-      end
-
-      context "when list is of single list type" do
-        it { expect(list_presenter.name).to eq "Contacts" }
+    describe "#initialize" do
+      it "sets list as an instance variable" do
+        expect((Spree::Marketing::ListPresenter.new list).instance_variable_get(:@list)).to eq list
       end
     end
 
-    context "#show_page_name" do
+    describe "#name" do
       context "when list is of multilist type" do
-        it { expect(multilist_presenter.show_page_name).to eq " -> " + product_name }
+        it "returns product name" do
+          expect(multilist_presenter.name).to eq product_name
+        end
       end
 
       context "when list is of single list type" do
-        it { expect(list_presenter.show_page_name).to eq "" }
+        it "returns 'Contacts' string" do expect(list_presenter.name).to eq "Contacts"
+        end
+      end
+    end
+
+    describe "#show_page_name" do
+      context "when list is of multilist type" do
+        it "returns product name with right arrow" do
+          expect(multilist_presenter.show_page_name).to eq " -> " + product_name
+        end
+      end
+
+      context "when list is of single list type" do
+        it "returns blank string" do
+          expect(list_presenter.show_page_name).to eq ""
+        end
       end
     end
   end
