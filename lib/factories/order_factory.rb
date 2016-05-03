@@ -29,6 +29,27 @@ FactoryGirl.define do
     end
   end
 
+  factory :order_with_given_shipping_state, parent: :completed_order_with_totals, class: Spree::Order do
+    transient do
+      state nil
+    end
+
+    after(:create) do |order, evaluator|
+      address = create(:address, state: evaluator.state)
+      order.update(ship_address: address)
+    end
+
+    trait :with_custom_completed_at do
+      transient do
+        completed_at nil
+      end
+
+      after(:create) do |order, evaluator|
+        order.update_columns(completed_at: evaluator.completed_at)
+      end
+    end
+  end
+
   factory :guest_user_order_with_given_payment_method, parent: :completed_order_with_totals, class: Spree::Order do
     transient do
       payment_method nil
