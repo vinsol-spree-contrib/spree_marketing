@@ -54,7 +54,7 @@ describe Spree::Marketing::ListPresenter do
   }
 
   describe "Constant" do
-    it "equals to VIEW_NAMES_HASH constant" do
+    it "VIEW_NAMES_HASH stores view names of lists" do
       expect(Spree::Marketing::ListPresenter::VIEW_NAMES_HASH).to eq view_names_hash
     end
   end
