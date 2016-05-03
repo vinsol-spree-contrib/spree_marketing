@@ -15,7 +15,7 @@ describe Spree::Marketing::MostDiscountedOrdersList, type: :model do
 
   describe "methods" do
     describe "#user_ids" do
-      context "when there are greater than or less than 5 orders" do
+      context "when there are users having less than 5 orders" do
         let(:user_having_4_completed_orders_with_promotion) { create(:user_with_completed_orders, :with_promotion, orders_count: 4) }
 
         it "includes users having more than 5 completed orders with promotion" do
