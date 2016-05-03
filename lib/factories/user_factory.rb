@@ -32,6 +32,17 @@ FactoryGirl.define do
         FactoryGirl.create_list(:order_with_given_payment_method, evaluator.orders_count, :with_custom_completed_at, payment_method: evaluator.payment_method, user: user, completed_at: evaluator.completed_at)
       end
     end
+
+    trait :with_promotion do
+      transient do
+        orders_count 5
+      end
+
+      after(:create) do |user, evaluator|
+        FactoryGirl.create_list(:order_with_promotion, evaluator.orders_count, user: user)
+      end
+    end
+
   end
 
 
