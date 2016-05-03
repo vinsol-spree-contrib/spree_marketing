@@ -3,7 +3,8 @@ require "spec_helper"
 describe Spree::Marketing::MostZoneWiseOrdersList, type: :model do
 
   let!(:second_user) { create(:user) }
-  let(:state) { create(:state) }
+  let(:state_name) { "alabama" }
+  let(:state) { create(:state, name: state_name) }
   let(:entity_key) { state.id }
   let(:entity_name) { state.name.downcase.gsub(" ", "_") }
   let!(:user_with_completed_orders_with_shipping_address_having_given_state) { create(:user_with_completed_orders, :with_given_shipping_state, state: state, orders_count: 6) }
@@ -25,7 +26,7 @@ describe Spree::Marketing::MostZoneWiseOrdersList, type: :model do
   describe "methods" do
     describe ".state_name" do
       it "returns the name of state according to the state_id given" do
-        expect(Spree::Marketing::MostZoneWiseOrdersList.send :state_name, state.id).to eq "alabama"
+        expect(Spree::Marketing::MostZoneWiseOrdersList.send :state_name, state.id).to eq state_name
       end
     end
 
