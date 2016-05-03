@@ -34,7 +34,7 @@ module Spree
 
       def self.data
         Spree::InventoryUnit.joins(variant: :product)
-                            .group("spree_variants.id")
+                            .group("spree_products.id")
                             .order("COUNT(spree_inventory_units.id) DESC")
                             .limit(FAVOURABLE_PRODUCT_COUNT)
                             .pluck(:product_id)
