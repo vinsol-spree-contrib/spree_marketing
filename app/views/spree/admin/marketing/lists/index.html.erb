@@ -2,11 +2,13 @@
   <%= "Lists" %>
 <% end %>
 
-
 <% @lists.each do |sub_class_lists| %>
   <% lists = sub_class_lists %>
-  <% sub_class_name = sub_class_lists.class.to_s.deconstantize.demodulize.underscore.humanize %>
-  <h4><%= sub_class_name %></h4>
+  <% sub_class_name = sub_class_lists.class.to_s.deconstantize.demodulize %>
+  <h4>
+    <%= Spree::Marketing::ListPresenter::VIEW_NAMES_HASH[sub_class_name][:presenter_name] %>
+    <span class="icon icon-question-sign" data-toggle="tooltip" title="<%= Spree::Marketing::ListPresenter::VIEW_NAMES_HASH[sub_class_name][:tooltip_content] %>"></span>
+  </h4>
   <% if lists.present? %>
     <table class="table">
       <thead>
@@ -16,8 +18,9 @@
       </thead>
       <tbody>
         <% lists.each do |list| %>
+          <% list_presenter = list.presenter %>
           <tr>
-            <td class="col-md-5"><%= link_to list.name.humanize, admin_marketing_list_path(list) %></td>
+            <td class="col-md-5"><%= link_to list_presenter.name, admin_marketing_list_path(list) %></td>
             <td class="col-md-4"><%= list.uid %></td>
             <td class="col-md-3 text-center"><%= list.contacts.count %></td>
           </tr>
@@ -26,7 +29,7 @@
     </table>
   <% else %>
     <div class="alert alert-info no-objects-found">
-      <%= Spree.t(:no_resource_found, resource: sub_class_name) %>
+      <%= Spree.t(:no_resource_found, resource: Spree::Marketing::ListPresenter::VIEW_NAMES_HASH[sub_class_name][:presenter_name]) %>
     </div>
   <% end %>
   <br>

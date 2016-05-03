@@ -20,13 +20,6 @@ describe Spree::Marketing::AbandonedCartList, type: :model do
         it { expect(Spree::Marketing::AbandonedCartList.new.send :emails).to_not include guest_user_incomplete_order.email  }
         it { expect(Spree::Marketing::AbandonedCartList.new.send :emails).to include registered_user_incomplete_order.email  }
       end
-
-      context "updated_at is before TIME FRAME" do
-        let!(:registered_user_old_incomplete_order) { create(:order, user_id: second_user.id, updated_at: Time.current - 10.days) }
-
-        it { expect(Spree::Marketing::AbandonedCartList.new.user_ids).to_not include second_user.id }
-        it { expect(Spree::Marketing::AbandonedCartList.new.user_ids).to include first_user.id }
-      end
     end
   end
 

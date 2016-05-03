@@ -159,4 +159,12 @@ describe Spree::Marketing::List, type: :model do
 
     it { expect(active_list.send(:removable_contact_uids, [contact.email])).to include(contact.uid) }
   end
+
+  describe "#presenter" do
+    let!(:list_presenter) { Spree::Marketing::ListPresenter.new active_list }
+
+    it "should return an instance of ListPresenter Class" do
+      expect(active_list.presenter.class).to eq list_presenter.class
+    end
+  end
 end
