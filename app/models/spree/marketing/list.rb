@@ -11,6 +11,7 @@ module Spree
       # Associations
       has_many :contacts_lists, class_name: "Spree::Marketing::ContactsList", dependent: :destroy
       has_many :contacts, through: :contacts_lists
+      has_many :campaigns, class_name: "Spree::Marketing::Campaign", dependent: :restrict_with_error
 
       # Validations
       validates :uid, :name, presence: true
