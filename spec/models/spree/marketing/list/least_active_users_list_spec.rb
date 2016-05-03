@@ -12,7 +12,7 @@ describe Spree::Marketing::LeastActiveUsersList, type: :model do
 
   describe "methods" do
     describe "#user_ids" do
-      context "when there are users having greater 5 page events" do
+      context "when there are users having more than 5 page events" do
         let!(:user_with_4_page_events) { create(:user_with_page_events, page_events_count: 4) }
 
         it "return user ids which include users who have less than 5 page events" do
