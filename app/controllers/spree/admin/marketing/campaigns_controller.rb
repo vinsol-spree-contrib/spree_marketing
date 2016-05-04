@@ -12,14 +12,10 @@ module Spree
           end
 
           def load_reports
-            @recepients_count = @marketing_campaign.recepients.count
-            @reports = JSON.parse @marketing_campaign.stats
+            stats = JSON.parse @marketing_campaign.stats
+            @recepients_count = stats.delete("emails_sent")
+            @reports = stats
           end
-
-          def find_resource
-            Spree::Marketing::Campaign.includes(:recepients).find(params[:id])
-          end
-
       end
     end
   end
