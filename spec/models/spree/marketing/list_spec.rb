@@ -22,6 +22,7 @@ describe Spree::Marketing::List, type: :model do
   describe "Associations" do
     it { is_expected.to have_many(:contacts_lists).class_name("Spree::Marketing::ContactsList").dependent(:destroy) }
     it { is_expected.to have_many(:contacts).through(:contacts_lists) }
+    it { is_expected.to have_many(:campaigns).class_name("Spree::Marketing::Campaign").dependent(:restrict_with_error) }
   end
 
   describe "Scopes" do

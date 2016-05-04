@@ -2,6 +2,8 @@ module Spree
   module Marketing
     class List < Spree::Base
 
+      acts_as_paranoid
+
       # Constants
       TIME_FRAME = 1.week
 
@@ -11,6 +13,7 @@ module Spree
       # Associations
       has_many :contacts_lists, class_name: "Spree::Marketing::ContactsList", dependent: :destroy
       has_many :contacts, through: :contacts_lists
+      has_many :campaigns, class_name: "Spree::Marketing::Campaign", dependent: :restrict_with_error
 
       # Validations
       validates :uid, :name, presence: true
