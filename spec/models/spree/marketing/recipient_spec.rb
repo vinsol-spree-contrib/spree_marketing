@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Spree::Marketing::Recepient, type: :model do
+describe Spree::Marketing::Recipient, type: :model do
 
   describe "Validations" do
     it { is_expected.to validate_presence_of(:campaign) }

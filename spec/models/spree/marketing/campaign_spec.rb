@@ -19,8 +19,8 @@ describe Spree::Marketing::Campaign, type: :model do
 
   describe "Associations" do
     it { is_expected.to belong_to(:list).class_name("Spree::Marketing::List") }
-    it { is_expected.to have_many(:recepients).class_name("Spree::Marketing::Recepient").dependent(:restrict_with_error) }
-    it { is_expected.to have_many(:contacts).through(:recepients) }
+    it { is_expected.to have_many(:recipients).class_name("Spree::Marketing::Recipient").dependent(:restrict_with_error) }
+    it { is_expected.to have_many(:contacts).through(:recipients) }
   end
 
 end

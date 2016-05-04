@@ -5,7 +5,7 @@ class ListGenerationJob < ActiveJob::Base
   # end
 
   def perform(list_name, emails, list_class_name, entity_data = {})
-    gibbon_service = GibbonService.new
+    gibbon_service = GibbonService::ListService.new
     list_data = gibbon_service.generate_list(list_name)
     list = list_class_name.constantize.create({ uid: list_data['id'], name: list_data['name'] }.merge(entity_data))
     if emails.present?
