@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Spree::Marketing::NewUsersList, type: :model do
 
@@ -11,8 +11,8 @@ describe Spree::Marketing::NewUsersList, type: :model do
     end
   end
 
-  describe "methods" do
-    context "#emails" do
+  describe 'methods' do
+    context '#emails' do
       it { expect(Spree::Marketing::NewUsersList.new.send :emails).to include new_user.email }
       it { expect(Spree::Marketing::NewUsersList.new.send :emails).to_not include old_user.email }
     end
