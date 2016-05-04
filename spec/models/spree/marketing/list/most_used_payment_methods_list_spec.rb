@@ -10,7 +10,7 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
   it_behaves_like "acts_as_multilist", Spree::Marketing::MostUsedPaymentMethodsList
 
   describe "Constants" do
-    it { expect(Spree::Marketing::MostUsedPaymentMethodsList::ENTITY_KEY).to eq "payment_method_id" }
+    it { expect(Spree::Marketing::MostUsedPaymentMethodsList::ENTITY_KEY).to eq "entity_id" }
     it { expect(Spree::Marketing::MostUsedPaymentMethodsList::TIME_FRAME).to eq 1.month }
     it { expect(Spree::Marketing::MostUsedPaymentMethodsList::MINIMUM_COUNT).to eq 5 }
     it { expect(Spree::Marketing::MostUsedPaymentMethodsList::MOST_USED_PAYMENT_METHODS_COUNT).to eq 5 }

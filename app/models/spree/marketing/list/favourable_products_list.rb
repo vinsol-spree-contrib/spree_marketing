@@ -5,6 +5,7 @@ module Spree
       include Spree::Marketing::ActsAsMultiList
 
       # Constants
+      NAME_TEXT = 'Most Selling Products'
       ENTITY_KEY = 'entity_id'
       ENTITY_TYPE = 'Spree::Product'
       TIME_FRAME = 1.month
@@ -15,8 +16,8 @@ module Spree
         # And we also have his email but we are leaving those emails for now.
         Spree::Order.joins(line_items: { variant: :product })
                     .of_registered_users
-                    .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time)
-                    .where("spree_products.id = ?", entity_id)
+                    .where('spree_orders.completed_at >= :time_frame', time_frame: computed_time)
+                    .where('spree_products.id = ?', entity_id)
                     .group(:user_id)
                     .pluck(:user_id)
       end
@@ -29,7 +30,6 @@ module Spree
                             .pluck(:product_id)
       end
       private_class_method :data
-
     end
   end
 end

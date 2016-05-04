@@ -5,6 +5,7 @@ module Spree
       include Spree::Marketing::ActsAsMultiList
 
       # Constants
+      NAME_TEXT = 'Most Searched Keywords'
       ENTITY_KEY = 'searched_keyword'
       ENTITY_TYPE = nil
       TIME_FRAME = 1.month
@@ -12,22 +13,21 @@ module Spree
 
       def user_ids
         Spree::PageEvent.where(search_keywords: searched_keyword)
-                        .where("created_at >= :time_frame", time_frame: computed_time)
+                        .where('created_at >= :time_frame', time_frame: computed_time)
                         .of_registered_users
                         .where(actor_type: Spree.user_class)
                         .group(:actor_id)
                         .pluck(:actor_id)
       end
 
-      def self.name_text searched_keyword
-        humanized_name + "_" + entity_name(searched_keyword)
+      def display_name
+        NAME_TEXT + ' (' + searched_keyword + ')'
       end
-      private_class_method :name_text
 
       def self.data
-        Spree::PageEvent.where(activity: "search")
+        Spree::PageEvent.where(activity: 'search')
                         .group(:search_keywords)
-                        .order("COUNT(spree_page_events.id) DESC")
+                        .order('COUNT(spree_page_events.id) DESC')
                         .limit(MOST_SEARCHRD_KEYWORD_COUNT)
                         .pluck(:search_keywords)
       end

@@ -6,12 +6,13 @@ module Spree
 
       # Constants
       TIME_FRAME = 1.week
+      NAME_TEXT = 'List'
 
       # Configurations
-      self.table_name = "spree_marketing_lists"
+      self.table_name = 'spree_marketing_lists'
 
       # Associations
-      has_many :contacts_lists, class_name: "Spree::Marketing::ContactsList", dependent: :destroy
+      has_many :contacts_lists, class_name: 'Spree::Marketing::ContactsList', dependent: :destroy
       has_many :contacts, through: :contacts_lists
       has_many :campaigns, class_name: "Spree::Marketing::Campaign", dependent: :restrict_with_error
       belongs_to :entity, polymorphic: true
@@ -28,7 +29,7 @@ module Spree
       end
 
       def generate
-        ListGenerationJob.perform_later name, emails, self.class.name, entity_data
+        ListGenerationJob.perform_later display_name, emails, self.class.name, entity_data
       end
 
       def update_list
@@ -62,6 +63,10 @@ module Spree
 
       def presenter
         Spree::Marketing::ListPresenter.new self
+      end
+
+      def display_name
+        self.class::NAME_TEXT
       end
 
       private

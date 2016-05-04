@@ -44,9 +44,9 @@ describe Spree::Marketing::List, type: :model do
       allow(active_list).to receive(:user_ids).and_return([])
     end
 
-    it { expect(ListGenerationJob).to receive(:perform_later).with(list_name, active_list.send(:emails), active_list.class.name) }
+    it { expect(ListGenerationJob).to receive(:perform_later).with(active_list.display_name, active_list.send(:emails), active_list.class.name, active_list.send(:entity_data)) }
 
-    after { active_list.generate(list_name) }
+    after { active_list.generate }
   end
 
   describe "#update_list" do
@@ -82,7 +82,7 @@ describe Spree::Marketing::List, type: :model do
 
     context 'when list is not persisted' do
       let(:humanized_name) { Spree::Marketing::List.send(:humanized_name) }
-      let(:new_list) { Spree::Marketing::List.new }
+      let(:new_list) { Spree::Marketing::List.new(name: humanized_name) }
 
       before do
         allow(ListGenerationJob).to receive(:perform_later).and_return(true)
@@ -92,7 +92,7 @@ describe Spree::Marketing::List, type: :model do
       end
 
       it { expect(Spree::Marketing::List).to receive(:find_by).with(name: humanized_name).and_return(nil) }
-      it { expect(new_list).to receive(:generate).with(humanized_name).and_return(true) }
+      it { expect(new_list).to receive(:generate).and_return(true) }
 
       after { Spree::Marketing::List.generator }
     end
