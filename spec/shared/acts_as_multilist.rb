@@ -3,7 +3,7 @@ RSpec.shared_examples "acts_as_multilist" do |list_type|
   SpreeMarketing::CONFIG ||= { Rails.env => {} }
 
   context ".load_list_by_entity" do
-    let!(:list) { create(list_type.to_s.demodulize.underscore.to_sym, name: list_type::NAME_TEXT + ' (' + entity_name + ')', entity_id: entity_id, entity_type: list_type::ENTITY_TYPE) }
+    let!(:list) { create(list_type.to_s.demodulize.underscore.to_sym, name: list_type::NAME_TEXT + ' (' + entity_name + ')', "#{ list_type::ENTITY_KEY }" => entity_id, entity_type: list_type::ENTITY_TYPE) }
 
     it { expect(list_type.send :load_list_by_entity, entity_id).to eq list }
   end

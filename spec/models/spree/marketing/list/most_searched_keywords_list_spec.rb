@@ -4,15 +4,22 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
 
   let!(:user_with_search_event_for_searched_keyword) { create(:user) }
   let!(:searched_keyword) { "Test" }
+  let(:entity_id) { searched_keyword }
   let(:entity_name) { searched_keyword }
-  let(:entity_key) { searched_keyword }
+  let(:entity_key) { 'searched_keyword' }
   let!(:search_page_events_for_search_keywords) { create_list(:marketing_search_page_event, 6, search_keywords: searched_keyword, actor_id: user_with_search_event_for_searched_keyword.id) }
 
   it_behaves_like "acts_as_multilist", Spree::Marketing::MostSearchedKeywordsList
 
   describe "Constants" do
-    it "ENTITY_KEY equals to entity_key for list" do
+    it 'NAME_TEXT equals to name representation for list' do
+      expect(Spree::Marketing::MostSearchedKeywordsList::NAME_TEXT).to eq 'Most Searched Keywords'
+    end
+    it 'ENTITY_KEY equals to entity attribute for list' do
       expect(Spree::Marketing::MostSearchedKeywordsList::ENTITY_KEY).to eq 'searched_keyword'
+    end
+    it 'ENTITY_TYPE equals to type of entity for list' do
+      expect(Spree::Marketing::MostSearchedKeywordsList::ENTITY_TYPE).to be_nil
     end
     it "TIME_FRAME equals to time frame used in filtering of users for list" do
       expect(Spree::Marketing::MostSearchedKeywordsList::TIME_FRAME).to eq 1.month
@@ -96,9 +103,11 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
       end
     end
 
-    context ".name_text" do
+    context "#display_name" do
+      let(:name) { Spree::Marketing::MostSearchedKeywordsList::NAME_TEXT + ' (' + searched_keyword + ')' }
+
       it "returns name of list to be made using searched keyword" do
-        expect(Spree::Marketing::MostSearchedKeywordsList.send :name_text, searched_keyword).to eq "most_searched_keywords_list_Test"
+        expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).send :display_name).to eq name
       end
     end
   end
