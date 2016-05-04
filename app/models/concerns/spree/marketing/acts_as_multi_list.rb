@@ -5,7 +5,11 @@ module Spree
       extend ActiveSupport::Concern
 
       def display_name
-        self.class::NAME_TEXT + ' (' + entity.name + ')'
+        self.class::NAME_TEXT + ' (' + entity_name + ')'
+      end
+
+      def entity_name
+        entity.name
       end
 
       class_methods do

@@ -5,7 +5,7 @@ describe Spree::Marketing::FavourableProductsList, type: :model do
   let(:user_with_orders_having_given_product) { create(:user) }
   let(:product) { create(:product, name: 'Ruby On Rails Tote') }
   let(:entity_id) { product.id }
-  let(:entity_name) { product.name.downcase.gsub(' ', '_') }
+  let(:entity_name) { product.name }
   let!(:orders_having_given_product) { create_list(:order_with_given_product, 2, user: user_with_orders_having_given_product, product: product) }
 
   it_behaves_like 'acts_as_multilist', Spree::Marketing::FavourableProductsList

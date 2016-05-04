@@ -103,11 +103,9 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
       end
     end
 
-    context '#display_name' do
-      let(:name) { Spree::Marketing::MostSearchedKeywordsList::NAME_TEXT + ' (' + searched_keyword + ')' }
-
-      it 'returns name of list to be made using searched keyword' do
-        expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).send :display_name).to eq name
+    context '#entity_name' do
+      it 'returns the searched keyword' do
+        expect(Spree::Marketing::MostSearchedKeywordsList.new(searched_keyword: searched_keyword).send :entity_name).to eq entity_name
       end
     end
   end

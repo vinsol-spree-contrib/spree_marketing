@@ -4,7 +4,7 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
 
   let(:payment_method) { create(:credit_card_payment_method) }
   let(:entity_id) { payment_method.id }
-  let(:entity_name) { payment_method.name.downcase.gsub(' ', '_') }
+  let(:entity_name) { payment_method.name }
   let!(:user_with_more_than_5_completed_orders) { create(:user_with_completed_orders, :with_given_payment_method, payment_method: payment_method, orders_count: 6) }
 
   it_behaves_like 'acts_as_multilist', Spree::Marketing::MostUsedPaymentMethodsList

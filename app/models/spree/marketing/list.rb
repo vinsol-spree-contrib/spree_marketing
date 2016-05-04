@@ -15,6 +15,7 @@ module Spree
       has_many :contacts_lists, class_name: 'Spree::Marketing::ContactsList', dependent: :destroy
       has_many :contacts, through: :contacts_lists
       has_many :campaigns, class_name: "Spree::Marketing::Campaign", dependent: :restrict_with_error
+      # entity is the associated record for which the list is defined(e.g. Spree::Product for 'Favourable Products')
       belongs_to :entity, polymorphic: true
 
       # Validations
@@ -62,6 +63,10 @@ module Spree
 
       def display_name
         self.class::NAME_TEXT
+      end
+
+      def entity_name
+        nil
       end
 
       private

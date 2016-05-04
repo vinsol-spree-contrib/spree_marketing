@@ -39,17 +39,10 @@ module Spree
         @list = list
       end
 
-      def name
-        @list.entity.try(:name) || @list.searched_keyword || 'Contacts'
+      def sub_list_name
+        @list.entity_name || 'Contacts'
       end
 
-      def show_page_name
-        if name == 'Contacts'
-          ''
-        else
-          ' -> ' + name
-        end
-      end
     end
   end
 end

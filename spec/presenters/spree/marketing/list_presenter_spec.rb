@@ -59,27 +59,13 @@ describe Spree::Marketing::ListPresenter do
     describe '#name' do
       context 'when list is of multilist type' do
         it 'returns product name' do
-          expect(multilist_presenter.name).to eq product_name
+          expect(multilist_presenter.sub_list_name).to eq product_name
         end
       end
 
       context 'when list is of single list type' do
         it 'returns Contacts string' do
-          expect(list_presenter.name).to eq 'Contacts'
-        end
-      end
-    end
-
-    describe '#show_page_name' do
-      context 'when list is of multilist type' do
-        it 'returns product name with right arrow' do
-          expect(multilist_presenter.show_page_name).to eq ' -> ' + product_name
-        end
-      end
-
-      context 'when list is of single list type' do
-        it 'returns blank string' do
-          expect(list_presenter.show_page_name).to eq ''
+          expect(list_presenter.sub_list_name).to eq 'Contacts'
         end
       end
     end

@@ -20,8 +20,8 @@ module Spree
                         .pluck(:actor_id)
       end
 
-      def display_name
-        NAME_TEXT + ' (' + searched_keyword + ')'
+      def entity_name
+        searched_keyword
       end
 
       def self.data

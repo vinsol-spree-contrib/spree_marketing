@@ -183,4 +183,8 @@ describe Spree::Marketing::List, type: :model do
 
     it { expect(active_list.send(:entity_data)).to eq({ entity_id: product.id, entity_type: product.class.to_s, searched_keyword: nil }) }
   end
+
+  describe '#entity_name' do
+    it { expect(active_list.entity_name).to be_nil }
+  end
 end
