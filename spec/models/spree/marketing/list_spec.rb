@@ -6,8 +6,12 @@ describe Spree::Marketing::List, type: :model do
   let(:inactive_list) { create(:marketing_list, active: false) }
 
   describe 'Constants' do
-    it { expect(Spree::Marketing::List::TIME_FRAME).to eq(1.week) }
-    it { expect(Spree::Marketing::List::NAME_TEXT).to eq('List') }
+    it 'TIME_FRAME equals to time frame used in filtering of users for list' do
+      expect(Spree::Marketing::List::TIME_FRAME).to eq 1.week
+    end
+    it 'NAME_TEXT equals to name representation for list' do
+      expect(Spree::Marketing::List::NAME_TEXT).to eq 'List'
+    end
   end
 
   describe 'Validations' do

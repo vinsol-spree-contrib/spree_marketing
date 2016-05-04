@@ -8,7 +8,9 @@ describe Spree::Marketing::AbandonedCartList, type: :model do
   let!(:registered_user_incomplete_order) { create(:order, user_id: first_user.id) }
 
   describe 'constants' do
-    it { expect(Spree::Marketing::AbandonedCartList::NAME_TEXT).to eq('Abandoned Cart') }
+    it 'NAME_TEXT equals to name representation for list' do
+      expect(Spree::Marketing::AbandonedCartList::NAME_TEXT).to eq 'Abandoned Cart'
+    end
   end
 
   describe 'methods' do
