@@ -1,0 +1,16 @@
+development:
+  gibbon_api_key: 'your_api_key'
+  permission_reminder: 'your_permission_reminder'
+  email_type_option: true
+  campaign_defaults:
+    from_name: 'test name'
+    from_email: 'test@marketing.com'
+    subject: 'test subject'
+    language: 'english'
+  contact:
+    company: 'marketing'
+    address1: '123'
+    city: 'city'
+    state: 'state'
+    zip: '123456'
+    country: 'country'
