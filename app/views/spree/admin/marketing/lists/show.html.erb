@@ -1,7 +1,5 @@
 <% content_for :page_title do %>
-  <% list_presenter = @marketing_list.presenter %>
-  <% sub_class_name = sub_class_lists.class.to_s.deconstantize.demodulize %>
-  <%= Spree::Marketing::ListPresenter::VIEW_NAMES_HASH[sub_class_name][:presenter_name] + list_presenter.show_page_name %>
+  <%= @marketing_list.name %>
 <% end %>
 
 <h3>Contacts</h3>
@@ -25,6 +23,6 @@
   </table>
 <% else %>
   <div class="alert alert-info no-objects-found">
-    <%= Spree.t(:no_resource_found, resource: "Contacts") %>
+    <%= Spree.t(:no_resource_found, resource: 'Contacts') %>
   </div>
 <% end %>

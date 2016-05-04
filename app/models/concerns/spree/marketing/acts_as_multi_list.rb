@@ -4,15 +4,25 @@ module Spree
 
       extend ActiveSupport::Concern
 
+      def display_name
+        self.class::NAME_TEXT + ' (' + entity_name + ')'
+      end
+
+      def entity_name
+        entity.name
+      end
+
       class_methods do
         def generator
           lists = []
-          data.each do |entity_id|
-            if list = load_list(entity_id)
+          # data returns polymorphic entity ids or searched keywords
+          data.each do |entity|
+            if list = load_list_by_entity(entity)
               list.update_list
             else
-              new("#{ self::ENTITY_KEY }" => entity_id).generate(name_text(entity_id))
-              list = load_list(entity_id)
+              # ENTITY_KEY constant defines the attribute we are updating(searched_keyword/entity_id)
+              new("#{ self::ENTITY_KEY }" => entity, entity_type: self::ENTITY_TYPE).generate
+              list = load_list_by_entity(entity)
             end
             lists << list
           end
@@ -25,12 +35,8 @@ module Spree
 
         private
 
-          def load_list(entity_id)
-            find_by(name: name_text(entity_id))
-          end
-
-          def name_text entity_id
-            humanized_name + "_" + entity_name(entity_id)
+          def load_list_by_entity(entity)
+            find_by("#{ self::ENTITY_KEY }" => entity)
           end
       end
     end

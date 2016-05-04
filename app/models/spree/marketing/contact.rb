@@ -3,11 +3,10 @@ module Spree
     class Contact < Spree::Base
 
       # Configurations
-      self.table_name = "spree_marketing_contacts"
+      self.table_name = 'spree_marketing_contacts'
 
       # Associations
-      has_many :contacts_lists, class_name: "Spree::Marketing::ContactsList",
-                                dependent: :restrict_with_error
+      has_many :contacts_lists, class_name: 'Spree::Marketing::ContactsList', dependent: :restrict_with_error
       has_many :lists, through: :contacts_lists
       has_many :recepients, class_name: "Spree::Marketing::Recepient",
                                      dependent: :restrict_with_error
