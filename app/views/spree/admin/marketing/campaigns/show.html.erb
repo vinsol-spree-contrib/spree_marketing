@@ -1,0 +1,30 @@
+<% content_for :page_title do %>
+  <%= @marketing_campaign.name.titleize %>
+<% end %>
+
+<h3>Reports</h3>
+
+<br>
+
+<% if @reports.present? %>
+  <table class="table">
+    <thead>
+      <th class="col-md-4"><%= Spree.t(:name) %></th>
+      <th class="col-md-4 text-center"><%= Spree.t(:total_recepients) %></th>
+      <th class="col-md-4 text-center"><%= Spree.t(:responders) %></th>
+    </thead>
+    <tbody>
+      <% @reports.each do |report| %>
+        <tr>
+          <td class="col-md-4"><%= report[0].titleize %></td>
+          <td class="col-md-4 text-center"><%= @recepients_count %></td>
+          <td class="col-md-4 text-center"><%= report[1]["count"] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alert alert-info no-objects-found">
+    <%= Spree.t(:no_resource_found, resource: "Reports") %>
+  </div>
+<% end %>

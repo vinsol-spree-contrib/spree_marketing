@@ -1,0 +1,36 @@
+<% content_for :page_title do %>
+  <%= "Campaigns" %>
+<% end %>
+
+<% @campaigns.each do |list_campaign_array| %>
+  <% list_sub_class_name = list_campaign_array[0] %>
+  <% campaigns = list_campaign_array[1] %>
+  <% sub_class_name = list_sub_class_name.demodulize %>
+  <h4>
+    <%= Spree::Marketing::ListPresenter::VIEW_NAMES_HASH[sub_class_name][:presenter_name] %>
+    <span class="icon icon-question-sign" data-toggle="tooltip" title="<%= Spree::Marketing::ListPresenter::VIEW_NAMES_HASH[sub_class_name][:tooltip_content] %>"></span>
+  </h4>
+  <% if campaigns.present? %>
+    <table class="table">
+      <thead>
+        <th class="col-md-5"><%= Spree::Marketing::List.human_attribute_name :name %></th>
+        <th class="col-md-3"><%= Spree::Marketing::List.human_attribute_name :uid %></th>
+        <th class="col-md-4"><%= Spree::Marketing::List.human_attribute_name :scheduled_at %></th>
+      </thead>
+      <tbody>
+        <% campaigns.each do |campaign| %>
+          <tr>
+            <td class="col-md-5"><%= link_to campaign.name, admin_marketing_campaign_path(campaign) %></td>
+            <td class="col-md-3"><%= campaign.uid %></td>
+            <td class="col-md-4"><%= campaign.scheduled_at.to_formatted_s(:short) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="alert alert-info no-objects-found">
+      <%= Spree.t(:no_resource_found, resource: "Campaigns") %>
+    </div>
+  <% end %>
+  <br>
+<% end %>
