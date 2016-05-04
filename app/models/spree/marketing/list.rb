@@ -2,6 +2,8 @@ module Spree
   module Marketing
     class List < Spree::Base
 
+      acts_as_paranoid
+
       # Constants
       TIME_FRAME = 1.week
 

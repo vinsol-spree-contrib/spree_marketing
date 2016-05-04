@@ -5,6 +5,7 @@ FactoryGirl.define do
     mailchimp_type { Faker::Name.name }
     name { Faker::Name.name }
     scheduled_at Time.current
+    stats { Faker::Lorem.sentence }
     association :list, factory: :marketing_list
   end
 

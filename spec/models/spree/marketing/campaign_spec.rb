@@ -8,6 +8,7 @@ describe Spree::Marketing::Campaign, type: :model do
     it { is_expected.to validate_presence_of(:uid) }
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:list) }
+    it { is_expected.to validate_presence_of(:stats) }
     it { is_expected.to validate_presence_of(:mailchimp_type) }
     it { is_expected.to validate_presence_of(:scheduled_at) }
     context "validates uniqueness of" do

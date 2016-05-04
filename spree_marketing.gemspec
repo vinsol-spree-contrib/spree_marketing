@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'gibbon',     '~> 2.2.3'
   s.add_dependency 'whenever',   '~> 0.9.4'
 
+  s.add_development_dependency 'acts_as_paranoid', '0.3.1'
   s.add_development_dependency 'capybara', '~> 2.4'
   s.add_development_dependency 'coffee-rails', '4.1.1'
   s.add_development_dependency 'database_cleaner', '1.5.1'

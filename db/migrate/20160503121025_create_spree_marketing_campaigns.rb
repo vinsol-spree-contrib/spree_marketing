@@ -4,6 +4,7 @@ class CreateSpreeMarketingCampaigns < ActiveRecord::Migration
       t.string :uid, null: false
       t.string :mailchimp_type, index: true
       t.string :name
+      t.text :stats
       t.references :list, index: true
       t.datetime :scheduled_at
     end
