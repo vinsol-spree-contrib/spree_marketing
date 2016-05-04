@@ -1,42 +1,44 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Spree::Marketing::List, type: :model do
 
   let(:active_list) { create(:marketing_list, active: true) }
   let(:inactive_list) { create(:marketing_list, active: false) }
 
-  describe "Constants" do
+  describe 'Constants' do
     it { expect(Spree::Marketing::List::TIME_FRAME).to eq(1.week) }
+    it { expect(Spree::Marketing::List::NAME_TEXT).to eq('List') }
   end
 
-  describe "Validations" do
+  describe 'Validations' do
     it { is_expected.to validate_presence_of(:uid) }
     it { is_expected.to validate_presence_of(:name) }
     #Spec would fail without subject assignment at db level
-    context "validates uniqueness of" do
-      subject { create(:marketing_list) }
+    context 'validates uniqueness of' do
+      subject { active_list }
       it { is_expected.to validate_uniqueness_of(:uid).case_insensitive }
     end
   end
 
-  describe "Associations" do
-    it { is_expected.to have_many(:contacts_lists).class_name("Spree::Marketing::ContactsList").dependent(:destroy) }
+  describe 'Associations' do
+    it { is_expected.to have_many(:contacts_lists).class_name('Spree::Marketing::ContactsList').dependent(:destroy) }
     it { is_expected.to have_many(:contacts).through(:contacts_lists) }
     it { is_expected.to have_many(:campaigns).class_name("Spree::Marketing::Campaign").dependent(:restrict_with_error) }
+    it { is_expected.to belong_to(:entity) }
   end
 
-  describe "Scopes" do
-    context ".active" do
+  describe 'Scopes' do
+    context '.active' do
       it { expect(Spree::Marketing::List.active).to include active_list }
       it { expect(Spree::Marketing::List.active).to_not include inactive_list }
     end
   end
 
-  describe "#user_ids" do
+  describe '#user_ids' do
     it { expect {active_list.user_ids}.to raise_error(::NotImplementedError, 'You must implement user_ids method for this smart list.') }
   end
 
-  describe "#generate" do
+  describe '#generate' do
     let!(:list_name) { 'test' }
 
     before do
@@ -49,7 +51,7 @@ describe Spree::Marketing::List, type: :model do
     after { active_list.generate }
   end
 
-  describe "#update_list" do
+  describe '#update_list' do
     let(:emails) { active_list.send(:emails) }
     let(:old_emails) { active_list.send(:old_emails) }
 
@@ -64,25 +66,24 @@ describe Spree::Marketing::List, type: :model do
   end
 
   describe '.generator' do
-    context 'when list is persisted' do
-      let(:humanized_name) { Spree::Marketing::List.send(:humanized_name) }
+    let(:name) { Spree::Marketing::List::NAME_TEXT }
 
+    context 'when list is persisted' do
       before do
-        active_list.update_column(:name, humanized_name)
+        active_list.update_column(:name, name)
         allow(ListModificationJob).to receive(:perform_later).and_return(true)
         allow(active_list).to receive(:user_ids).and_return([])
         allow(Spree::Marketing::List).to receive(:find_by).and_return(active_list)
       end
 
-      it { expect(Spree::Marketing::List).to receive(:find_by).with(name: humanized_name).and_return(active_list) }
+      it { expect(Spree::Marketing::List).to receive(:find_by).with(name: name).and_return(active_list) }
       it { expect(active_list).to receive(:update_list).and_return(true) }
 
       after { Spree::Marketing::List.generator }
     end
 
     context 'when list is not persisted' do
-      let(:humanized_name) { Spree::Marketing::List.send(:humanized_name) }
-      let(:new_list) { Spree::Marketing::List.new(name: humanized_name) }
+      let(:new_list) { Spree::Marketing::List.new(name: name) }
 
       before do
         allow(ListGenerationJob).to receive(:perform_later).and_return(true)
@@ -91,7 +92,7 @@ describe Spree::Marketing::List, type: :model do
         allow(new_list).to receive(:user_ids).and_return([])
       end
 
-      it { expect(Spree::Marketing::List).to receive(:find_by).with(name: humanized_name).and_return(nil) }
+      it { expect(Spree::Marketing::List).to receive(:find_by).with(name: name).and_return(nil) }
       it { expect(new_list).to receive(:generate).and_return(true) }
 
       after { Spree::Marketing::List.generator }
@@ -112,8 +113,8 @@ describe Spree::Marketing::List, type: :model do
     after { Spree::Marketing::List.generate_all }
   end
 
-  describe '.humanized_name' do
-    it { expect(Spree::Marketing::List.send(:humanized_name)).to eq(Spree::Marketing::List.name.demodulize.underscore) }
+  describe '#display_name' do
+    it { expect(Spree::Marketing::List.new.send(:display_name)).to eq(Spree::Marketing::List::NAME_TEXT) }
   end
 
   describe '#populate' do
@@ -161,11 +162,21 @@ describe Spree::Marketing::List, type: :model do
     it { expect(active_list.send(:removable_contact_uids, [contact.email])).to include(contact.uid) }
   end
 
-  describe "#presenter" do
+  describe '#presenter' do
     let!(:list_presenter) { Spree::Marketing::ListPresenter.new active_list }
 
-    it "should return an instance of ListPresenter Class" do
+    it 'should return an instance of ListPresenter Class' do
       expect(active_list.presenter.class).to eq list_presenter.class
     end
+  end
+
+  describe '#entity_data' do
+    let(:product) { create(:product, name: "Ruby On Rails Tote") }
+
+    before do
+      active_list.update(entity: product)
+    end
+
+    it { expect(active_list.send(:entity_data)).to eq({ entity_id: product.id, entity_type: product.class.to_s, searched_keyword: nil }) }
   end
 end

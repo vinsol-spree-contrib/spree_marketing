@@ -39,8 +39,8 @@ module Spree
       end
 
       def self.generator
-        list = find_by(name: humanized_name)
-        list ? list.update_list : new(name: humanized_name).generate
+        list = find_by(name: NAME_TEXT)
+        list ? list.update_list : new(name: NAME_TEXT).generate
       end
 
       def self.generate_all
@@ -48,11 +48,6 @@ module Spree
           list_type.generator
         end
       end
-
-      def self.humanized_name
-        @humanized_name ||= name.demodulize.underscore
-      end
-      private_class_method :humanized_name
 
       def populate(contacts_data)
         contacts_data.each do |contact_data|
