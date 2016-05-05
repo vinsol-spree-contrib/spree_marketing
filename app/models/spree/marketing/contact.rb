@@ -8,9 +8,8 @@ module Spree
       # Associations
       has_many :contacts_lists, class_name: 'Spree::Marketing::ContactsList', dependent: :restrict_with_error
       has_many :lists, through: :contacts_lists
-      has_many :recepients, class_name: "Spree::Marketing::Recepient",
-                                     dependent: :restrict_with_error
-      has_many :campaigns, through: :recepients
+      has_many :recipients, class_name: "Spree::Marketing::Recipient", dependent: :restrict_with_error
+      has_many :campaigns, through: :recipients
 
       # Validations
       validates :uid, :email, :mailchimp_id, presence: true

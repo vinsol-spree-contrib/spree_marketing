@@ -1,9 +1,9 @@
 module Spree
   module Marketing
-    class Recepient < Spree::Base
+    class Recipient < Spree::Base
 
       # Configurations
-      self.table_name = "spree_marketing_recepients"
+      self.table_name = "spree_marketing_recipients"
 
       # Validations
       validates :campaign, :contact, presence: true

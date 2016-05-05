@@ -41,8 +41,8 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
       end
 
       let(:params) { { id: campaign.id } }
-      let(:recepients) { double(ActiveRecord::Relation) }
-      let(:recepients_count) { 3 }
+      let(:recipients) { double(ActiveRecord::Relation) }
+      let(:recipients_count) { 3 }
       let(:hash_stats_data) { { "log_ins" => { "emails" => ["vinay@vinsol.com"], "count" => 1 }, "emails_sent" => 3 } }
       let(:reports_data) { { "log_ins" => { "emails" => ["vinay@vinsol.com"], "count" => 1 } } }
 
@@ -61,8 +61,8 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
       context "assigns" do
         before { do_show params }
 
-        it "assigns recepients count to an instance variable recepients_count" do
-          expect(assigns(:recepients_count)).to eq recepients_count
+        it "assigns recipients count to an instance variable recipients_count" do
+          expect(assigns(:recipients_count)).to eq recipients_count
         end
         it "assigns stats data in hash format to an instance variable reports" do
           expect(assigns(:reports)).to eq reports_data
