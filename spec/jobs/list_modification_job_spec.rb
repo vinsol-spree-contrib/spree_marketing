@@ -42,8 +42,12 @@ RSpec.describe ListModificationJob, type: :job do
   end
 
   context 'executes perform' do
-    it { expect(GibbonService::ListService).to receive(:new).with(list.uid).and_return(gibbon_service) }
-    it { expect(gibbon_service).to receive(:update_list).with(emails, [contact.uid]).and_return(contacts_data) }
+    it 'expect GibbonService::ListService to be initialized' do
+      expect(GibbonService::ListService).to receive(:new).with(list.uid).and_return(gibbon_service)
+    end
+    it 'expect initialized service to receive update_list' do
+      expect(gibbon_service).to receive(:update_list).with(emails, [contact.uid]).and_return(contacts_data)
+    end
 
     after { perform_enqueued_jobs { job } }
   end
