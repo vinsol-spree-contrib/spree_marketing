@@ -14,11 +14,11 @@
       <th class="col-md-4 text-center"><%= Spree.t(:responders) %></th>
     </thead>
     <tbody>
-      <% @reports.each do |report| %>
+      <% @reports.each do |report_name, report_data| %>
         <tr>
-          <td class="col-md-4"><%= report[0].titleize %></td>
+          <td class="col-md-4"><%= report_name.titleize %></td>
           <td class="col-md-4 text-center"><%= @recepients_count %></td>
-          <td class="col-md-4 text-center"><%= report[1]["count"] %></td>
+          <td class="col-md-4 text-center"><%= report_data["count"] %></td>
         </tr>
       <% end %>
     </tbody>

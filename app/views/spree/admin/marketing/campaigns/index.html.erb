@@ -15,7 +15,7 @@
         <tr>
           <td class="col-md-3"><%= link_to campaign.name, admin_marketing_campaign_path(campaign) %></td>
           <td class="col-md-2"><%= campaign.uid %></td>
-          <td class="col-md-5 text-center"><%= campaign.list.display_name %></td>
+          <td class="col-md-5 text-center"><%= campaign.list.name %></td>
           <td class="col-md-3"><%= campaign.scheduled_at.to_formatted_s(:short) %></td>
         </tr>
       <% end %>
