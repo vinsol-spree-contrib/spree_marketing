@@ -13,7 +13,7 @@ module Spree
 
           def load_reports
             stats = JSON.parse @marketing_campaign.stats
-            @recepients_count = stats.delete("emails_sent")
+            @recipients_count = stats.delete("emails_sent")
             @reports = stats
           end
       end
