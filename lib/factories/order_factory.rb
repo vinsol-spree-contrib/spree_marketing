@@ -101,4 +101,14 @@ FactoryGirl.define do
     end
   end
 
+  factory :completed_order_with_custom_completion_time, parent: :completed_order_with_totals, class: Spree::Order do
+    transient do
+      completed_at nil
+    end
+
+    after(:create) do |order, evaluator|
+      order.update_columns(completed_at: evaluator.completed_at)
+    end
+  end
+
 end

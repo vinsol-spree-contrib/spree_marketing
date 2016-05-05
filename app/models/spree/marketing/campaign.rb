@@ -2,8 +2,11 @@ module Spree
   module Marketing
     class Campaign < Spree::Base
 
+      # Constants
       STATS_PARAMS = %w(email_id email_address status)
       DEFAULT_SEND_TIME_GAP = 1.day
+
+      include Spree::Marketing::CalculateReports
 
       # Configurations
       self.table_name = "spree_marketing_campaigns"

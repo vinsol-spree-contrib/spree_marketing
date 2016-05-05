@@ -16,6 +16,8 @@ describe Spree::Marketing::Campaign, type: :model do
     end
   end
 
+  it_behaves_like "calculate_reports"
+
   describe "Validations" do
     it { is_expected.to validate_presence_of(:uid) }
     it { is_expected.to validate_presence_of(:name) }
