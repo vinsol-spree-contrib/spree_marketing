@@ -8,7 +8,7 @@ module Spree
         private
 
           def collection
-            @campaigns = Spree::Marketing::Campaign.includes(:list).group_by { |campaign| campaign.list.class.to_s }
+            @campaigns = Spree::Marketing::Campaign.order(scheduled_at: :desc)
           end
 
           def load_reports

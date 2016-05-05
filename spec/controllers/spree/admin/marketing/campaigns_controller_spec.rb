@@ -14,21 +14,13 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
         spree_get :index
       end
 
-      let(:abandoned_cart_list) { create(:abandoned_cart_list) }
-      let(:abandoned_cart_list_campaign) { create(:marketing_campaign, list: abandoned_cart_list, stats: json_stats_data) }
-      let(:campaigns_hash) { { "AbandonedCartList" => [abandoned_cart_list_campaign] } }
-
       before do
-        allow(Spree::Marketing::Campaign).to receive(:includes).and_return(campaigns)
-        allow(campaigns).to receive(:group_by).and_return(campaigns_hash)
+        allow(Spree::Marketing::Campaign).to receive(:order).and_return(campaigns)
       end
 
       context "expects to receive" do
-        it "Spree::Marketing::Campaign to receive includes and return campaigns" do
-          expect(Spree::Marketing::Campaign).to receive(:includes).with(:list).and_return(campaigns)
-        end
-        it "campaigns to receive group_by and return campaigns_hash" do
-          expect(campaigns).to receive(:group_by).and_return(campaigns_hash)
+        it "Spree::Marketing::Campaign to receive order and return campaigns" do
+          expect(Spree::Marketing::Campaign).to receive(:order).with(scheduled_at: :desc).and_return(campaigns)
         end
 
         after { do_index }
@@ -38,7 +30,7 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
         before { do_index }
 
         it "assigns campaigns instance variable to campaigns_hash" do
-          expect(assigns(:campaigns)).to eq campaigns_hash
+          expect(assigns(:campaigns)).to eq campaigns
         end
       end
     end
