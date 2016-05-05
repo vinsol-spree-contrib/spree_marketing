@@ -56,15 +56,11 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
 
       before do
         allow(Spree::Marketing::Campaign).to receive(:find).and_return(campaign)
-        allow(campaign).to receive(:stats).and_return(json_stats_data)
       end
 
       context "expects to receive" do
         it "Spree::Marketing::Campaign to receive includes and return campaigns" do
           expect(Spree::Marketing::Campaign).to receive(:find).with(params[:id].to_s).and_return(campaign)
-        end
-        it "campaign to receive stats and return json_stats_data" do
-          expect(campaign).to receive(:stats).and_return(json_stats_data)
         end
 
         after { do_show params }
