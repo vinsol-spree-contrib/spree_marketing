@@ -29,7 +29,7 @@ module Spree
       end
 
       def self.sync(since_send_time = nil)
-        CampaignSyncJob.perform_later(since_send_time || DEFAULT_SEND_TIME_GAP.ago)
+        CampaignSyncJob.perform_later(since_send_time || DEFAULT_SEND_TIME_GAP.ago.to_s)
       end
 
       def populate(recipients_data)
