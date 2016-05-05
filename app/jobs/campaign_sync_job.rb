@@ -6,13 +6,11 @@ class CampaignSyncJob < ActiveJob::Base
 
   def perform(since_send_time = nil)
     gibbon_service = GibbonService::CampaignService.new
-    gibbon_service.retrieve_sent_campaigns(since_send_time)
-    campaigns_data = gibbon_service.campaigns
+    campaigns_data = gibbon_service.retrieve_sent_campaigns(since_send_time)
     if campaigns_data.any?
       campaigns = Spree::Marketing::Campaign.generate(campaigns_data)
       campaigns.each do |campaign|
-        gibbon_service.retrieve_recipients(campaign.uid)
-        recipients_data = gibbon_service.recipients
+        recipients_data = gibbon_service.retrieve_recipients(campaign.uid)
         campaign.populate(recipients_data)
       end
     end

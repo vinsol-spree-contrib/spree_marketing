@@ -5,9 +5,7 @@ RSpec.describe CampaignSyncJob, type: :job do
 
   SpreeMarketing::CONFIG ||= { Rails.env => {} }
 
-  class GibbonServiceTest
-    attr_accessor :campaigns, :recipients
-  end
+  class GibbonServiceTest; end
 
   let(:list) { create(:marketing_list) }
   let(:since_send_time) { (Time.current - 1.day).to_s }
@@ -19,10 +17,8 @@ RSpec.describe CampaignSyncJob, type: :job do
 
   before do
     allow(GibbonService::CampaignService).to receive(:new).and_return(gibbon_service)
-    allow(gibbon_service).to receive(:retrieve_sent_campaigns).and_return(gibbon_service)
-    allow(gibbon_service).to receive(:campaigns).and_return(campaigns_data)
-    allow(gibbon_service).to receive(:retrieve_recipients).and_return(gibbon_service)
-    allow(gibbon_service).to receive(:recipients).and_return(recipients_data)
+    allow(gibbon_service).to receive(:retrieve_sent_campaigns).and_return(campaigns_data)
+    allow(gibbon_service).to receive(:retrieve_recipients).and_return(recipients_data)
   end
 
   subject(:job) { described_class.perform_later(since_send_time) }
@@ -46,11 +42,15 @@ RSpec.describe CampaignSyncJob, type: :job do
   end
 
   context 'executes perform' do
-    it { expect(GibbonService::CampaignService).to receive(:new).and_return(gibbon_service) }
-    it { expect(gibbon_service).to receive(:retrieve_sent_campaigns).with(since_send_time).and_return(gibbon_service) }
-    it { expect(gibbon_service).to receive(:campaigns).and_return(campaigns_data) }
-    it { expect(gibbon_service).to receive(:retrieve_recipients).and_return(gibbon_service) }
-    it { expect(gibbon_service).to receive(:recipients).and_return(recipients_data) }
+    it 'expects GibbonService::CampaignService to be initialized' do
+      expect(GibbonService::CampaignService).to receive(:new).and_return(gibbon_service)
+    end
+    it 'expects initialized service to retrieve sent campaigns' do
+      expect(gibbon_service).to receive(:retrieve_sent_campaigns).with(since_send_time).and_return(campaigns_data)
+    end
+    it 'expects initialized service to retrieve recipients' do
+      expect(gibbon_service).to receive(:retrieve_recipients).and_return(recipients_data)
+    end
 
     after { perform_enqueued_jobs { job } }
   end

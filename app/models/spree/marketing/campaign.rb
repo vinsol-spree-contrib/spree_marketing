@@ -19,7 +19,7 @@ module Spree
 
       def self.generate(campaigns_data)
         campaigns_data.collect do |data|
-          list = Spree::Marketing::List.find_by(uid: data['recipients']['list_id'])
+          list = Spree::Marketing::List.with_deleted.find_by(uid: data['recipients']['list_id'])
           new(uid: data['id'],
               mailchimp_type: data['type'],
               name: data['settings']['title'],
@@ -29,16 +29,18 @@ module Spree
       end
 
       def self.sync(since_send_time = nil)
-        CampaignSyncJob.perform_later(since_send_time || (Time.current - DEFAULT_SEND_TIME_GAP).to_s)
+        CampaignSyncJob.perform_later(since_send_time || DEFAULT_SEND_TIME_GAP.ago)
       end
 
       def populate(recipients_data)
         self.stats = { recipients: recipients_data.map! { |data| data.slice(*STATS_PARAMS) },
                        emails_sent: recipients_data.count }
-        save
-        recipients_data.each do |recipient_data|
-          contact = Spree::Marketing::Contact.find_by(uid: recipient_data['email_id'])
-          recipient = Spree::Marketing::Recipient.create(contact: contact, campaign: self)
+        if save
+          recipients_data.each do |recipient_data|
+            contact = Spree::Marketing::Contact.find_by(uid: recipient_data['email_id'])
+            recipient = Spree::Marketing::Recipient.create(contact: contact, campaign: self)
+          end
+          # ignoring case when not saved
         end
       end
     end

@@ -36,7 +36,24 @@ describe Spree::Marketing::Campaign, type: :model do
   end
 
   describe '.generate' do
-    it { expect(Spree::Marketing::Campaign.generate(campaigns_data).first.uid).to eq campaigns_data.first[:id] }
+    context 'when list is not destroyed' do
+      it 'generated campaign uids equal fetched campaigns_data ids' do
+        expect(Spree::Marketing::Campaign.generate(campaigns_data).first.uid).to eq campaigns_data.first[:id]
+      end
+      it 'generated campaign is associated to list' do
+        expect(Spree::Marketing::Campaign.generate(campaigns_data).first.list).to eq list
+      end
+    end
+    context 'when list is destroyed' do
+      before { list.destroy }
+
+      it 'generated campaign uids equal fetched campaigns_data ids' do
+        expect(Spree::Marketing::Campaign.generate(campaigns_data).first.uid).to eq campaigns_data.first[:id]
+      end
+      it 'generated campaign is associated to list' do
+        expect(Spree::Marketing::Campaign.generate(campaigns_data).first.list).to eq list
+      end
+    end
   end
 
   describe '.sync' do
@@ -46,7 +63,9 @@ describe Spree::Marketing::Campaign, type: :model do
       allow(CampaignSyncJob).to receive(:perform_later).and_return(true)
     end
 
-    it { expect(CampaignSyncJob).to receive(:perform_later).with(Time.current.to_s) }
+    it 'schedules CampaignSyncJob with since_send_time' do
+      expect(CampaignSyncJob).to receive(:perform_later).with(Time.current.to_s)
+    end
 
     after { Spree::Marketing::Campaign.sync(Time.current.to_s) }
   end
@@ -54,14 +73,40 @@ describe Spree::Marketing::Campaign, type: :model do
   describe '#populate' do
     let(:contact) { create(:marketing_contact) }
     let(:recipients_data) { [{ email_id: contact.uid, email_address: contact.email, status: 'sent' }.with_indifferent_access] }
-    let(:synced_campaign) { Spree::Marketing::Campaign.generate(campaigns_data).first }
     let(:stats) { { recipients: recipients_data, emails_sent: recipients_data.count } }
 
-    before { synced_campaign.populate(recipients_data) }
+    context 'when mailchimp campaign data is valid' do
+      let(:synced_campaign) { Spree::Marketing::Campaign.generate(campaigns_data).first }
 
-    it { expect(synced_campaign).to be_persisted }
-    it { expect(synced_campaign.stats).to eq stats.to_s }
-    it { expect(synced_campaign.recipients.count).to eq recipients_data.count }
-    it { expect(synced_campaign.recipients.first.contact).to eq contact }
+      before { synced_campaign.populate(recipients_data) }
+
+      it 'synced campaign is saved' do
+        expect(synced_campaign).to be_persisted
+      end
+      it 'synced campaign stats is equal to recipients set and emails sent count' do
+        expect(synced_campaign.stats).to eq stats.to_s
+      end
+      it 'synced campaign recipients count equals mailchimp fetched recipients data' do
+        expect(synced_campaign.recipients.count).to eq recipients_data.count
+      end
+      it 'synced recipients are associated to contacts' do
+        expect(synced_campaign.recipients.first.contact).to eq contact
+      end
+    end
+
+    context 'when mailcimp campaign is not valid' do
+      let(:invalid_campaigns_data) { [{ id: '12456', type: 'regular', settings: { title: 'test' },
+        recipients: { list_id: 'test' }, send_time: Time.current.to_s }.with_indifferent_access] }
+      let(:synced_campaign) { Spree::Marketing::Campaign.generate(invalid_campaigns_data).first }
+
+      before { synced_campaign.populate(recipients_data) }
+
+      it 'synced campaign is not saved' do
+        expect(synced_campaign).not_to be_persisted
+      end
+      it 'synced campaign recipients do not exist' do
+        expect(synced_campaign.recipients.count).to eq 0
+      end
+    end
   end
 end

@@ -50,7 +50,8 @@ module SpreeMarketing
         append_file filename, <<-WHENEVER
 \n
 every 1.day, :at => '12:01 am' do
-  rake 'smart_list:generate'
+  rake 'spree_marketing:smart_list:generate'
+  rake 'spree_marketing:smart_list:campaign:sync'
 end
         WHENEVER
       end
