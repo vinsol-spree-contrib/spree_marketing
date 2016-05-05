@@ -70,14 +70,16 @@ describe Spree::Marketing::FavourableProductsList, type: :model do
     end
 
     describe '#user_ids' do
+      let(:list_param) { { entity_id: product.id, entity_type: 'Spree::Product' } }
+
       context 'method flow' do
         let!(:user_with_no_orders) { create(:user) }
 
         it 'includes the users who have ordered the entity product' do
-          expect(Spree::Marketing::FavourableProductsList.new(entity_id: product.id, entity_type: 'Spree::Product').user_ids).to include user_with_orders_having_given_product.id
+          expect(Spree::Marketing::FavourableProductsList.new(list_param).user_ids).to include user_with_orders_having_given_product.id
         end
         it "doesn't include the users who haven't ordered the entity product" do
-          expect(Spree::Marketing::FavourableProductsList.new(entity_id: product.id, entity_type: 'Spree::Product').user_ids).to_not include user_with_no_orders.id
+          expect(Spree::Marketing::FavourableProductsList.new(list_param).user_ids).to_not include user_with_no_orders.id
         end
       end
 
@@ -86,7 +88,7 @@ describe Spree::Marketing::FavourableProductsList, type: :model do
         let!(:guest_user_complete_order) { create(:order_with_given_product, product: product, email: guest_user_email, user_id: nil) }
 
         it "doesn't include guest users who have ordered the entity product" do
-          expect(Spree::Marketing::FavourableProductsList.new(entity_id: product.id, entity_type: 'Spree::Product').send :emails).to_not include guest_user_complete_order.email
+          expect(Spree::Marketing::FavourableProductsList.new(list_param).send :emails).to_not include guest_user_complete_order.email
         end
       end
 
@@ -96,7 +98,7 @@ describe Spree::Marketing::FavourableProductsList, type: :model do
         let!(:registered_user_old_complete_order) { create(:order_with_given_product, :with_custom_completed_at, user: registered_user, product: product, completed_at: timestamp) }
 
         it "doesn't include users who have ordered the entity product before time frame" do
-          expect(Spree::Marketing::FavourableProductsList.new(entity_id: product.id, entity_type: 'Spree::Product').user_ids).to_not include registered_user.id
+          expect(Spree::Marketing::FavourableProductsList.new(list_param).user_ids).to_not include registered_user.id
         end
       end
 
@@ -106,10 +108,10 @@ describe Spree::Marketing::FavourableProductsList, type: :model do
         let!(:other_product_order) { create(:order_with_given_product, product: other_product, user_id: user_with_order_having_other_product.id) }
 
         it "doesn't include users who haven't entity product" do
-          expect(Spree::Marketing::FavourableProductsList.new(entity_id: product.id, entity_type: 'Spree::Product').user_ids).to_not include user_with_order_having_other_product.id
+          expect(Spree::Marketing::FavourableProductsList.new(list_param).user_ids).to_not include user_with_order_having_other_product.id
         end
         it 'includes users who have ordered the entity product' do
-          expect(Spree::Marketing::FavourableProductsList.new(entity_id: product.id, entity_type: 'Spree::Product').user_ids).to include user_with_orders_having_given_product.id
+          expect(Spree::Marketing::FavourableProductsList.new(list_param).user_ids).to include user_with_orders_having_given_product.id
         end
       end
     end

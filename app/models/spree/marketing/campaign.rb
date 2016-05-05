@@ -21,10 +21,10 @@ module Spree
         campaigns_data.collect do |data|
           list = Spree::Marketing::List.find_by(uid: data['recipients']['list_id'])
           new(uid: data['id'],
-                 mailchimp_type: data['type'],
-                 name: data['settings']['title'],
-                 list: list,
-                 scheduled_at: data['send_time'])
+              mailchimp_type: data['type'],
+              name: data['settings']['title'],
+              list: list,
+              scheduled_at: data['send_time'])
         end
       end
 

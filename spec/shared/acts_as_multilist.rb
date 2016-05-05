@@ -28,7 +28,7 @@ RSpec.shared_examples 'acts_as_multilist' do |list_type|
     let(:contacts_data) { [{ id: '12345678', email_address: emails.first, unique_email_id: 'test' }.with_indifferent_access] }
 
     before do
-      allow(GibbonService).to receive(:new).and_return(gibbon_service)
+      allow(GibbonService::ListService).to receive(:new).and_return(gibbon_service)
       allow(gibbon_service).to receive(:delete_lists).and_return(true)
     end
 

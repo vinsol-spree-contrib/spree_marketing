@@ -12,7 +12,7 @@ RSpec.describe ListCleanupJob, type: :job do
   let(:list) { create(:marketing_list) }
 
   before do
-    allow(GibbonService).to receive(:new).and_return(gibbon_service)
+    allow(GibbonService::ListService).to receive(:new).and_return(gibbon_service)
     allow(gibbon_service).to receive(:delete_lists).and_return(true)
   end
 
@@ -33,7 +33,7 @@ RSpec.describe ListCleanupJob, type: :job do
   end
 
   context 'executes perform' do
-    it { expect(GibbonService).to receive(:new).and_return(gibbon_service) }
+    it { expect(GibbonService::ListService).to receive(:new).and_return(gibbon_service) }
     it { expect(gibbon_service).to receive(:delete_lists).with([list.uid]).and_return(true) }
 
     after { perform_enqueued_jobs { job } }
