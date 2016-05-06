@@ -2,6 +2,8 @@ require "spec_helper"
 
 describe Spree::Marketing::Campaign, type: :model do
 
+  ActiveJob::Base.queue_adapter = :test
+
   let(:campaign) { create(:marketing_campaign) }
   let(:list) { create(:marketing_list) }
   let(:campaigns_data) { [{ id: '12456', type: 'regular', settings: { title: 'test' },
@@ -35,6 +37,10 @@ describe Spree::Marketing::Campaign, type: :model do
     it { is_expected.to belong_to(:list).class_name("Spree::Marketing::List") }
     it { is_expected.to have_many(:recipients).class_name("Spree::Marketing::Recipient").dependent(:restrict_with_error) }
     it { is_expected.to have_many(:contacts).through(:recipients) }
+  end
+
+  describe "Callbacks" do
+    it { is_expected.to callback(:enqueue_reports_generation_job).after(:create) }
   end
 
   describe '.generate' do
@@ -108,6 +114,27 @@ describe Spree::Marketing::Campaign, type: :model do
       end
       it 'synced campaign recipients do not exist' do
         expect(synced_campaign.recipients.count).to eq 0
+      end
+    end
+  end
+
+  describe '#enqueue_reports_generation_job' do
+    context 'when scheduled_time is less than Time.current' do
+      before do
+        campaign.update_column(:scheduled_at, Time.current - 2.days)
+      end
+
+      it 'no job is enqueued' do
+        expect { campaign.send(:enqueue_reports_generation_job) }.not_to have_enqueued_job(ReportsGenerationJob)
+      end
+    end
+    context 'when scheduled_time is greater than or equal to Time.current' do
+      before do
+        campaign.update_column(:scheduled_at, Time.current)
+      end
+
+      it 'job is enqueued' do
+        expect { campaign.send(:enqueue_reports_generation_job) }.to  have_enqueued_job(ReportsGenerationJob)
       end
     end
   end

@@ -20,6 +20,9 @@ module Spree
       has_many :recipients, class_name: "Spree::Marketing::Recipient", dependent: :restrict_with_error
       has_many :contacts, through: :recipients
 
+      # Callbacks
+      after_create :enqueue_reports_generation_job
+
       def self.generate(campaigns_data)
         campaigns_data.collect do |data|
           list = Spree::Marketing::List.with_deleted.find_by(uid: data['recipients']['list_id'])
@@ -46,6 +49,15 @@ module Spree
           # ignoring case when not saved
         end
       end
+
+      private
+
+        def enqueue_reports_generation_job
+          schedule_time = scheduled_at + 1.day
+          if schedule_time > Time.current
+            ReportsGenerationJob.set(wait_until: schedule_time).perform_later id
+          end
+        end
     end
   end
 end
