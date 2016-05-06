@@ -13,23 +13,22 @@ RSpec.shared_examples 'calculate_reports' do
   let!(:campaign_with_recepients) { create(:marketing_campaign, contacts: [contact_with_successful_purchase, contact_with_product_view_event, contact_with_cart_addition_event, contact_with_login_event], list: new_users_list) }
 
   describe "#product_views_by" do
-    let!(:product_view_event) { create(:marketing_product_view_event, actor: user_with_product_view_event) }
-
-    context "when there are product views of guest users" do
+    context "when guest user views product" do
       let!(:guest_user_product_view) { create(:marketing_product_view_event, actor: nil) }
 
-      it "returns emails which do not include nil" do
-        expect(campaign_with_recepients.product_views_by.size).to eq 1
+      it "returns emails of users which are not guest users" do
+        expect(campaign_with_recepients.product_views_by.size).to eq 0
       end
     end
 
-    context "when there are product view events before scheduled time" do
+    context "when product is viewed before scheduled time" do
+      let!(:product_view_event) { create(:marketing_product_view_event, actor: user_with_product_view_event) }
       let!(:old_product_view_event) { create(:marketing_product_view_event, actor: user_with_successful_purchase, created_at: timestamp) }
 
       it "returns emails which includes email of user_with_product_view_event" do
         expect(campaign_with_recepients.product_views_by).to include user_with_product_view_event.email
       end
-      it "returns emails which do not include email of user woth old product view event" do
+      it "returns emails which do not include email of user with old product view event" do
         expect(campaign_with_recepients.product_views_by).to_not include user_with_successful_purchase.email
       end
     end
@@ -82,10 +81,10 @@ RSpec.shared_examples 'calculate_reports' do
       end
     end
 
-    context "when there are product views of guest users" do
+    context "when guest users views a page" do
       let!(:guest_user_log_in_view) { create(:marketing_page_event, actor: nil) }
 
-      it "returns emails which do not include nil" do
+      it "returns emails of users which are not guest users" do
         expect(campaign_with_recepients.log_ins_by.size).to eq 1
       end
     end
@@ -96,7 +95,7 @@ RSpec.shared_examples 'calculate_reports' do
       it "returns emails which includes email of user_with_login_event" do
         expect(campaign_with_recepients.log_ins_by).to include user_with_login_event.email
       end
-      it "returns emails which do not include email of user woth old product view event" do
+      it "returns emails which do not include email of user with old product view event" do
         expect(campaign_with_recepients.log_ins_by).to_not include user_with_successful_purchase.email
       end
     end
@@ -147,21 +146,20 @@ RSpec.shared_examples 'calculate_reports' do
       end
     end
 
-    context "when there cart events of guest users" do
+    context "when guest users add an item to cart" do
       let(:guest_user_email) { "spree@example.com" }
       let(:guest_user_order) { create(:order, email: guest_user_email, user: nil) }
       let!(:guest_user_order_cart_addition_event) { create(:cart_addition_event, actor: guest_user_order) }
 
-      it "returns emails which do not include guest user emails" do
+      it "returns emails of users which are not guest users" do
         expect(campaign_with_recepients.cart_additions_by).to_not include guest_user_email
       end
     end
   end
 
   describe "#purchases_by" do
-    let!(:completed_order) { create(:completed_order_with_totals, user: user_with_successful_purchase) }
-
     context "when the order is completed before scheduled time" do
+      let!(:completed_order) { create(:completed_order_with_totals, user: user_with_successful_purchase) }
       let(:timestamp) { campaign_with_recepients.scheduled_at - 1.day }
       let(:user_with_old_completed_order) { create(:user) }
       let!(:old_completed_order) { create(:completed_order_with_custom_completion_time, completed_at: timestamp, user: user_with_product_view_event) }
@@ -169,7 +167,7 @@ RSpec.shared_examples 'calculate_reports' do
       it "returns emails which include user_with_successful_purchase" do
         expect(campaign_with_recepients.purchases_by).to include user_with_successful_purchase.email
       end
-      it "returns emails which do not include user woth old completed order" do
+      it "returns emails which do not include user with old completed order" do
         expect(campaign_with_recepients.purchases_by).to_not include user_with_product_view_event.email
       end
     end
@@ -178,7 +176,7 @@ RSpec.shared_examples 'calculate_reports' do
       let(:guest_user_email) { "spree@example.com" }
       let!(:guest_user_completed_order) { create(:completed_order_with_totals, email: guest_user_email, user: nil) }
 
-      it "returns emails which do not include guest user email which have completed order" do
+      it "returns emails of users which are not guest users which have completed order" do
         expect(campaign_with_recepients.purchases_by).to_not include guest_user_email
       end
     end
