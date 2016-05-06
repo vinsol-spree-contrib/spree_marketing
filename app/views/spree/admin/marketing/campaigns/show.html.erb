@@ -10,15 +10,13 @@
   <table class="table">
     <thead>
       <th class="col-md-4"><%= Spree.t(:name) %></th>
-      <th class="col-md-4 text-center"><%= Spree.t(:total_recipients) %></th>
-      <th class="col-md-4 text-center"><%= Spree.t(:responders) %></th>
+      <th class="col-md-4 text-center"><%= Spree.t(:occurences) %></th>
     </thead>
     <tbody>
       <% @reports.each do |report_name, report_data| %>
         <tr>
           <td class="col-md-4"><%= report_name.titleize %></td>
-          <td class="col-md-4 text-center"><%= @recipients_count %></td>
-          <td class="col-md-4 text-center"><%= report_data["count"] %></td>
+          <td class="col-md-4 text-center"><%= report_data["count"].to_s + "/" + @recipients_count.to_s %></td>
         </tr>
       <% end %>
     </tbody>
