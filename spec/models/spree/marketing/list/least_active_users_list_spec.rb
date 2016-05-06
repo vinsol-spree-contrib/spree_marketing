@@ -11,6 +11,9 @@ describe Spree::Marketing::LeastActiveUsersList, type: :model do
     it 'user should have lesser page events than MAXIMUM_PAGE_EVENT_COUNT' do
       expect(Spree::Marketing::LeastActiveUsersList::MAXIMUM_PAGE_EVENT_COUNT).to eq 5
     end
+    it 'AVAILABLE_REPORTS equals to array of reports for this list type' do
+      expect(Spree::Marketing::LeastActiveUsersList::AVAILABLE_REPORTS).to eq [:log_ins_by, :purchases_by, :product_views_by, :cart_additions_by]
+    end
   end
 
   describe 'methods' do

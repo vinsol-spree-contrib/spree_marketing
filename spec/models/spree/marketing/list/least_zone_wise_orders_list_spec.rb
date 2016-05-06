@@ -26,6 +26,9 @@ describe Spree::Marketing::LeastZoneWiseOrdersList, type: :model do
     it 'LEAST_ZONE_WISE_ORDER_COUNT equals to count of keywords to be used for data for lists' do
       expect(Spree::Marketing::LeastZoneWiseOrdersList::LEAST_ZONE_WISE_ORDER_COUNT).to eq 5
     end
+    it 'AVAILABLE_REPORTS equals to array of reports for this list type' do
+      expect(Spree::Marketing::LeastZoneWiseOrdersList::AVAILABLE_REPORTS).to eq [:purchases_by]
+    end
   end
 
   describe 'methods' do

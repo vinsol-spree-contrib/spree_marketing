@@ -28,6 +28,9 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
     it 'MINIMUM_COUNT equals to minimum count of orders made by users for a payment method for list' do
       expect(Spree::Marketing::MostUsedPaymentMethodsList::MINIMUM_COUNT).to eq 5
     end
+    it 'AVAILABLE_REPORTS equals to array of reports for this list type' do
+      expect(Spree::Marketing::MostUsedPaymentMethodsList::AVAILABLE_REPORTS).to eq [:purchases_by]
+    end
   end
 
   describe 'methods' do

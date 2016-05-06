@@ -26,6 +26,9 @@ describe Spree::Marketing::FavourableProductsList, type: :model do
     it 'FAVOURABLE_PRODUCT_COUNT equals to count of products to be used for data for lists' do
       expect(Spree::Marketing::FavourableProductsList::FAVOURABLE_PRODUCT_COUNT).to eq 10
     end
+    it 'AVAILABLE_REPORTS equals to array of reports for this list type' do
+      expect(Spree::Marketing::FavourableProductsList::AVAILABLE_REPORTS).to eq [:cart_additions_by, :purchases_by, :product_views_by]
+    end
   end
 
   describe 'methods' do

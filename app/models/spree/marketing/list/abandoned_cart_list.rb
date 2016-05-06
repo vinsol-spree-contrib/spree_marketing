@@ -2,7 +2,9 @@ module Spree
   module Marketing
     class AbandonedCartList < List
 
+      # Constants
       NAME_TEXT = 'Abandoned Cart'
+      AVAILABLE_REPORTS = [:purchases_by]
 
       def user_ids
         # FIXME: There is a case where guest user has an incomplete order and we

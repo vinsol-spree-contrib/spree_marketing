@@ -10,6 +10,7 @@ module Spree
       ENTITY_TYPE = nil
       TIME_FRAME = 1.month
       MOST_SEARCHRD_KEYWORD_COUNT = 5
+      AVAILABLE_REPORTS = [:cart_additions_by, :purchases_by]
 
       def user_ids
         Spree::PageEvent.where(search_keywords: searched_keyword)

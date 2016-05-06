@@ -14,6 +14,9 @@ describe Spree::Marketing::MostDiscountedOrdersList, type: :model do
     it 'MINIMUM_COUNT equals to the minimum count of orders required by a single user' do
       expect(Spree::Marketing::MostDiscountedOrdersList::MINIMUM_COUNT).to eq 5
     end
+    it 'AVAILABLE_REPORTS equals to array of reports for this list type' do
+      expect(Spree::Marketing::MostDiscountedOrdersList::AVAILABLE_REPORTS).to eq [:cart_additions_by, :purchases_by, :product_views_by]
+    end
   end
 
   describe 'methods' do

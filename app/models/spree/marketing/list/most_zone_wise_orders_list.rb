@@ -10,6 +10,7 @@ module Spree
       ENTITY_TYPE = 'Spree::State'
       TIME_FRAME = 1.month
       MOST_ZONE_WISE_ORDERS_COUNT = 5
+      AVAILABLE_REPORTS = [:purchases_by]
 
       def user_ids
         # FIXME: There are some countries which do not have states, we are leaving those cases for now.

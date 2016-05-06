@@ -10,6 +10,7 @@ module Spree
       ENTITY_TYPE = 'Spree::State'
       TIME_FRAME = 1.month
       LEAST_ZONE_WISE_ORDER_COUNT = 5
+      AVAILABLE_REPORTS = [:purchases_by]
 
       def user_ids
         # FIXME: what if state id is not available, only country id is available. Should we use only zones.

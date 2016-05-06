@@ -7,6 +7,7 @@ module Spree
       # Constants
       TIME_FRAME = 1.week
       NAME_TEXT = 'List'
+      AVAILABLE_REPORTS = [:cart_additions_by, :log_ins_by, :product_views_by, :purchases_by]
 
       # Configurations
       self.table_name = 'spree_marketing_lists'

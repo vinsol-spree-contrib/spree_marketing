@@ -27,6 +27,9 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
     it 'MOST_SEARCHED_KEYWORD_COUNT equals to count of keywords to be used for data for lists' do
       expect(Spree::Marketing::MostSearchedKeywordsList::MOST_SEARCHRD_KEYWORD_COUNT).to eq 5
     end
+    it 'AVAILABLE_REPORTS equals to array of reports for this list type' do
+      expect(Spree::Marketing::MostSearchedKeywordsList::AVAILABLE_REPORTS).to eq [:cart_additions_by, :purchases_by]
+    end
   end
 
   describe 'Methods' do
