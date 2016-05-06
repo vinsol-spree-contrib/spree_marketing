@@ -2,6 +2,11 @@
   <%= "Campaigns" %>
 <% end %>
 
+<% content_for :page_actions do %>
+  <%= button_link_to Spree.t(:sync), admin_marketing_campaigns_sync_path, data: { method: :post, url: admin_marketing_campaigns_sync_path }, class: 'btn-success ajax_handler', icon: 'refresh' %>
+<% end %>
+
+
 <% if @campaigns.present? %>
   <table class="table">
     <thead>
