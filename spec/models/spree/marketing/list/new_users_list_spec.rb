@@ -9,6 +9,9 @@ describe Spree::Marketing::NewUsersList, type: :model do
     it 'NAME_TEXT equals to name representation for list' do
       expect(Spree::Marketing::NewUsersList::NAME_TEXT).to eq 'New Users'
     end
+    it 'AVAILABLE_REPORTS equals to array of method names for reports' do
+      expect(Spree::Marketing::NewUsersList::AVAILABLE_REPORTS).to eq [:log_ins_by, :cart_additions_by, :purchases_by, :product_views_by]
+    end
   end
 
   describe 'methods' do
