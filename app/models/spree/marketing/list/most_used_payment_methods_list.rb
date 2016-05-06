@@ -11,6 +11,7 @@ module Spree
       TIME_FRAME = 1.month
       MINIMUM_COUNT = 5
       MOST_USED_PAYMENT_METHODS_COUNT = 5
+      AVAILABLE_REPORTS = [:purchases_by]
 
       def user_ids
         Spree::Order.joins(payments: :payment_method)

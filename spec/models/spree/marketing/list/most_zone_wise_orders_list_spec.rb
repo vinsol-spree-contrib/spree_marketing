@@ -27,6 +27,9 @@ describe Spree::Marketing::MostZoneWiseOrdersList, type: :model do
     it 'MOST_ZONE_WISE_ORDERS_COUNT equals to count of zones to be used as data for list' do
       expect(Spree::Marketing::MostZoneWiseOrdersList::MOST_ZONE_WISE_ORDERS_COUNT).to eq 5
     end
+    it 'AVAILABLE_REPORTS equals to array of reports for this list type' do
+      expect(Spree::Marketing::MostZoneWiseOrdersList::AVAILABLE_REPORTS).to eq [:purchases_by]
+    end
   end
 
   describe 'methods' do

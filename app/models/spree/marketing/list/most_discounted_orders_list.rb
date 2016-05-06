@@ -6,6 +6,7 @@ module Spree
       NAME_TEXT = 'Discount Seekers'
       TIME_FRAME = 1.month
       MINIMUM_COUNT = 5
+      AVAILABLE_REPORTS = [:cart_additions_by, :purchases_by, :product_views_by]
 
       def user_ids
         # FIXME: there is a case where guest user email is available but we are leaving that now.

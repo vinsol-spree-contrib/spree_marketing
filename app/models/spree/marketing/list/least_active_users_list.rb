@@ -5,6 +5,7 @@ module Spree
       # Constants
       NAME_TEXT = 'Least Active Users'
       MAXIMUM_PAGE_EVENT_COUNT = 5
+      AVAILABLE_REPORTS = [:log_ins_by, :purchases_by, :product_views_by, :cart_additions_by]
 
       def user_ids
         Spree::PageEvent.group(:actor_id)

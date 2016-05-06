@@ -10,6 +10,7 @@ module Spree
       ENTITY_TYPE = 'Spree::Product'
       TIME_FRAME = 1.month
       FAVOURABLE_PRODUCT_COUNT = 10
+      AVAILABLE_REPORTS = [:cart_additions_by, :purchases_by, :product_views_by]
 
       def user_ids
         # FIXME: There might be a case where a guest user have placed an order

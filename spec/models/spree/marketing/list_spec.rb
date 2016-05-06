@@ -12,6 +12,9 @@ describe Spree::Marketing::List, type: :model do
     it 'NAME_TEXT equals to name representation for list' do
       expect(Spree::Marketing::List::NAME_TEXT).to eq 'List'
     end
+    it 'AVAILABLE_REPORTS equals to array of reports for this list type' do
+      expect(Spree::Marketing::List::AVAILABLE_REPORTS).to eq [:cart_additions_by, :log_ins_by, :product_views_by, :purchases_by]
+    end
   end
 
   describe 'Validations' do

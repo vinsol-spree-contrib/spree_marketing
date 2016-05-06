@@ -11,6 +11,9 @@ describe Spree::Marketing::AbandonedCartList, type: :model do
     it 'NAME_TEXT equals to name representation for list' do
       expect(Spree::Marketing::AbandonedCartList::NAME_TEXT).to eq 'Abandoned Cart'
     end
+    it 'AVAILABLE_REPORTS equals to array of reports for this list type' do
+      expect(Spree::Marketing::AbandonedCartList::AVAILABLE_REPORTS).to eq [:purchases_by]
+    end
   end
 
   describe 'methods' do
