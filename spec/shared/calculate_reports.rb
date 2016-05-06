@@ -19,7 +19,7 @@ RSpec.shared_examples 'calculate_reports' do
       let!(:guest_user_product_view) { create(:marketing_product_view_event, actor: nil) }
 
       it "returns emails which do not include nil" do
-        expect(campaign_with_recepients.product_views_by).to_not include nil
+        expect(campaign_with_recepients.product_views_by.size).to eq 1
       end
     end
 
@@ -75,7 +75,7 @@ RSpec.shared_examples 'calculate_reports' do
 
     context "when there are product view events of users other than contacts of that campaign" do
       let(:another_user) { create(:user) }
-      let!(:another_user_product_view_event) { create(:marketing_page_event, actor: another_user) }
+      let!(:another_user_log_in_event) { create(:marketing_page_event, actor: another_user) }
 
       it "returns emails which do not include user which are not contacts of this campaign" do
         expect(campaign_with_recepients.log_ins_by).to_not include another_user.email
@@ -83,15 +83,15 @@ RSpec.shared_examples 'calculate_reports' do
     end
 
     context "when there are product views of guest users" do
-      let!(:guest_user_product_view) { create(:marketing_page_event, actor: nil) }
+      let!(:guest_user_log_in_view) { create(:marketing_page_event, actor: nil) }
 
       it "returns emails which do not include nil" do
-        expect(campaign_with_recepients.log_ins_by).to_not include nil
+        expect(campaign_with_recepients.log_ins_by.size).to eq 1
       end
     end
 
     context "when there are product view events before scheduled time" do
-      let!(:old_product_view_event) { create(:marketing_page_event, actor: user_with_successful_purchase, created_at: timestamp) }
+      let!(:old_log_in_view_event) { create(:marketing_page_event, actor: user_with_successful_purchase, created_at: timestamp) }
 
       it "returns emails which includes email of user_with_login_event" do
         expect(campaign_with_recepients.log_ins_by).to include user_with_login_event.email
@@ -104,7 +104,7 @@ RSpec.shared_examples 'calculate_reports' do
     context "when there are product view events of users other than Spree.user_class type" do
       let(:other_user_type_id) { 9 }
       let(:other_user_type_email) { "spree@example.com" }
-      let!(:other_user_product_view_event) { create(:marketing_page_event, actor_id: other_user_type_id, actor_type: nil) }
+      let!(:other_user_log_in_event) { create(:marketing_page_event, actor_id: other_user_type_id, actor_type: nil) }
 
       it "returns emails which do not include other user type emails" do
         expect(campaign_with_recepients.log_ins_by).to_not include other_user_type_email
@@ -144,6 +144,16 @@ RSpec.shared_examples 'calculate_reports' do
 
       it "returns emails which do not inlude users which are not conatcts of this campaign" do
         expect(campaign_with_recepients.cart_additions_by).to_not include another_user.email
+      end
+    end
+
+    context "when there cart events of guest users" do
+      let(:guest_user_email) { "spree@example.com" }
+      let(:guest_user_order) { create(:order, email: guest_user_email, user: nil) }
+      let!(:guest_user_order_cart_addition_event) { create(:cart_addition_event, actor: guest_user_order) }
+
+      it "returns emails which do not include guest user emails" do
+        expect(campaign_with_recepients.cart_additions_by).to_not include guest_user_email
       end
     end
   end
@@ -189,7 +199,7 @@ RSpec.shared_examples 'calculate_reports' do
     end
   end
 
-  describe "#make_reports" do
+  describe "#generate_reports" do
     let!(:first_login_event) { create(:marketing_page_event, actor: user_with_login_event) }
     let(:user_with_cart_addition_event_order) { create(:order, user: user_with_cart_addition_event) }
     let!(:cart_addition_event) { create(:cart_addition_event, actor: user_with_cart_addition_event_order) }
@@ -220,7 +230,7 @@ RSpec.shared_examples 'calculate_reports' do
     }
     let(:reports_data_in_json) { reports_data.to_json }
 
-    before { campaign_with_recepients.make_reports }
+    before { campaign_with_recepients.generate_reports }
 
     it "updates campaign stats with the reports data in json format" do
       expect(JSON.parse(campaign_with_recepients.stats).each { |k, v| v["emails"].sort! if v.is_a? Hash }).to eq reports_data

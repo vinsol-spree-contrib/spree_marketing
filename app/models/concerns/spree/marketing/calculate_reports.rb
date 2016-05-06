@@ -3,49 +3,50 @@ module Spree
     module CalculateReports
 
       def log_ins_by
-        Spree::PageEvent.includes(:actor)
-                        .of_registered_users
-                        .where(actor_id: user_ids)
-                        .where(actor_type: Spree.user_class)
-                        .where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
-                        .map { |page_event| page_event.actor.try :email }
-                        .uniq
+        actor_ids = Spree::PageEvent.of_registered_users
+                                    .where(actor_id: user_ids, actor_type: Spree.user_class)
+                                    .where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
+                                    .uniq
+                                    .pluck(:actor_id)
+
+        Spree.user_class.where(id: actor_ids).pluck(:email)
       end
 
       def purchases_by
         Spree::Order.of_registered_users
                     .where("completed_at >= :scheduled_time", scheduled_time: scheduled_at)
                     .where(email: contacts.pluck(:email))
-                    .pluck(:email)
                     .uniq
+                    .pluck(:email)
       end
 
       def cart_additions_by
-        Spree::CartEvent.includes(:actor)
-                        .where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
-                        .where(activity: "add")
-                        .map { |cart_event| cart_event.actor.try :email }
-                        .uniq
-                        .select { |email| contacts.pluck(:email).include?(email) }
+        actor_ids = Spree::CartEvent.where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
+                                    .where(activity: "add")
+                                    .uniq
+                                    .pluck(:actor_id)
+
+        Spree::Order.of_registered_users
+                    .where(id: actor_ids, user_id: contact_ids)
+                    .uniq
+                    .pluck(:email)
       end
 
       def product_views_by
-        Spree::PageEvent.includes(:actor)
-                        .of_registered_users
-                        .where(actor_id: user_ids)
-                        .where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
-                        .where(actor_type: Spree.user_class)
-                        .where(target_type: "Spree::Product")
-                        .where(activity: "view")
-                        .map { |page_event| page_event.actor.try :email }
-                        .uniq
+        actor_ids = Spree::PageEvent.of_registered_users
+                                    .where(actor_id: user_ids, actor_type: Spree.user_class, target_type: "Spree::Product", activity: "view")
+                                    .where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
+                                    .uniq
+                                    .pluck(:actor_id)
+
+        Spree.user_class.where(id: actor_ids).pluck(:email)
       end
 
       def user_ids
         Spree.user_class.where(email: contacts.pluck(:email)).ids
       end
 
-      def make_reports
+      def generate_reports
         stats = {}
         list.class::AVAILABLE_REPORTS.each do |report|
           emails = self.send report
