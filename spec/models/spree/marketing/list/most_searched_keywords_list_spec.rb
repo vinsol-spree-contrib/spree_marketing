@@ -28,7 +28,7 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
       expect(Spree::Marketing::MostSearchedKeywordsList::MOST_SEARCHRD_KEYWORD_COUNT).to eq 5
     end
     it 'AVAILABLE_REPORTS equals to array of reports for this list type' do
-      expect(Spree::Marketing::AbandonedCartList::AVAILABLE_REPORTS).to eq [:cart_additions_by, :purchases_by]
+      expect(Spree::Marketing::MostSearchedKeywordsList::AVAILABLE_REPORTS).to eq [:cart_additions_by, :purchases_by]
     end
   end
 
