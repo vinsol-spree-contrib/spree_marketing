@@ -1,5 +1,5 @@
-raise 'Unnecessary monkey patch!' if ActiveJob::Base.method_defined?(:deserialize)
-
+# https://github.com/rails/rails/pull/18260 is merged in master,
+# but not released in current dependent rails version.
 ActiveJob::Base.class_eval do
   def self.deserialize(job_data)
     job = job_data['job_class'].constantize.new

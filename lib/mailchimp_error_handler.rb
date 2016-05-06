@@ -30,7 +30,7 @@ module MailchimpErrorHandler
   end
 
   def notify_admin(exception)
-    Spree::Marketing::MailchimpErrorNotifier.notify_failure(self.class.to_s, exception.message).deliver_later
+    Spree::Marketing::MailchimpErrorNotifier.notify_failure(self.class.to_s, exception.title, exception.detail).deliver_later
   end
 
   def should_retry?(retry_attempt)
