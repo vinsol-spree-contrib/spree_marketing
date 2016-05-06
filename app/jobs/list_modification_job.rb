@@ -1,8 +1,7 @@
 class ListModificationJob < ActiveJob::Base
-  queue_as :default
+  include ::MailchimpErrorHandler
 
-  # rescue_from(Gibbon::MailChimpError) do |exception|
-  # end
+  queue_as :default
 
   def perform(list_id, subscribable_emails, unsubscribable_uids)
     list = Spree::Marketing::List.find_by(id: list_id)
@@ -12,4 +11,5 @@ class ListModificationJob < ActiveJob::Base
     list.contacts_lists.with_contact_ids(unsubscribable_ids).destroy_all
     list.populate(contacts_data)
   end
+
 end
