@@ -20,10 +20,10 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
     context "response" do
       before { do_sync }
 
-      it "have 200 http status" do
+      it "has 200 http status" do
         expect(response).to have_http_status 200
       end
-      it "have flash key in response body equal to success flash message" do
+      it "flash key in response body equal to success flash message" do
         expect(JSON.parse(response.body)["flash"]).to eq Spree.t("admin.marketing.campaigns.sync.success")
       end
     end
