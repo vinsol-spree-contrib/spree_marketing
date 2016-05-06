@@ -2,9 +2,14 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  hello: 'Hello world'
   spree:
     marketing:
       mailchimp_error_notifier:
         notify_failure:
           subject: '--Exception Triggered--'
+    admin:
+      marketing:
+        campaigns:
+          sync:
+            success: 'Campaigns will be updated shortly.'

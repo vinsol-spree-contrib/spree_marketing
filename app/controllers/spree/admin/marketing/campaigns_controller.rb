@@ -6,10 +6,10 @@ module Spree
         before_action :load_reports, only: :show
 
         def sync
+          Spree::Marketing::Campaign.sync
           render json: {
-            flash: "Campaigns will be updated shortly",
-            flash_type: "success"
-          }
+            flash: t('.success')
+          }, status: 200
         end
 
         private
