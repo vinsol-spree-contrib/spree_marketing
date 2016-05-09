@@ -1,8 +1,7 @@
 class ListGenerationJob < ActiveJob::Base
-  queue_as :default
+  include ::MailchimpErrorHandler
 
-  # rescue_from(Gibbon::MailChimpError) do |exception|
-  # end
+  queue_as :default
 
   def perform(list_name, emails, list_class_name, entity_data = {})
     gibbon_service = GibbonService::ListService.new
@@ -13,4 +12,5 @@ class ListGenerationJob < ActiveJob::Base
       list.populate(contacts_data) if contacts_data.present?
     end
   end
+
 end

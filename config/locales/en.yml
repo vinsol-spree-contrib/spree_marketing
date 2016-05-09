@@ -3,3 +3,8 @@
 
 en:
   hello: "Hello world"
+  spree:
+    marketing:
+      mailchimp_error_notifier:
+        notify_failure:
+          subject: '--Exception Triggered--'

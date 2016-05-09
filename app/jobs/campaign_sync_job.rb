@@ -1,8 +1,7 @@
 class CampaignSyncJob < ActiveJob::Base
-  queue_as :default
+  include ::MailchimpErrorHandler
 
-  # rescue_from(Gibbon::MailChimpError) do |exception|
-  # end
+  queue_as :default
 
   def perform(since_send_time = nil)
     gibbon_service = GibbonService::CampaignService.new
@@ -15,4 +14,5 @@ class CampaignSyncJob < ActiveJob::Base
       end
     end
   end
+
 end
