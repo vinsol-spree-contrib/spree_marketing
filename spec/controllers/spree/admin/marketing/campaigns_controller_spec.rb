@@ -8,6 +8,35 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
   let(:campaign) { create(:marketing_campaign, stats: json_stats_data) }
   let(:campaigns) { double(ActiveRecord::Relation) }
 
+  describe "POST sync" do
+    def do_sync
+      spree_post :sync
+    end
+
+    before do
+      allow(Spree::Marketing::Campaign).to receive(:sync).and_return(true)
+    end
+
+    context "response" do
+      before { do_sync }
+
+      it "has 200 http status" do
+        expect(response).to have_http_status 200
+      end
+      it "flash key in response body equal to success flash message" do
+        expect(JSON.parse(response.body)["flash"]).to eq Spree.t("admin.marketing.campaigns.sync.success")
+      end
+    end
+
+    context "expects to receive" do
+      it "Spree::Marketing::Campaign to receive sync method and return true" do
+        expect(Spree::Marketing::Campaign).to receive(:sync).and_return(true)
+      end
+
+      after { do_sync }
+    end
+  end
+
   describe "Callbacks" do
     describe "#collection" do
       def do_index

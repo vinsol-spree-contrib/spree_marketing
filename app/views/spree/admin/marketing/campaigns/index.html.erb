@@ -2,6 +2,11 @@
   <%= "Campaigns" %>
 <% end %>
 
+<% content_for :page_actions do %>
+  <%= button_link_to Spree.t(:sync), admin_marketing_campaigns_sync_path, data: { remote: true, method: :post, type: 'JSON' }, class: 'btn-success campaign_sync', icon: 'refresh' %>
+<% end %>
+
+
 <% if @campaigns.present? %>
   <table class="table">
     <thead>
@@ -26,3 +31,5 @@
     <%= Spree.t(:no_resource_found, resource: "Campaigns") %>
   </div>
 <% end %>
+
+<%= javascript_include_tag 'spree/backend/campaign_sync_flash_handler' %>

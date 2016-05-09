@@ -4,6 +4,7 @@ Spree::Core::Engine.routes.draw do
     namespace :marketing do
       resources :lists, only: [:show, :index]
       resources :campaigns, only: [:show, :index]
+      post 'campaigns/sync', to: 'campaigns#sync'
     end
   end
 
