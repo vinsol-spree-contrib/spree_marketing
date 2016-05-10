@@ -5,7 +5,8 @@ describe Spree::Marketing::AbandonedCartList, type: :model do
   let!(:first_user) { create(:user) }
   let!(:second_user) { create(:user) }
   let!(:registered_user_complete_order) { create(:completed_order_with_totals, user_id: second_user.id) }
-  let!(:registered_user_incomplete_order) { create(:order, user_id: first_user.id) }
+  let(:line_item) { create(:line_item) }
+  let!(:registered_user_incomplete_order) { create(:order, user_id: first_user.id, item_count: 1) }
 
   describe 'constants' do
     it 'NAME_TEXT equals to name representation for list' do
@@ -28,6 +29,15 @@ describe Spree::Marketing::AbandonedCartList, type: :model do
 
         it { expect(Spree::Marketing::AbandonedCartList.new.send :emails).to_not include guest_user_incomplete_order.email  }
         it { expect(Spree::Marketing::AbandonedCartList.new.send :emails).to include registered_user_incomplete_order.email  }
+      end
+
+      context 'when there are no items in the cart' do
+        let(:user_with_with_zero_items_in_cart) { create(:user) }
+        let!(:registered_user_incomplete_order_with_no_items) { create(:order, user: user_with_with_zero_items_in_cart, item_count: 0) }
+
+        it 'returns user ids which will not include users with zero items in cart' do
+          expect(Spree::Marketing::AbandonedCartList.new.user_ids).to_not include user_with_with_zero_items_in_cart.id
+        end
       end
     end
   end
