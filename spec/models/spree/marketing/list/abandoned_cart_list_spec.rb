@@ -35,7 +35,7 @@ describe Spree::Marketing::AbandonedCartList, type: :model do
         let(:user_with_with_zero_items_in_cart) { create(:user) }
         let!(:registered_user_incomplete_order_with_no_items) { create(:order, user: user_with_with_zero_items_in_cart, item_count: 0) }
 
-        it 'will return user ids which will not include users with zero items in cart' do
+        it 'returns user ids which will not include users with zero items in cart' do
           expect(Spree::Marketing::AbandonedCartList.new.user_ids).to_not include user_with_with_zero_items_in_cart.id
         end
       end
