@@ -69,8 +69,8 @@ describe MailchimpErrorHandler, type: :module do
 
   describe '#rescue_with_handler' do
     subject(:job) { TestJob.perform_later }
+    before { perform_enqueued_jobs { job } }
     it 'notifies admin after more than RETRY_LIMIT failed attempts' do
-      perform_enqueued_jobs { job }
       expect(ActionMailer::Base.deliveries.count).to eq(1)
     end
   end
