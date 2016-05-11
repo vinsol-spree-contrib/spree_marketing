@@ -36,7 +36,7 @@ FactoryGirl.define do
 
     after(:create) do |order, evaluator|
       address = create(:address, state: evaluator.state)
-      order.update(ship_address: address)
+      order.update(bill_address: address)
     end
 
     trait :with_custom_completed_at do
