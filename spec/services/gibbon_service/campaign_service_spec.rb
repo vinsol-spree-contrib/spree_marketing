@@ -19,13 +19,13 @@ RSpec.describe GibbonService::CampaignService, type: :job do
       allow(gibbon_service).to receive(:retrieve).and_return(campaigns_data)
     end
 
-    it 'should access gibbon instance' do
+    it 'accesses gibbon instance' do
       expect(gibbon_service).to receive(:gibbon).and_return(gibbon_service)
     end
-    it 'should assign campaigns part path for gibbon' do
+    it 'assigns campaigns part path for gibbon' do
       expect(gibbon_service).to receive(:campaigns).and_return(gibbon_service)
     end
-    it 'should call retrieve for campaigns from gibbon' do
+    it 'calls retrieve for campaigns from gibbon' do
       expect(gibbon_service).to receive(:retrieve).and_return(campaigns_data)
     end
 
@@ -41,16 +41,16 @@ RSpec.describe GibbonService::CampaignService, type: :job do
       allow(gibbon_service).to receive(:retrieve).and_return(recipients_data)
     end
 
-    it 'should access gibbon instance' do
+    it 'accesses gibbon instance' do
       expect(gibbon_service).to receive(:gibbon).and_return(gibbon_service)
     end
-    it 'should assign reports part path for gibbon' do
+    it 'assigns reports part path for gibbon' do
       expect(gibbon_service).to receive(:reports).and_return(gibbon_service)
     end
-    it 'should assign sent-to part path for gibbon' do
+    it 'assigns sent-to part path for gibbon' do
       expect(gibbon_service).to receive(:sent_to).and_return(gibbon_service)
     end
-    it 'should call retrieve for recipients from gibbon' do
+    it 'calls retrieve for recipients from gibbon' do
       expect(gibbon_service).to receive(:retrieve).and_return(recipients_data)
     end
 
