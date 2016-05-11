@@ -42,17 +42,17 @@ namespace :test_activity do
     new_user_emails = CSV.read("#{Rails.root}/log/new_users.csv", headers: false).flatten
     new_users = Spree.user_class.where(email: new_users_emails)
 
-    new_users.sample(8) do |user|
+    new_users.sample(20) do |user|
       Spree::PageEvent.create(actor: user, activity: random_activity, session_id: Devise.friendly_token)
     end
-    new_users.sample(2) do |user|
+    new_users.sample(5) do |user|
       Spree::PageEvent.create(actor: user, activity: "view", session_id: Devise.friendly_token)
     end
-    new_users.sample(2) do |user|
+    new_users.sample(5) do |user|
       order = Spree::Order.create(user: user)
       order.contents.add random_variant
     end
-    new_users.sample(3) do |user|
+    new_users.sample(10) do |user|
       order = Spree::Order.create(user: user)
       order.contents.add random_variant
       order.ship_address = address
@@ -64,7 +64,7 @@ namespace :test_activity do
     abandoned_cart_user_emails = CSV.read("#{Rails.root}/log/abandoned_cart_users.csv", headers: false).flatten
     abandoned_cart_users = Spree.user_class.where(email: abandoned_cart_user_emails)
 
-    abandoned_cart_users.sample(10) do |user|
+    abandoned_cart_users.sample(20) do |user|
       order = Spree::Order.create(user: user)
       order.contents.add random_variant
       order.ship_address = address
