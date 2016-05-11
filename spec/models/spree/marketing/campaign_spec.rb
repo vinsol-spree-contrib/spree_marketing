@@ -2,6 +2,8 @@ require "spec_helper"
 
 describe Spree::Marketing::Campaign, type: :model do
 
+  ActiveJob::Base.queue_adapter = :test
+
   let(:campaign) { create(:marketing_campaign) }
   let(:list) { create(:marketing_list) }
   let(:campaigns_data) { [{ id: '12456', type: 'regular', settings: { title: 'test' },
@@ -35,6 +37,10 @@ describe Spree::Marketing::Campaign, type: :model do
     it { is_expected.to belong_to(:list).class_name("Spree::Marketing::List") }
     it { is_expected.to have_many(:recipients).class_name("Spree::Marketing::Recipient").dependent(:restrict_with_error) }
     it { is_expected.to have_many(:contacts).through(:recipients) }
+  end
+
+  describe "Callbacks" do
+    it { is_expected.to callback(:enqueue_reports_generation_job).after(:create) }
   end
 
   describe '.generate' do
@@ -109,6 +115,14 @@ describe Spree::Marketing::Campaign, type: :model do
       it 'synced campaign recipients do not exist' do
         expect(synced_campaign.recipients.count).to eq 0
       end
+    end
+  end
+
+  describe '#enqueue_reports_generation_job' do
+    let(:not_saved_campaign) { build(:marketing_campaign) }
+
+    it 'enqueues report generation job to run a day after campaign\'s scheduled_at' do
+      expect { not_saved_campaign.save }.to have_enqueued_job(ReportsGenerationJob).at(not_saved_campaign.scheduled_at.tomorrow)
     end
   end
 end
