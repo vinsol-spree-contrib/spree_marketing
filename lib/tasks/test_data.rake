@@ -10,6 +10,15 @@ namespace :test_data do
       "sachin", "akshay", "chetna", "anurag", "rajat", "gurpreet", "ishaan", "pratibha", "manish", "mayank"
     ]
 
+    def find_or_create_user attributes
+      user = Spree.user_class.find_by(email: attributes[:email])
+      if user
+        user
+      else
+        Spree.user_class.create(attributes)
+      end
+    end
+
     def user_name
       USER_NAMES.sample
     end
@@ -28,7 +37,7 @@ namespace :test_data do
 
     def address
       Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar", city: "Indian City",
-        state: random_indian_state, country: india_country, pincode: "110034", phone: "7503513633")
+        state: random_indian_state, country: india_country, zipcode: "110034", phone: "7503513633")
     end
 
     def random_variant
@@ -69,13 +78,13 @@ namespace :test_data do
 
     new_users = []
     25.times do |count|
-      new_users << Spree.user_class.find_or_create_by(email: random_email, password: "spree123", created_at: Time.current - 8.days)
+      new_users << find_or_create_user(email: random_email, password: "spree123", created_at: Time.current - 8.days)
     end
     15.times do |count|
-      new_users << Spree.user_class.find_or_create_by(email: random_email, password: "spree123", created_at: Time.current - 7.days)
+      new_users << find_or_create_user(email: random_email, password: "spree123", created_at: Time.current - 7.days)
     end
     60.times do |count|
-      new_users << Spree.user_class.find_or_create_by(email: random_email, password: "spree123", created_at: Time.current - 3.days)
+      new_users << find_or_create_user(email: random_email, password: "spree123", created_at: Time.current - 3.days)
     end
 
 
@@ -84,7 +93,7 @@ namespace :test_data do
       # Activity Count > 6
       array = []
       45.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         7.times do
@@ -95,7 +104,7 @@ namespace :test_data do
       # Activity Count = 6
       array = []
       15.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         6.times do
@@ -106,7 +115,7 @@ namespace :test_data do
       # Activity Count = 4
       array = []
       10.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         4.times do
@@ -117,7 +126,7 @@ namespace :test_data do
       # Activity Count = 3
       array = []
       15.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         3.times do
@@ -128,7 +137,7 @@ namespace :test_data do
       # Activity Count = 5
       array = []
       15.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         5.times do
@@ -138,7 +147,7 @@ namespace :test_data do
 
       # Activity Count = 0
       25.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
 
 
@@ -147,7 +156,7 @@ namespace :test_data do
       # Activity Count > 6
       array = []
       45.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         7.times do
@@ -158,7 +167,7 @@ namespace :test_data do
       # Activity Count = 6
       array = []
       15.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         6.times do
@@ -169,7 +178,7 @@ namespace :test_data do
       # Activity Count = 4
       array = []
       10.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         4.times do
@@ -180,7 +189,7 @@ namespace :test_data do
       # Activity Count = 3
       array = []
       15.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         3.times do
@@ -191,7 +200,7 @@ namespace :test_data do
       # Activity Count = 5
       array = []
       15.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         5.times do
@@ -201,7 +210,7 @@ namespace :test_data do
 
       # Activity Count = 0
       25.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
 
 
@@ -211,7 +220,7 @@ namespace :test_data do
       # No additions
       array = []
       25.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         order = Spree::Order.create(user: user)
@@ -221,7 +230,7 @@ namespace :test_data do
       # Some additions to cart
       array = []
       75.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         order = Spree::Order.create(user: user)
@@ -232,7 +241,7 @@ namespace :test_data do
       # Some addition then removing same from cart
       array = []
       25.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         order = Spree::Order.create(user: user)
@@ -248,7 +257,7 @@ namespace :test_data do
       # 10 users with 6 discounted orders
       array = []
       50.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         6.times do
@@ -264,7 +273,7 @@ namespace :test_data do
       # 10 users with less than 6 discounted orders
       array = []
       50.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         2.times do
@@ -280,7 +289,7 @@ namespace :test_data do
       # 10 users with 5 discounted and 1 non-discounted orders
       array = []
       50.times do
-        array << Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        array << find_or_create_user(email: random_email, password: "spree123")
       end
       array.each do |user|
         5.times do
@@ -307,7 +316,7 @@ namespace :test_data do
       # 1st Zone
       first_state = indian_states[0]
       first_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
-        city: "Indian City", state: first_state, country: india_country, pincode: "110034", phone: "7503513633")
+        city: "Indian City", state: first_state, country: india_country, zipcode: "110034", phone: "7503513633")
       25.times do
         user = Spree.user_class(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
@@ -320,7 +329,7 @@ namespace :test_data do
       # 2nd Zone
       second_state = indian_states[1]
       second_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
-        city: "Indian City", state: second_state, country: india_country, pincode: "110034", phone: "7503513633")
+        city: "Indian City", state: second_state, country: india_country, zipcode: "110034", phone: "7503513633")
       25.times do
         user = Spree.user_class(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
@@ -333,7 +342,7 @@ namespace :test_data do
       # 3rd Zone
       third_state = indian_states[2]
       third_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
-        city: "Indian City", state: third_state, country: india_country, pincode: "110034", phone: "7503513633")
+        city: "Indian City", state: third_state, country: india_country, zipcode: "110034", phone: "7503513633")
       50.times do
         user = Spree.user_class(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
@@ -346,7 +355,7 @@ namespace :test_data do
       # 4th Zone
       fourth_state = indian_states[3]
       fourth_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
-        city: "Indian City", state: fourth_state, country: india_country, pincode: "110034", phone: "7503513633")
+        city: "Indian City", state: fourth_state, country: india_country, zipcode: "110034", phone: "7503513633")
       100.times do
         user = Spree.user_class(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
@@ -359,7 +368,7 @@ namespace :test_data do
       # 5th Zone
       fifth_state = indian_states[4]
       fifth_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
-        city: "Indian City", state: fifth_state, country: india_country, pincode: "110034", phone: "7503513633")
+        city: "Indian City", state: fifth_state, country: india_country, zipcode: "110034", phone: "7503513633")
       150.times do
         user = Spree.user_class(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
@@ -372,7 +381,7 @@ namespace :test_data do
       # 6th Zone
       sixth_state = indian_states[5]
       sixth_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
-        city: "Indian City", state: sixth_state, country: india_country, pincode: "110034", phone: "7503513633")
+        city: "Indian City", state: sixth_state, country: india_country, zipcode: "110034", phone: "7503513633")
       200.times do
         user = Spree.user_class(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
@@ -385,7 +394,7 @@ namespace :test_data do
       # 7th Zone
       seventh_state = indian_states[6]
       seventh_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
-        city: "Indian City", state: seventh_state, country: india_country, pincode: "110034", phone: "7503513633")
+        city: "Indian City", state: seventh_state, country: india_country, zipcode: "110034", phone: "7503513633")
       250.times do
         user = Spree.user_class(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
@@ -398,7 +407,7 @@ namespace :test_data do
       # 8th Zone
       eighth_state = indian_states[7]
       eighth_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
-        city: "Indian City", state: eighth_state, country: india_country, pincode: "110034", phone: "7503513633")
+        city: "Indian City", state: eighth_state, country: india_country, zipcode: "110034", phone: "7503513633")
       250.times do
         user = Spree.user_class(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
@@ -415,7 +424,7 @@ namespace :test_data do
       # Keyword 1
       keyword1 = "apache"
       50.times do
-        user = Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        user = find_or_create_user(email: random_email, password: "spree123")
         6.times do
           Spree::PageEvent.create(actor: user, activity: "search", session_id: Devise.friendly_token, search_keywords: keyword1)
         end
@@ -425,7 +434,7 @@ namespace :test_data do
       # Keyword 2
       keyword2 = "ruby"
       50.times do
-        user = Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        user = find_or_create_user(email: random_email, password: "spree123")
         6.times do
           Spree::PageEvent.create(actor: user, activity: "search", session_id: Devise.friendly_token, search_keywords: keyword2)
         end
@@ -435,7 +444,7 @@ namespace :test_data do
       # Keyword 3
       keyword3 = "rails"
       150.times do
-        user = Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        user = find_or_create_user(email: random_email, password: "spree123")
         6.times do
           Spree::PageEvent.create(actor: user, activity: "search", session_id: Devise.friendly_token, search_keywords: keyword3)
         end
@@ -445,7 +454,7 @@ namespace :test_data do
       # Keyword 4
       keyword4 = "vinsol"
       200.times do
-        user = Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        user = find_or_create_user(email: random_email, password: "spree123")
         6.times do
           Spree::PageEvent.create(actor: user, activity: "search", session_id: Devise.friendly_token, search_keywords: keyword4)
         end
@@ -455,7 +464,7 @@ namespace :test_data do
       # Keyword 5
       keyword5 = "mug"
       50.times do
-        user = Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        user = find_or_create_user(email: random_email, password: "spree123")
         6.times do
           Spree::PageEvent.create(actor: user, activity: "search", session_id: Devise.friendly_token, search_keywords: keyword5)
         end
@@ -467,7 +476,7 @@ namespace :test_data do
     # Single User cases
 
       # 1st Case
-        user1 = Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        user1 = find_or_create_user(email: random_email, password: "spree123")
         6.times do
           Spree::PageEvent.create(actor: user1, activity: random_activity, session_id: Devise.friendly_token)
         end
@@ -487,7 +496,7 @@ namespace :test_data do
 
 
       # 2nd Case
-        user2 = Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        user2 = find_or_create_user(email: random_email, password: "spree123")
         2.times do
           Spree::PageEvent.create(actor: user2, activity: random_activity, session_id: Devise.friendly_token)
         end
@@ -505,13 +514,13 @@ namespace :test_data do
         end
 
       # 3rd Case
-        user3 = Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        user3 = find_or_create_user(email: random_email, password: "spree123")
         6.times do
           Spree::PageEvent.create(actor: user3, activity: random_activity, session_id: Devise.friendly_token)
         end
         6.times do
           address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar", city: "Indian City",
-            state: random_indian_state, country: india_country, pincode: "110034", phone: "7503513633")
+            state: random_indian_state, country: india_country, zipcode: "110034", phone: "7503513633")
           order = Spree::Order.create(user: user3)
           order.contents.add(random_variant)
           order.ship_address = address
@@ -521,13 +530,13 @@ namespace :test_data do
         end
 
       # 4th Case
-        user4 = Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        user4 = find_or_create_user(email: random_email, password: "spree123")
         Spree::PageEvent.create(actor: user4, activity: random_activity, session_id: Devise.friendly_token)
         order = Spree::Order.create(user: user4)
         order.contents.add random_variant
 
       # 5th Case
-        user5 = Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        user5 = find_or_create_user(email: random_email, password: "spree123")
         [keyword1, keyword2, keyword3, keyword4, keyword5].each do |keyword|
           6.times do
             Spree::PageEvent.create(actor: user5, activity: "search", session_id: Devise.friendly_token, search_keywords: keyword)
@@ -535,7 +544,7 @@ namespace :test_data do
         end
 
       # 6th Case
-        user6 = Spree.user_class.find_or_create_by(email: random_email, password: "spree123")
+        user6 = find_or_create_user(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user6)
         order.contents.add random_variant
         6.times do
