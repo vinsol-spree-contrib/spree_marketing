@@ -1,6 +1,7 @@
 require "spec_helper"
 
 describe Spree::Admin::Marketing::CampaignsController, type: :controller do
+  include ActiveJob::TestHelper
 
   stub_authorization!
 
@@ -98,7 +99,7 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
         end
       end
     end
-
   end
 
+  after { clear_enqueued_jobs }
 end

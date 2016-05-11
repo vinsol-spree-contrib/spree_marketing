@@ -13,7 +13,7 @@ RSpec.describe GibbonService::ListService, type: :service do
   let(:contacts_data) { { members: [{ id: '12345678', email_address: emails.first, unique_email_id: 'test' }] }.with_indifferent_access }
 
   describe '#generate_list' do
-    let(:params) { { body: { name: list_name } }.merge(GibbonService::ListService::DEFAULT_LIST_GENERATION_PARAMS) }
+    let(:params) { { body: { name: list_name }.merge(GibbonService::ListService::DEFAULT_LIST_GENERATION_PARAMS) } }
 
     before do
       allow(gibbon_service).to receive(:gibbon).and_return(gibbon_service)
