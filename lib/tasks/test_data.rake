@@ -45,7 +45,11 @@ namespace :test_data do
     end
 
     def random_indian_state
-      india_country.states.sample
+      indian_states.sample
+    end
+
+    def indian_states
+      @states ||= india_country.states.sample(8)
     end
 
     def random_payment_method
@@ -301,7 +305,7 @@ namespace :test_data do
     # Most/Least Zone Wise Orders
 
       # 1st Zone
-      first_state = random_indian_state
+      first_state = indian_states[0]
       first_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: first_state, country: india_country, pincode: "110034", phone: "7503513633")
       25.times do
@@ -314,7 +318,7 @@ namespace :test_data do
       end
 
       # 2nd Zone
-      second_state = random_indian_state
+      second_state = indian_states[1]
       second_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: second_state, country: india_country, pincode: "110034", phone: "7503513633")
       25.times do
@@ -327,7 +331,7 @@ namespace :test_data do
       end
 
       # 3rd Zone
-      third_state = random_indian_state
+      third_state = indian_states[2]
       third_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: third_state, country: india_country, pincode: "110034", phone: "7503513633")
       50.times do
@@ -340,7 +344,7 @@ namespace :test_data do
       end
 
       # 4th Zone
-      fourth_state = random_indian_state
+      fourth_state = indian_states[3]
       fourth_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: fourth_state, country: india_country, pincode: "110034", phone: "7503513633")
       100.times do
@@ -353,7 +357,7 @@ namespace :test_data do
       end
 
       # 5th Zone
-      fifth_state = random_indian_state
+      fifth_state = indian_states[4]
       fifth_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: fifth_state, country: india_country, pincode: "110034", phone: "7503513633")
       150.times do
@@ -366,7 +370,7 @@ namespace :test_data do
       end
 
       # 6th Zone
-      sixth_state = random_indian_state
+      sixth_state = indian_states[5]
       sixth_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: sixth_state, country: india_country, pincode: "110034", phone: "7503513633")
       200.times do
@@ -379,7 +383,7 @@ namespace :test_data do
       end
 
       # 7th Zone
-      seventh_state = random_indian_state
+      seventh_state = indian_states[6]
       seventh_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: seventh_state, country: india_country, pincode: "110034", phone: "7503513633")
       250.times do
@@ -392,7 +396,7 @@ namespace :test_data do
       end
 
       # 8th Zone
-      eighth_state = random_indian_state
+      eighth_state = indian_states[7]
       eighth_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: eighth_state, country: india_country, pincode: "110034", phone: "7503513633")
       250.times do

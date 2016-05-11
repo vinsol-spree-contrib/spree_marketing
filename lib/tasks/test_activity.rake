@@ -80,7 +80,6 @@ namespace :test_activity do
       order = Spree::Order.create(user: user)
       order.contents.add random_variant
     end
-
     most_searched_keyword_users.sample(15) do |user|
       order = Spree::Order.create(user: user)
       order.contents.add random_variant
