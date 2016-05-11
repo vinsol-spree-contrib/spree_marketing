@@ -18,7 +18,11 @@ namespace :test_activity do
     end
 
     def random_indian_state
-      india_country.states.sample
+      indian_states.sample
+    end
+
+    def indian_states
+      @states ||= india_country.states.sample(8)
     end
 
     def address
