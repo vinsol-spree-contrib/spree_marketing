@@ -53,10 +53,7 @@ module Spree
       private
 
         def enqueue_reports_generation_job
-          schedule_time = scheduled_at + 1.day
-          if schedule_time > Time.current
-            ReportsGenerationJob.set(wait_until: schedule_time).perform_later id
-          end
+          ReportsGenerationJob.set(wait_until: scheduled_at.tomorrow).perform_later id
         end
     end
   end

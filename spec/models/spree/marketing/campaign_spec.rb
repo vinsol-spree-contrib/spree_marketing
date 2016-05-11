@@ -119,23 +119,10 @@ describe Spree::Marketing::Campaign, type: :model do
   end
 
   describe '#enqueue_reports_generation_job' do
-    context 'when scheduled_time is less than Time.current' do
-      before do
-        campaign.update_column(:scheduled_at, Time.current - 2.days)
-      end
+    let(:not_saved_campaign) { build(:marketing_campaign) }
 
-      it 'no job is enqueued' do
-        expect { campaign.send(:enqueue_reports_generation_job) }.not_to have_enqueued_job(ReportsGenerationJob)
-      end
-    end
-    context 'when scheduled_time is greater than or equal to Time.current' do
-      before do
-        campaign.update_column(:scheduled_at, Time.current)
-      end
-
-      it 'job is enqueued' do
-        expect { campaign.send(:enqueue_reports_generation_job) }.to  have_enqueued_job(ReportsGenerationJob)
-      end
+    it 'enqueues report generation job to run a day after campaign\'s scheduled_at' do
+      expect { not_saved_campaign.save }.to have_enqueued_job(ReportsGenerationJob).at(not_saved_campaign.scheduled_at.tomorrow)
     end
   end
 end
