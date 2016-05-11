@@ -29,7 +29,7 @@ FactoryGirl.define do
     end
   end
 
-  factory :order_with_given_shipping_state, parent: :completed_order_with_totals, class: Spree::Order do
+  factory :order_with_given_billing_state, parent: :completed_order_with_totals, class: Spree::Order do
     transient do
       state nil
     end

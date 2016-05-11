@@ -7,7 +7,7 @@ describe Spree::Marketing::MostZoneWiseOrdersList, type: :model do
   let(:state) { create(:state, name: state_name) }
   let(:entity_id) { state.id }
   let(:entity_name) { state.name.downcase.gsub(' ', '_') }
-  let!(:user_with_completed_orders_with_shipping_address_having_given_state) { create(:user_with_completed_orders, :with_given_shipping_state, state: state, orders_count: 6) }
+  let!(:user_with_completed_orders_with_billing_address_having_given_state) { create(:user_with_completed_orders, :with_given_billing_state, state: state, orders_count: 6) }
 
   it_behaves_like 'acts_as_multilist', Spree::Marketing::MostZoneWiseOrdersList
 
@@ -46,11 +46,11 @@ describe Spree::Marketing::MostZoneWiseOrdersList, type: :model do
         let(:fourth_state) { create(:state, name: 'State 4') }
         let(:fifth_state) { create(:state, name: 'State 5') }
         let(:sixth_state) { create(:state, name: 'State 6') }
-        let!(:orders_in_second_state) { create_list(:order_with_given_shipping_state, 6, state: second_state) }
-        let!(:orders_in_third_state) { create_list(:order_with_given_shipping_state, 6, state: third_state) }
-        let!(:orders_in_fourth_state) { create_list(:order_with_given_shipping_state, 6, state: fourth_state) }
-        let!(:orders_in_fifth_state) { create_list(:order_with_given_shipping_state, 6, state: fifth_state) }
-        let!(:orders_in_sixth_state) { create_list(:order_with_given_shipping_state, 1, state: sixth_state) }
+        let!(:orders_in_second_state) { create_list(:order_with_given_billing_state, 6, state: second_state) }
+        let!(:orders_in_third_state) { create_list(:order_with_given_billing_state, 6, state: third_state) }
+        let!(:orders_in_fourth_state) { create_list(:order_with_given_billing_state, 6, state: fourth_state) }
+        let!(:orders_in_fifth_state) { create_list(:order_with_given_billing_state, 6, state: fifth_state) }
+        let!(:orders_in_sixth_state) { create_list(:order_with_given_billing_state, 1, state: sixth_state) }
 
         it 'includes top 5 states where most orders are placed' do
           expect(Spree::Marketing::MostZoneWiseOrdersList.send :data).to include *[state.id, second_state.id, third_state.id, fourth_state.id, fifth_state.id]
@@ -62,35 +62,37 @@ describe Spree::Marketing::MostZoneWiseOrdersList, type: :model do
     end
 
     describe '#user_ids' do
+      let(:params) { { entity_id: state.id, entity_type: 'Spree::State' } }
+
       context 'with orders not having selected state' do
         let(:registered_user) { create(:user) }
         let(:other_state) { create(:state, name: 'Other state') }
-        let!(:orders_in_other_state) { create_list(:order_with_given_shipping_state, 6, state: other_state, user_id: registered_user.id) }
+        let!(:orders_in_other_state) { create_list(:order_with_given_billing_state, 6, state: other_state, user_id: registered_user.id) }
 
         it 'includes users who has placed order in the entity state' do
-          expect(Spree::Marketing::MostZoneWiseOrdersList.new(entity_id: state.id, entity_type: 'Spree::State').user_ids).to include user_with_completed_orders_with_shipping_address_having_given_state.id
+          expect(Spree::Marketing::MostZoneWiseOrdersList.new(params).user_ids).to include user_with_completed_orders_with_billing_address_having_given_state.id
         end
         it "doesn't include users who has placed no orders in the entity state" do
-          expect(Spree::Marketing::MostZoneWiseOrdersList.new(entity_id: state.id, entity_type: 'Spree::State').user_ids).to_not include registered_user.id
+          expect(Spree::Marketing::MostZoneWiseOrdersList.new(params).user_ids).to_not include registered_user.id
         end
       end
 
       context 'when user is not registered' do
         let(:guest_user_email) { 'spree@example.com' }
-        let!(:guest_user_order) { create(:order_with_given_shipping_state, user_id: nil, email: guest_user_email, state: state) }
+        let!(:guest_user_order) { create(:order_with_given_billing_state, user_id: nil, email: guest_user_email, state: state) }
 
         it "doesn't include guest users who have placed orders in the entity state" do
-          expect(Spree::Marketing::MostZoneWiseOrdersList.new(entity_id: state.id, entity_type: 'Spree::State').send :emails).to_not include guest_user_email
+          expect(Spree::Marketing::MostZoneWiseOrdersList.new(params).send :emails).to_not include guest_user_email
         end
       end
 
       context 'when orders are completed before TIME_FRAME' do
         let(:timestamp) { Time.current - 2.months }
         let(:registered_user) { create(:user) }
-        let!(:old_completed_order) { create(:order_with_given_shipping_state, :with_custom_completed_at, user_id: registered_user.id, state: state, completed_at: timestamp) }
+        let!(:old_completed_order) { create(:order_with_given_billing_state, :with_custom_completed_at, user_id: registered_user.id, state: state, completed_at: timestamp) }
 
         it "doesn't include users who have placed order before the time frame in the entity state" do
-          expect(Spree::Marketing::MostZoneWiseOrdersList.new(entity_id: state.id, entity_type: 'Spree::State').send :user_ids).to_not include registered_user.id
+          expect(Spree::Marketing::MostZoneWiseOrdersList.new(params).send :user_ids).to_not include registered_user.id
         end
       end
     end
