@@ -55,6 +55,7 @@ RSpec.configure do |config|
   config.before :each do
     DatabaseCleaner.strategy = RSpec.current_example.metadata[:js] ? :truncation : :transaction
     DatabaseCleaner.start
+    ActionMailer::Base.deliveries.clear
   end
 
   # After each spec clean the database.
