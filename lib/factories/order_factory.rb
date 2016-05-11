@@ -29,14 +29,14 @@ FactoryGirl.define do
     end
   end
 
-  factory :order_with_given_shipping_state, parent: :completed_order_with_totals, class: Spree::Order do
+  factory :order_with_given_billing_state, parent: :completed_order_with_totals, class: Spree::Order do
     transient do
       state nil
     end
 
     after(:create) do |order, evaluator|
       address = create(:address, state: evaluator.state)
-      order.update(ship_address: address)
+      order.update(bill_address: address)
     end
 
     trait :with_custom_completed_at do
