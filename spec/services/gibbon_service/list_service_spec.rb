@@ -21,13 +21,13 @@ RSpec.describe GibbonService::ListService, type: :service do
       allow(gibbon_service).to receive(:create).and_return(list_data)
     end
 
-    it 'should access gibbon instance' do
+    it 'accesses gibbon instance' do
       expect(gibbon_service).to receive(:gibbon).and_return(gibbon_service)
     end
-    it 'should assign lists part path for gibbon' do
+    it 'assigns lists part path for gibbon' do
       expect(gibbon_service).to receive(:lists).and_return(gibbon_service)
     end
-    it 'should call create for list to gibbon' do
+    it 'calls create for list to gibbon' do
       expect(gibbon_service).to receive(:create).with(params).and_return(list_data)
     end
 
@@ -44,17 +44,17 @@ RSpec.describe GibbonService::ListService, type: :service do
       allow(gibbon_service).to receive(:create).and_return(contacts_data['members'].first)
     end
 
-    it 'should access gibbon instance' do
+    it 'accesses gibbon instance' do
       expect(gibbon_service).to receive(:gibbon).and_return(gibbon_service)
     end
-    it 'should assign lists part path for gibbon' do
+    it 'assigns lists part path for gibbon' do
       expect(gibbon_service).to receive(:lists).and_return(gibbon_service)
     end
-    it 'should assign members part path for gibbon' do
+    it 'assigns members part path for gibbon' do
       expect(gibbon_service).to receive(:members).and_return(gibbon_service)
     end
     context 'when unsubscribable contact uid is defined' do
-      it 'should call update for contact to gibbon' do
+      it 'calls update for contact to gibbon' do
         expect(gibbon_service).to receive(:update).and_return(contacts_data['members'].first)
       end
     end
@@ -63,7 +63,7 @@ RSpec.describe GibbonService::ListService, type: :service do
         before do
           allow(Spree::Marketing::Contact).to receive(:find_by).and_return(contact)
         end
-        it 'should call upsert for member to gibbon' do
+        it 'calls upsert for member to gibbon' do
           expect(gibbon_service).to receive(:upsert).and_return(contacts_data['members'].first)
         end
       end
@@ -71,7 +71,7 @@ RSpec.describe GibbonService::ListService, type: :service do
         before do
           allow(Spree::Marketing::Contact).to receive(:find_by).and_return(nil)
         end
-        it 'should call create for member to gibbon' do
+        it 'calls create for member to gibbon' do
           expect(gibbon_service).to receive(:create).and_return(contacts_data['members'].first)
         end
       end
@@ -88,16 +88,16 @@ RSpec.describe GibbonService::ListService, type: :service do
       allow(gibbon_service).to receive(:retrieve).and_return(contacts_data)
     end
 
-    it 'should access gibbon instance' do
+    it 'accesses gibbon instance' do
       expect(gibbon_service).to receive(:gibbon).and_return(gibbon_service)
     end
-    it 'should assign lists part path for gibbon' do
+    it 'assigns lists part path for gibbon' do
       expect(gibbon_service).to receive(:lists).and_return(gibbon_service)
     end
-    it 'should assign members part path for gibbon' do
+    it 'assigns members part path for gibbon' do
       expect(gibbon_service).to receive(:members).and_return(gibbon_service)
     end
-    it 'should retrieve members from gibbon' do
+    it 'retrieves members from gibbon' do
       expect(gibbon_service).to receive(:retrieve).and_return(contacts_data)
     end
 
@@ -111,13 +111,13 @@ RSpec.describe GibbonService::ListService, type: :service do
       allow(gibbon_service).to receive(:delete).and_return(nil)
     end
 
-    it 'should access gibbon instance' do
+    it 'accesses gibbon instance' do
       expect(gibbon_service).to receive(:gibbon).and_return(gibbon_service)
     end
-    it 'should assign lists part path for gibbon' do
+    it 'assigns lists part path for gibbon' do
       expect(gibbon_service).to receive(:lists).with(list.uid).and_return(gibbon_service)
     end
-    it 'should apply delete for list to gibbon' do
+    it 'applies delete for list to gibbon' do
       expect(gibbon_service).to receive(:delete).and_return(nil)
     end
 
@@ -132,17 +132,17 @@ RSpec.describe GibbonService::ListService, type: :service do
       allow(gibbon_service).to receive(:update).and_return(contacts_data['members'].first)
     end
 
-    it 'should access gibbon instance' do
+    it 'accesses gibbon instance' do
       expect(gibbon_service).to receive(:gibbon).and_return(gibbon_service)
     end
-    it 'should assign lists part path for gibbon' do
+    it 'assigns lists part path for gibbon' do
       expect(gibbon_service).to receive(:lists).and_return(gibbon_service)
     end
-    it 'should assign members part path for gibbon' do
+    it 'assigns members part path for gibbon' do
       expect(gibbon_service).to receive(:members).and_return(gibbon_service)
     end
     context 'when unsubscribable contact uid is defined' do
-      it 'should call update for contact to gibbon' do
+      it 'calls update for contact to gibbon' do
         expect(gibbon_service).to receive(:update).and_return(contacts_data['members'].first)
       end
     end
@@ -159,13 +159,13 @@ RSpec.describe GibbonService::ListService, type: :service do
       allow(gibbon_service).to receive(:create).and_return(contacts_data['members'].first)
     end
 
-    it 'should access gibbon instance' do
+    it 'accesses gibbon instance' do
       expect(gibbon_service).to receive(:gibbon).and_return(gibbon_service)
     end
-    it 'should assign lists part path for gibbon' do
+    it 'assigns lists part path for gibbon' do
       expect(gibbon_service).to receive(:lists).and_return(gibbon_service)
     end
-    it 'should assign members part path for gibbon' do
+    it 'assigns members part path for gibbon' do
       expect(gibbon_service).to receive(:members).and_return(gibbon_service)
     end
     context 'when subscribing new contacts' do
@@ -173,7 +173,7 @@ RSpec.describe GibbonService::ListService, type: :service do
         before do
           allow(Spree::Marketing::Contact).to receive(:find_by).and_return(contact)
         end
-        it 'should call upsert for member to gibbon' do
+        it 'calls upsert for member to gibbon' do
           expect(gibbon_service).to receive(:upsert).and_return(contacts_data['members'].first)
         end
       end
@@ -181,7 +181,7 @@ RSpec.describe GibbonService::ListService, type: :service do
         before do
           allow(Spree::Marketing::Contact).to receive(:find_by).and_return(nil)
         end
-        it 'should call create for member to gibbon' do
+        it 'calls create for member to gibbon' do
           expect(gibbon_service).to receive(:create).and_return(contacts_data['members'].first)
         end
       end
