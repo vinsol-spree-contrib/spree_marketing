@@ -12,15 +12,14 @@ RSpec.describe ListCleanupJob, type: :job do
   let(:list) { create(:marketing_list) }
 
   before do
-    allow(GibbonService).to receive(:new).and_return(gibbon_service)
+    allow(GibbonService::ListService).to receive(:new).and_return(gibbon_service)
     allow(gibbon_service).to receive(:delete_lists).and_return(true)
   end
 
   subject(:job) { described_class.perform_later([list.uid]) }
 
   it 'queues the job' do
-    expect { job }
-      .to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
+    expect { job }.to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
   end
 
   it 'destroys lists' do
@@ -33,8 +32,12 @@ RSpec.describe ListCleanupJob, type: :job do
   end
 
   context 'executes perform' do
-    it { expect(GibbonService).to receive(:new).and_return(gibbon_service) }
-    it { expect(gibbon_service).to receive(:delete_lists).with([list.uid]).and_return(true) }
+    it 'expect GibbonService::ListService to be initialized' do
+      expect(GibbonService::ListService).to receive(:new).and_return(gibbon_service)
+    end
+    it 'expect initialized service to receive delete_lists' do
+      expect(gibbon_service).to receive(:delete_lists).with([list.uid]).and_return(true)
+    end
 
     after { perform_enqueued_jobs { job } }
   end

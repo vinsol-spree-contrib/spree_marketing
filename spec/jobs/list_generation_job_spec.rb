@@ -16,7 +16,7 @@ RSpec.describe ListGenerationJob, type: :job do
   let(:contacts_data) { [{ id: '12345678', email_address: emails.first, unique_email_id: 'test' }.with_indifferent_access] }
 
   before do
-    allow(GibbonService).to receive(:new).and_return(gibbon_service)
+    allow(GibbonService::ListService).to receive(:new).and_return(gibbon_service)
     allow(gibbon_service).to receive(:generate_list).and_return(list_data)
     allow(gibbon_service).to receive(:subscribe_members).and_return(contacts_data)
   end
@@ -24,8 +24,7 @@ RSpec.describe ListGenerationJob, type: :job do
   subject(:job) { described_class.perform_later(list_name, emails, list_class_name) }
 
   it 'queues the job' do
-    expect { job }
-      .to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
+    expect { job }.to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
   end
 
   it 'creates lists' do
@@ -43,9 +42,15 @@ RSpec.describe ListGenerationJob, type: :job do
   end
 
   context 'executes perform' do
-    it { expect(GibbonService).to receive(:new).and_return(gibbon_service) }
-    it { expect(gibbon_service).to receive(:generate_list).with(list_name).and_return(list_data) }
-    it { expect(gibbon_service).to receive(:subscribe_members).with(emails).and_return(contacts_data) }
+    it 'expect GibbonService::ListService to be initialized' do
+      expect(GibbonService::ListService).to receive(:new).and_return(gibbon_service)
+    end
+    it 'expect initialized service to receive generate_lists' do
+      expect(gibbon_service).to receive(:generate_list).with(list_name).and_return(list_data)
+    end
+    it 'expect initialized service to receive subscribe_members' do
+      expect(gibbon_service).to receive(:subscribe_members).with(emails).and_return(contacts_data)
+    end
 
     after { perform_enqueued_jobs { job } }
   end

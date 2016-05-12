@@ -5,32 +5,23 @@ module Spree
       include Spree::Marketing::ActsAsMultiList
 
       # Constants
-      ENTITY_KEY = 'product_id'
+      NAME_TEXT = 'Most Selling Products'
+      ENTITY_KEY = 'entity_id'
+      ENTITY_TYPE = 'Spree::Product'
       TIME_FRAME = 1.month
       FAVOURABLE_PRODUCT_COUNT = 10
-
-      attr_accessor :product_id
+      AVAILABLE_REPORTS = [:cart_additions_by, :purchases_by, :product_views_by]
 
       def user_ids
         # FIXME: There might be a case where a guest user have placed an order
         # And we also have his email but we are leaving those emails for now.
         Spree::Order.joins(line_items: { variant: :product })
                     .of_registered_users
-                    .where("spree_orders.completed_at >= :time_frame", time_frame: computed_time)
-                    .where("spree_products.id = ?", @product_id)
+                    .where('spree_orders.completed_at >= :time_frame', time_frame: computed_time)
+                    .where('spree_products.id = ?', entity_id)
                     .group(:user_id)
                     .pluck(:user_id)
       end
-
-      def self.product_name product_id
-        Spree::Product.find_by(id: product_id).name.downcase.gsub(" ", "_")
-      end
-      private_class_method :product_name
-
-      def self.name_text product_id
-        humanized_name + "_" + product_name(product_id)
-      end
-      private_class_method :name_text
 
       def self.data
         Spree::InventoryUnit.joins(variant: :product)

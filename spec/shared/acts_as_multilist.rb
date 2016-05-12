@@ -1,14 +1,24 @@
-RSpec.shared_examples "acts_as_multilist" do |list_type|
+RSpec.shared_examples 'acts_as_multilist' do |list_type|
 
   SpreeMarketing::CONFIG ||= { Rails.env => {} }
 
-  context ".load_list" do
-    let!(:list) { create(list_type.to_s.demodulize.underscore.to_sym, name: list_type.to_s.demodulize.underscore + "_" + entity_name) }
+  describe 'methods' do
+    let!(:list) { create(list_type.to_s.demodulize.underscore.to_sym, name: list_type::NAME_TEXT + ' (' + entity_name + ')', "#{ list_type::ENTITY_KEY }" => entity_id, entity_type: list_type::ENTITY_TYPE) }
 
-    it { expect(list_type.send :load_list, entity_key).to eq list }
+    context '.load_list_by_entity' do
+      it { expect(list_type.send :load_list_by_entity, entity_id).to eq list }
+    end
+
+    context '#display_name' do
+      it { expect(list.display_name).to eq list_type::NAME_TEXT + ' (' + entity_name + ')' }
+    end
+
+    context '#entity_name' do
+      it { expect(list.entity_name).to eq entity_name }
+    end
   end
 
-  context ".generator" do
+  context '.generator' do
 
     class GibbonServiceTest
     end
@@ -18,13 +28,13 @@ RSpec.shared_examples "acts_as_multilist" do |list_type|
     let(:contacts_data) { [{ id: '12345678', email_address: emails.first, unique_email_id: 'test' }.with_indifferent_access] }
 
     before do
-      allow(GibbonService).to receive(:new).and_return(gibbon_service)
+      allow(GibbonService::ListService).to receive(:new).and_return(gibbon_service)
       allow(gibbon_service).to receive(:delete_lists).and_return(true)
     end
 
-    context "if list already exists" do
+    context 'if list already exists' do
 
-      let(:list) { create(list_type.to_s.demodulize.underscore.to_sym, name: list_type.to_s.demodulize.underscore + "_" + entity_name) }
+      let(:list) { create(list_type.to_s.demodulize.underscore.to_sym, name: list_type.to_s.demodulize.underscore + '_' + entity_name) }
 
       before do
         allow(list_type).to receive(:find_by).and_return(list)

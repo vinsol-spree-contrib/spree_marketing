@@ -2,15 +2,22 @@ module Spree
   module Marketing
     class List < Spree::Base
 
+      acts_as_paranoid
+
       # Constants
       TIME_FRAME = 1.week
+      NAME_TEXT = 'List'
+      AVAILABLE_REPORTS = [:cart_additions_by, :log_ins_by, :product_views_by, :purchases_by]
 
       # Configurations
-      self.table_name = "spree_marketing_lists"
+      self.table_name = 'spree_marketing_lists'
 
       # Associations
-      has_many :contacts_lists, class_name: "Spree::Marketing::ContactsList", dependent: :destroy
+      has_many :contacts_lists, class_name: 'Spree::Marketing::ContactsList', dependent: :destroy
       has_many :contacts, through: :contacts_lists
+      has_many :campaigns, class_name: "Spree::Marketing::Campaign", dependent: :restrict_with_error
+      # entity is the associated record for which the list is defined(e.g. Spree::Product for 'Favourable Products')
+      belongs_to :entity, polymorphic: true
 
       # Validations
       validates :uid, :name, presence: true
@@ -23,19 +30,19 @@ module Spree
         raise ::NotImplementedError, 'You must implement user_ids method for this smart list.'
       end
 
-      def generate list_name
-        ListGenerationJob.perform_later list_name, emails, self.class.name
+      def generate
+        ListGenerationJob.perform_later display_name, emails, self.class.name, entity_data
       end
 
       def update_list
         _emails = emails
         _old_emails = old_emails
-        ListModificationJob.perform_later self.id, (_emails - _old_emails), removable_contact_uids(_old_emails - _emails)
+        ListModificationJob.perform_later id, (_emails - _old_emails), removable_contact_uids(_old_emails - _emails)
       end
 
       def self.generator
-        list = find_by(name: humanized_name)
-        list ? list.update_list : new.generate(humanized_name)
+        list = find_by(name: NAME_TEXT)
+        list ? list.update_list : new(name: NAME_TEXT).generate
       end
 
       def self.generate_all
@@ -43,11 +50,6 @@ module Spree
           list_type.generator
         end
       end
-
-      def self.humanized_name
-        @humanized_name ||= name.demodulize.underscore
-      end
-      private_class_method :humanized_name
 
       def populate(contacts_data)
         contacts_data.each do |contact_data|
@@ -58,6 +60,14 @@ module Spree
 
       def presenter
         Spree::Marketing::ListPresenter.new self
+      end
+
+      def display_name
+        self.class::NAME_TEXT
+      end
+
+      def entity_name
+        nil
       end
 
       private
@@ -80,6 +90,10 @@ module Spree
 
         def old_emails
           contacts.pluck(:email)
+        end
+
+        def entity_data
+          { entity_id: entity_id, entity_type: entity_type, searched_keyword: searched_keyword }
         end
     end
   end

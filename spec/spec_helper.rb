@@ -55,6 +55,7 @@ RSpec.configure do |config|
   config.before :each do
     DatabaseCleaner.strategy = RSpec.current_example.metadata[:js] ? :truncation : :transaction
     DatabaseCleaner.start
+    ActionMailer::Base.deliveries.clear
   end
 
   # After each spec clean the database.
@@ -69,3 +70,5 @@ end
 
 Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |file| require file }
 Dir[File.join(File.dirname(__FILE__), 'shared/*.rb')].each { |file| require file }
+
+SpreeMarketing::CONFIG = { Rails.env => {} }

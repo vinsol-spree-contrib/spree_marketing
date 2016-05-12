@@ -25,6 +25,7 @@ module SpreeMarketing
         Dir.glob(File.join(File.dirname(__FILE__), '../../app/**/*_decorator*.rb'))
       ].flatten.each do |c|
         Rails.configuration.cache_classes ? require(c) : load(c)
+        Rails.application.config.assets.precompile += %w( spree/backend/campaign_sync_flash_handler.js )
       end
     end
 
