@@ -41,7 +41,7 @@ namespace :test_data do
     end
 
     def random_variant
-      @variants ||= Spree::Product.all.map(&:variants_including_master).flatten
+      @variants ||= Spree::Product.not_gift_cards.map(&:variants_including_master).map { |variants| variants.in_stock }.flatten
       @variants.sample
     end
 
@@ -318,7 +318,7 @@ namespace :test_data do
       first_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: first_state, country: india_country, zipcode: "110034", phone: "7503513633")
       25.times do
-        user = Spree.user_class(email: random_email, password: "spree123")
+        user = find_or_create_user(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
         order.contents.add(random_variant)
         order.ship_address = first_state_address.clone
@@ -331,7 +331,7 @@ namespace :test_data do
       second_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: second_state, country: india_country, zipcode: "110034", phone: "7503513633")
       25.times do
-        user = Spree.user_class(email: random_email, password: "spree123")
+        user = find_or_create_user(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
         order.contents.add(random_variant)
         order.ship_address = second_state_address.clone
@@ -344,7 +344,7 @@ namespace :test_data do
       third_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: third_state, country: india_country, zipcode: "110034", phone: "7503513633")
       50.times do
-        user = Spree.user_class(email: random_email, password: "spree123")
+        user = find_or_create_user(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
         order.contents.add(random_variant)
         order.ship_address = third_state_address.clone
@@ -357,7 +357,7 @@ namespace :test_data do
       fourth_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: fourth_state, country: india_country, zipcode: "110034", phone: "7503513633")
       100.times do
-        user = Spree.user_class(email: random_email, password: "spree123")
+        user = find_or_create_user(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
         order.contents.add(random_variant)
         order.ship_address = fourth_state_address.clone
@@ -370,7 +370,7 @@ namespace :test_data do
       fifth_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: fifth_state, country: india_country, zipcode: "110034", phone: "7503513633")
       150.times do
-        user = Spree.user_class(email: random_email, password: "spree123")
+        user = find_or_create_user(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
         order.contents.add(random_variant)
         order.ship_address = fifth_state_address.clone
@@ -383,7 +383,7 @@ namespace :test_data do
       sixth_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: sixth_state, country: india_country, zipcode: "110034", phone: "7503513633")
       200.times do
-        user = Spree.user_class(email: random_email, password: "spree123")
+        user = find_or_create_user(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
         order.contents.add(random_variant)
         order.ship_address = sixth_state_address.clone
@@ -396,7 +396,7 @@ namespace :test_data do
       seventh_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: seventh_state, country: india_country, zipcode: "110034", phone: "7503513633")
       250.times do
-        user = Spree.user_class(email: random_email, password: "spree123")
+        user = find_or_create_user(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
         order.contents.add(random_variant)
         order.ship_address = seventh_state_address.clone
@@ -409,7 +409,7 @@ namespace :test_data do
       eighth_state_address = Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar",
         city: "Indian City", state: eighth_state, country: india_country, zipcode: "110034", phone: "7503513633")
       250.times do
-        user = Spree.user_class(email: random_email, password: "spree123")
+        user = find_or_create_user(email: random_email, password: "spree123")
         order = Spree::Order.create(user: user)
         order.contents.add(random_variant)
         order.ship_address = eighth_state_address.clone
@@ -562,6 +562,7 @@ namespace :test_data do
         csv << ["order_number", "email", "product", "zone", "promotions", "payment_method"]
         Spree::Order.includes(:promotions, bill_address: [:state], payments: [:payment_method], line_items: {variant: :product})
                     .complete
+                    .where("spree_orders.completed_at > ?", Time.current - 1.month)
                     .of_registered_users
                     .each do |order|
           order.line_items.each do |line_item|
@@ -572,28 +573,28 @@ namespace :test_data do
 
       search_event_csv_file = CSV.open("#{Rails.root}/log/search.csv", "wb") do |csv|
         csv << ["id", "email", "searched_keyword"]
-        Spree::PageEvent.of_registered_users.where(activity: "search").includes(:actor).each do |page_event|
+        Spree::PageEvent.of_registered_users.where(activity: "search").where("spree_page_events.created_at > ?", Time.current - 1.week).includes(:actor).each do |page_event|
           csv << [page_event.id, page_event.actor.email, page_event.search_keywords.to_s]
         end
       end
 
       page_event_csv_file = CSV.open("#{Rails.root}/log/activity.csv", "wb") do |csv|
         csv << ["id", "email", "activity"]
-        Spree::PageEvent.of_registered_users.includes(:actor).each do |page_event|
+        Spree::PageEvent.of_registered_users.includes(:actor).where("spree_page_events.created_at > ?", Time.current - 1.week).each do |page_event|
           csv << [page_event.id, page_event.actor.email, page_event.activity]
         end
       end
 
       users_csv_file = CSV.open("#{Rails.root}/log/users.csv", "wb") do |csv|
         csv << ["id", "email", "created_at"]
-        Spree.user_class.each do |user|
+        Spree.user_class.where("spree_users.created_at > ?", Time.current - 7.days).each do |user|
           csv << [user.id, user.email, user.created_at.to_formatted_s(:short)]
         end
       end
 
       abandoned_cart_csv_file = CSV.open("#{Rails.root}/log/abandoned_cart.csv", "wb") do |csv|
         csv << ["order_number", "email"]
-        Spree::Order.includes(:user).of_registered_users.incomplete.where.not(item_count: 0).each do |order|
+        Spree::Order.includes(:user).of_registered_users.where("spree_orders.updated_at > ?", Time.current - 1.month).incomplete.where.not(item_count: 0).each do |order|
           csv << [order.number, order.user.email]
         end
       end
