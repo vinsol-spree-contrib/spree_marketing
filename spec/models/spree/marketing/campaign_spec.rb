@@ -1,8 +1,7 @@
 require "spec_helper"
 
 describe Spree::Marketing::Campaign, type: :model do
-
-  ActiveJob::Base.queue_adapter = :test
+  include ActiveJob::TestHelper
 
   let(:campaign) { create(:marketing_campaign) }
   let(:list) { create(:marketing_list) }
@@ -125,4 +124,6 @@ describe Spree::Marketing::Campaign, type: :model do
       expect { not_saved_campaign.save }.to have_enqueued_job(ReportsGenerationJob).at(not_saved_campaign.scheduled_at.tomorrow)
     end
   end
+
+  after { clear_enqueued_jobs }
 end
