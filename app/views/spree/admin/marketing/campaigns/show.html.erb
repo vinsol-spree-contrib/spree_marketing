@@ -11,10 +11,9 @@
 
 <hr />
 
-<h3><%= @marketing_campaign.list.name %></h3>
-<br />
-<h4>Description: <%= Spree::Marketing::ListPresenter::VIEW_NAMES_HASH[@marketing_campaign.list.class.to_s.demodulize][:tooltip_content] %></h4>
-<h4>Subscribers Count: <%= @stats['emails_sent'] %></h4>
+<h3><%= @marketing_campaign.list.name %> List</h3>
+<h4><i><%= @marketing_campaign.list.presenter.description %></h4></i>
+<h4>Users Count: <%= @stats['emails_sent'] %></h4>
 
 <hr />
 

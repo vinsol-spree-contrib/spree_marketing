@@ -43,6 +43,9 @@ module Spree
         @list.entity_name || 'Contacts'
       end
 
+      def description
+        VIEW_NAMES_HASH[@list.class.to_s.demodulize][:tooltip_content].remove('View the contact list of ').capitalize
+      end
     end
   end
 end
