@@ -1,0 +1,26 @@
+<% content_for :page_title do %>
+  <%= @marketing_campaign.name.titleize %> - <%= @report_name.titleize %>
+<% end %>
+
+<h3>Recipients</h3>
+<br/ >
+<% if @recipient_emails.present? %>
+  <table class="table">
+    <thead>
+      <th><%= Spree.t(:email) %></th>
+    </thead>
+    <tbody>
+      <% @recipient_emails.each do |email| %>
+        <tr>
+          <td><%= email %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alert alert-info no-objects-found">
+    <%= Spree.t(:no_resource_found, resource: "Recipients") %>
+  </div>
+<% end %>
+
+<%= paginate @emails %>

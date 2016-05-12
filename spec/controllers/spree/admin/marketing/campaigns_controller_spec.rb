@@ -91,8 +91,8 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
       context "assigns" do
         before { do_show params }
 
-        it "assigns recipients count to an instance variable recipients_count" do
-          expect(assigns(:recipients_count)).to eq recipients_count
+        it "assigns stats to an instance variable stats" do
+          expect(assigns(:stats)).to eq hash_stats_data
         end
         it "assigns stats data in hash format to an instance variable reports" do
           expect(assigns(:reports)).to eq reports_data
@@ -101,5 +101,9 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
     end
   end
 
-  after { clear_enqueued_jobs }
+  after do
+    clear_enqueued_jobs
+    clear_performed_jobs
+  end
+
 end

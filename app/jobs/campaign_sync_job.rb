@@ -9,6 +9,8 @@ class CampaignSyncJob < ActiveJob::Base
     if campaigns_data.any?
       campaigns = Spree::Marketing::Campaign.generate(campaigns_data)
       campaigns.each do |campaign|
+        report_data = gibbon_service.retrieve_report(campaign.uid)
+        campaign.update_stats(report_data)
         recipients_data = gibbon_service.retrieve_recipients(campaign.uid)
         campaign.populate(recipients_data)
       end
