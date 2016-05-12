@@ -29,7 +29,7 @@
     <tbody>
       <% @reports.each do |report_name, report_data| %>
         <tr>
-          <td class="col-md-4"><%= report_name.titleize %></td>
+          <td class="col-md-4"><%= link_to report_name.titleize, display_recipient_emails_admin_marketing_campaign_path(report_key: report_name) %></td>
           <td class="col-md-4 text-center"><%= report_data["count"].to_s + "/" + @stats['emails_sent'].to_s %></td>
         </tr>
       <% end %>
