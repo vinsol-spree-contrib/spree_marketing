@@ -25,7 +25,7 @@ module Spree
 
           def load_reports
             @stats = JSON.parse @marketing_campaign.stats
-            @reports = @stats.slice(*Spree::Marketing::List::AVAILABLE_REPORTS.collect { |name| name.to_s.remove("_by") })
+            @reports = @stats.slice(*Spree::Marketing::Campaign::REPORT_TITLE_KEYS)
           end
       end
     end

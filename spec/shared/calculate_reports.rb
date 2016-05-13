@@ -12,6 +12,12 @@ RSpec.shared_examples 'calculate_reports' do
   let(:timestamp) { campaign_with_recepients.scheduled_at - 1.day }
   let!(:campaign_with_recepients) { create(:marketing_campaign, contacts: [contact_with_successful_purchase, contact_with_product_view_event, contact_with_cart_addition_event, contact_with_login_event], list: new_users_list) }
 
+  describe 'constants' do
+    it 'REPORT_TITLE_KEYS equals to the list of keys corresponding to various reports' do
+      expect(described_class::REPORT_TITLE_KEYS).to eq Spree::Marketing::List::AVAILABLE_REPORTS.collect { |key| key.to_s.remove('_by') }
+    end
+  end
+
   describe "#product_views_by" do
     context "when guest user views product" do
       let!(:guest_user_product_view) { create(:marketing_product_view_event, actor: nil) }

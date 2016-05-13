@@ -11,34 +11,44 @@ describe Spree::Marketing::ListPresenter do
   let(:view_names_hash) {
     {
       'AbandonedCartList' => {
-        tooltip_content: 'View the contact list of users who have abandoned the cart'
+        tooltip_content: 'View the contact list of users who have abandoned the cart',
+        description: 'Users who have abandoned the cart'
       },
       'FavourableProductsList' => {
-        tooltip_content: 'View the contact list of users who are part of the purchase family for top 10 most selling products'
+        tooltip_content: 'View the contact list of users who are part of the purchase family for top 10 most selling products',
+        description: 'Users who are part of the purchase family for top 10 most selling products'
       },
       'LeastActiveUsersList' => {
-        tooltip_content: 'View the contact list of users corresponding to least activities'
+        tooltip_content: 'View the contact list of users corresponding to least activities',
+        description: 'Users corresponding to least activities'
       },
       'LeastZoneWiseOrdersList' => {
-        tooltip_content: 'View the contact list of users in 5 lowest ordering Zone'
+        tooltip_content: 'View the contact list of users in 5 lowest ordering Zone',
+        description: 'Users in 5 lowest ordering Zone'
       },
       'MostActiveUsersList' => {
-        tooltip_content: 'View the contact list of users corresponding to most activities'
+        tooltip_content: 'View the contact list of users corresponding to most activities',
+        description: 'Users corresponding to most activities'
       },
       'MostDiscountedOrdersList' => {
-        tooltip_content: 'View the contact list of users who are part of the purchase family mostly for discounted orders'
+        tooltip_content: 'View the contact list of users who are part of the purchase family mostly for discounted orders',
+        description: 'Users who are part of the purchase family mostly for discounted orders'
       },
       'MostSearchedKeywordsList' => {
-        tooltip_content: 'View the contact list of users corresponding to top 10 keywords'
+        tooltip_content: 'View the contact list of users corresponding to top 10 keywords',
+        description: 'Users corresponding to top 10 keywords'
       },
       'MostUsedPaymentMethodsList' => {
-        tooltip_content: 'View the contact list of users corresponding to most used payment methods'
+        tooltip_content: 'View the contact list of users corresponding to most used payment methods',
+        description: 'Users corresponding to most used payment methods'
       },
       'MostZoneWiseOrdersList' => {
-        tooltip_content: 'View the contact list of users in 5 most ordering Zone'
+        tooltip_content: 'View the contact list of users in 5 most ordering Zone',
+        description: 'Users in 5 most ordering Zone'
       },
       'NewUsersList' => {
-        tooltip_content: 'View the contact list of users who have signed up in last week'
+        tooltip_content: 'View the contact list of users who have signed up in last week',
+        description: 'Users who have signed up in last week'
       }
     }
   }
@@ -71,8 +81,8 @@ describe Spree::Marketing::ListPresenter do
     end
 
     describe '#description' do
-      it 'sets removes part of tooltip content for description' do
-        expect((Spree::Marketing::ListPresenter.new list).description).to eq view_names_hash['AbandonedCartList'][:tooltip_content].remove('View the contact list of ').capitalize
+      it 'provides description for list' do
+        expect((Spree::Marketing::ListPresenter.new list).description).to eq view_names_hash['AbandonedCartList'][:description]
       end
     end
   end

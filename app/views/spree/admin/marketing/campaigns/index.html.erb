@@ -13,7 +13,7 @@
       <th class="col-md-3"><%= Spree::Marketing::List.human_attribute_name :name %></th>
       <th class="col-md-2"><%= Spree::Marketing::List.human_attribute_name :uid %></th>
       <th class="col-md-5 text-center"><%= Spree.t(:list_name) %></th>
-      <th class="col-md-2"><%= Spree::Marketing::List.human_attribute_name :scheduled_at %></th>
+      <th class="col-md-2"><%= Spree.t(:sent_at) %></th>
     </thead>
     <tbody>
       <% @campaigns.each do |campaign| %>

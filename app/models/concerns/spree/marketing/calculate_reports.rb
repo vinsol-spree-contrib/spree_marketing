@@ -2,6 +2,8 @@ module Spree
   module Marketing
     module CalculateReports
 
+      REPORT_TITLE_KEYS = Spree::Marketing::List::AVAILABLE_REPORTS.collect { |key| key.to_s.remove("_by") }
+
       def log_ins_by
         actor_ids = Spree::PageEvent.of_registered_users
                                     .where(actor_id: user_ids, actor_type: Spree.user_class)
@@ -47,14 +49,14 @@ module Spree
       end
 
       def generate_reports
-        stats = {}
+        report_stats = {}
         list.class::AVAILABLE_REPORTS.each do |report|
           emails = self.send report
           count = emails.count
-          stats[report.to_s.remove("_by")] = { "emails" => emails, "count" => count }
+          report_stats[report.to_s.remove("_by")] = { "emails" => emails, "count" => count }
         end
-        stats["emails_sent"] = contacts.count
-        update(stats: stats.merge(JSON.parse(self.stats)).to_json)
+        report_stats["emails_sent"] = contacts.count
+        update(stats: report_stats.merge(JSON.parse(stats)).to_json)
       end
     end
   end
