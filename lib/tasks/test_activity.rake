@@ -43,7 +43,10 @@ namespace :test_activity do
       order.next
     end
 
-    new_user_emails = CSV.read("#{Rails.root}/log/new_users.csv", headers: false).flatten
+    new_user_emails = []
+    CSV.read("#{Rails.root}/log/users.csv", headers: true).each do |row|
+      new_users_emails << row["email"]
+    end
     new_users = Spree.user_class.where(email: new_users_emails)
 
     new_users.sample(20) do |user|
@@ -65,7 +68,10 @@ namespace :test_activity do
     end
 
 
-    abandoned_cart_user_emails = CSV.read("#{Rails.root}/log/abandoned_cart_users.csv", headers: false).flatten
+    abandoned_cart_user_emails = []
+    CSV.read("#{Rails.root}/log/abandoned_cart.csv", headers: true).each do |row|
+      abandoned_cart_user_emails << row["email"]
+    end
     abandoned_cart_users = Spree.user_class.where(email: abandoned_cart_user_emails)
 
     abandoned_cart_users.sample(20) do |user|

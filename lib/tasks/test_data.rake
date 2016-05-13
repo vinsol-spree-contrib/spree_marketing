@@ -594,20 +594,20 @@ namespace :test_data do
 
       abandoned_cart_csv_file = CSV.open("#{Rails.root}/log/abandoned_cart.csv", "wb") do |csv|
         csv << ["order_number", "email"]
-        Spree::Order.includes(:user).of_registered_users.where("spree_orders.updated_at > ?", Time.current - 1.month).incomplete.where.not(item_count: 0).each do |order|
+        Spree::Order.includes(:user).of_registered_users.incomplete.where.not(item_count: 0).each do |order|
           csv << [order.number, order.user.email]
         end
       end
 
       keywords_csv_file = CSV.open("#{Rails.root}/log/keywords.csv", "wb") do |csv|
         csv << ["keyword"]
-        [keyword1, keyword5, keyword2, keyword3, keyword4].each { |keyword| csv << keyword }
+        ["apache", "rails", "ruby", "mug", "vinsol"].each { |keyword| csv << [keyword] }
       end
 
       states_csv_file = CSV.open("#{Rails.root}/log/states.csv", "wb") do |csv|
         csv << ["state_name"]
-        [first_state, second_state, third_state, fourth_state, fifth_state, sixth_state, seventh_state, eighth_state].each do |state|
-          csv << [state.name]
+        state_names.each do |state|
+          csv << [state]
         end
       end
 
@@ -620,7 +620,17 @@ namespace :test_data do
       end
 
       most_searched_keyword_csv_file = CSV.open("#{Rails.root}/log/most_searched_keyword_users.csv", "wb") do |csv|
-        most_searched_keyword_users.each { |user| csv << [user.email] }
+        actor_ids = Spree::PageEvent.where(activity: "search")
+                                    .where(search_keywords: ["rails", "ruby", "apache", "mug", "vinsol"])
+                                    .where("spree_page_events.created_at > ?", Time.current - 1.month)
+                                    .of_registered_users
+                                    .uniq
+                                    .pluck(:actor_id)
+
+        users = Spree.user_class.where(id: actor_ids)
+
+        users.each { |user| csv << [user.email] }
+
       end
 
   end
