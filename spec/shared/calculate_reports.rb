@@ -12,6 +12,12 @@ RSpec.shared_examples 'calculate_reports' do
   let(:timestamp) { campaign_with_recepients.scheduled_at - 1.day }
   let!(:campaign_with_recepients) { create(:marketing_campaign, contacts: [contact_with_successful_purchase, contact_with_product_view_event, contact_with_cart_addition_event, contact_with_login_event], list: new_users_list) }
 
+  describe 'constants' do
+    it 'REPORT_TITLE_KEYS equals to the list of keys corresponding to various reports' do
+      expect(described_class::REPORT_TITLE_KEYS).to eq Spree::Marketing::List::AVAILABLE_REPORTS.collect { |key| key.to_s.remove('_by') }
+    end
+  end
+
   describe "#product_views_by" do
     context "when guest user views product" do
       let!(:guest_user_product_view) { create(:marketing_product_view_event, actor: nil) }
@@ -223,12 +229,32 @@ RSpec.shared_examples 'calculate_reports' do
           "emails" => [user_with_product_view_event.email, user_with_cart_addition_event.email].sort,
           "count" => 2
         },
-        "emails_sent" => campaign_with_recepients.contacts.count
+        "emails_sent"=>200, "emails_bounced"=>2, "emails_opened"=>100, "emails_delivered"=>198
       }
     }
+    let(:report_data) { { id: "42694e9e57",
+                          emails_sent: 200,
+                          bounces: {
+                            hard_bounces: 0,
+                            soft_bounces: 2,
+                            syntax_errors: 0
+                          },
+                          forwards: {
+                            forwards_count: 0,
+                            forwards_opens: 0
+                          },
+                          opens: {
+                            opens_total: 186,
+                            unique_opens: 100,
+                            open_rate: 42,
+                            last_open: "2015-09-15T19:15:47+00:00"
+                          } }.with_indifferent_access }
     let(:reports_data_in_json) { reports_data.to_json }
 
-    before { campaign_with_recepients.generate_reports }
+    before do
+      campaign_with_recepients.update_stats(report_data)
+      campaign_with_recepients.generate_reports
+    end
 
     it "updates campaign stats with the reports data in json format" do
       expect(JSON.parse(campaign_with_recepients.stats).each { |k, v| v["emails"].sort! if v.is_a? Hash }).to eq reports_data

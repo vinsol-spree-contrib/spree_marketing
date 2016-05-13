@@ -80,12 +80,32 @@ describe Spree::Marketing::Campaign, type: :model do
   describe '#populate' do
     let(:contact) { create(:marketing_contact) }
     let(:recipients_data) { [{ email_id: contact.uid, email_address: contact.email, status: 'sent' }.with_indifferent_access] }
-    let(:stats) { { recipients: recipients_data, emails_sent: recipients_data.count } }
+    let (:stats) { "{\"emails_sent\":200,\"emails_bounced\":2,\"emails_opened\":100,\"emails_delivered\":198}" }
+    let(:report_data) { { id: "42694e9e57",
+                          emails_sent: 200,
+                          bounces: {
+                            hard_bounces: 0,
+                            soft_bounces: 2,
+                            syntax_errors: 0
+                          },
+                          forwards: {
+                            forwards_count: 0,
+                            forwards_opens: 0
+                          },
+                          opens: {
+                            opens_total: 186,
+                            unique_opens: 100,
+                            open_rate: 42,
+                            last_open: "2015-09-15T19:15:47+00:00"
+                          } }.with_indifferent_access }
 
     context 'when mailchimp campaign data is valid' do
       let(:synced_campaign) { Spree::Marketing::Campaign.generate(campaigns_data).first }
 
-      before { synced_campaign.populate(recipients_data) }
+      before do
+        synced_campaign.update_stats(report_data)
+        synced_campaign.populate(recipients_data)
+      end
 
       it 'synced campaign is saved' do
         expect(synced_campaign).to be_persisted
