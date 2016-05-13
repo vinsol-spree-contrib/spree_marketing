@@ -54,7 +54,7 @@ module Spree
           stats[report.to_s.remove("_by")] = { "emails" => emails, "count" => count }
         end
         stats["emails_sent"] = contacts.count
-        update(stats: stats.to_json)
+        update(stats: stats.merge(JSON.parse(self.stats)).to_json)
       end
     end
   end

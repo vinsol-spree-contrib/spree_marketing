@@ -41,7 +41,7 @@ namespace :test_data do
     end
 
     def random_variant
-      @variants ||= Spree::Product.not_gift_cards.map(&:variants_including_master).map { |variants| variants.in_stock }.flatten
+      @variants ||= Spree::Product.all.map(&:variants_including_master).map { |variants| variants.in_stock }.flatten
       @variants.sample
     end
 

@@ -31,7 +31,7 @@ namespace :campaign do
 
       # Abandoned Cart List
         abandoned_cart_list = Spree::Marketing::AbandonedCartList.includes(:contacts).last
-        campaign = Spree::Marketing::Camapign.create(name: abandoned_cart_list.name + " Campaign", list: abandoned_cart_list,
+        campaign = Spree::Marketing::Campaign.create(name: abandoned_cart_list.name + " Campaign", list: abandoned_cart_list,
           uid: Devise.friendly_token, mailchimp_type: "html", scheduled_at: Time.current, stats: "{}")
         abandoned_cart_list.contacts.each do |contact|
           campaign.contacts << contact
@@ -44,7 +44,7 @@ namespace :campaign do
 
       # Favourite Products (Product 2)
         second_favourite_product_list = Spree::Marketing::FavourableProductsList.last(2).first
-        campaign = Spree::Marketing::Camapign.create(name: second_favourite_product_list.name + " Campaign" + list.entity_name, list: abandoned_cart_list,
+        campaign = Spree::Marketing::Campaign.create(name: second_favourite_product_list.name + " Campaign" + list.entity_name, list: abandoned_cart_list,
           uid: Devise.friendly_token, mailchimp_type: "html", scheduled_at: Time.current, stats: "{}")
         second_favourite_product_list.contacts.each do |contact|
           campaign.contacts << contact

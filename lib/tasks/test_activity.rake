@@ -9,7 +9,7 @@ namespace :test_activity do
     end
 
     def random_variant
-      @variants ||= Spree::Product.all.map(&:variants_including_master).flatten
+      @variants ||= Spree::Product.all.map(&:variants_including_master).map { |variants| variants.in_stock }.flatten
       @variants.sample
     end
 
@@ -27,7 +27,7 @@ namespace :test_activity do
 
     def address
       Spree::Address.create(firstname: "Vinay", lastname: "Mittal", address1: "Patel Nagar", city: "Indian City",
-        state: random_indian_state, country: india_country, pincode: "110034", phone: "7503513633")
+        state: random_indian_state, country: india_country, zipcode: "110034", phone: "7503513633")
     end
 
     def random_payment_method
@@ -43,59 +43,60 @@ namespace :test_activity do
       order.next
     end
 
-    new_user_emails = []
-    CSV.read("#{Rails.root}/log/users.csv", headers: true).each do |row|
-      new_users_emails << row["email"]
-    end
+    new_users_emails = Spree::Marketing::NewUsersList.last.contacts.pluck(:email)
     new_users = Spree.user_class.where(email: new_users_emails)
 
-    new_users.sample(20) do |user|
+    new_users.sample(200).each do |user|
       Spree::PageEvent.create(actor: user, activity: random_activity, session_id: Devise.friendly_token)
     end
-    new_users.sample(5) do |user|
+    new_users.sample(150).each do |user|
       Spree::PageEvent.create(actor: user, activity: "view", session_id: Devise.friendly_token)
     end
-    new_users.sample(5) do |user|
+    new_users.sample(150).each do |user|
       order = Spree::Order.create(user: user)
       order.contents.add random_variant
     end
-    new_users.sample(10) do |user|
+    new_users.sample(100).each do |user|
       order = Spree::Order.create(user: user)
       order.contents.add random_variant
       order.ship_address = address
       order.bill_address = address
       complete_order order
+      p order
     end
 
 
-    abandoned_cart_user_emails = []
-    CSV.read("#{Rails.root}/log/abandoned_cart.csv", headers: true).each do |row|
-      abandoned_cart_user_emails << row["email"]
-    end
+    abandoned_cart_user_emails = Spree::Marketing::AbandonedCartList.last.contacts.pluck(:email)
     abandoned_cart_users = Spree.user_class.where(email: abandoned_cart_user_emails)
 
-    abandoned_cart_users.sample(20) do |user|
+    abandoned_cart_users.sample(120).each do |user|
       order = Spree::Order.create(user: user)
       order.contents.add random_variant
       order.ship_address = address
       order.bill_address = address
       complete_order order
+      p order
     end
 
 
-    most_searched_keyword_user_emails = CSV.read("#{Rails.root}/log/most_searched_keyword_users.csv", headers: false).flatten
+    most_searched_keyword_user_emails = []
+    Spree::Marketing::MostSearchedKeywordsList.includes(:contacts).last(5).each do |list|
+      most_searched_keyword_user_emails << list.contacts.pluck(:email)
+    end
+    most_searched_keyword_user_emails.flatten
     most_searched_keyword_users = Spree.user_class.where(email: most_searched_keyword_user_emails)
 
-    most_searched_keyword_users.sample(35) do |user|
+    most_searched_keyword_users.sample(150).each do |user|
       order = Spree::Order.create(user: user)
       order.contents.add random_variant
     end
-    most_searched_keyword_users.sample(15) do |user|
+    most_searched_keyword_users.sample(100).each do |user|
       order = Spree::Order.create(user: user)
       order.contents.add random_variant
       order.ship_address = address
       order.bill_address = address
       complete_order order
+      p order
     end
 
   end
