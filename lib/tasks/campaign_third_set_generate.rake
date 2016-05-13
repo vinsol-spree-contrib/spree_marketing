@@ -1,4 +1,4 @@
-desc "generate campaigns part-2 for version 1"
+desc "generate campaigns part-3 for version 1"
 namespace :campaign do
   namespace :third_set do
     task generate: :environment do |t, args|
@@ -11,6 +11,11 @@ namespace :campaign do
           campaign.contacts << contact
         end
       end
+      stats = {}
+      stats["emails_bounced"] = (campaign.contacts.size * 0.05).to_i
+      stats["emails_delivered"] = campaign.contacts.size - stats["emails_bounced"]
+      stats["emails_opened"] = (campaign.contacts.size * 0.25).to_i
+      campaign.update(stats: stats.to_json)
 
     end
   end

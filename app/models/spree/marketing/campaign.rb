@@ -21,7 +21,7 @@ module Spree
       has_many :contacts, through: :recipients
 
       # Callbacks
-      after_create :enqueue_reports_generation_job
+      # after_create :enqueue_reports_generation_job
 
       def self.generate(campaigns_data)
         campaigns_data.collect do |data|

@@ -10,6 +10,11 @@ namespace :campaign do
         new_users_list.contacts.each do |contact|
           campaign.contacts << contact
         end
+        stats = {}
+        stats["emails_bounced"] = (campaign.contacts.size * 0.05).to_i
+        stats["emails_delivered"] = campaign.contacts.size - stats["emails_bounced"]
+        stats["emails_opened"] = (campaign.contacts.size * 0.25).to_i
+        campaign.update(stats: stats.to_json)
 
       # Most Active Users List
         most_active_users_list = Spree::Marketing::MostActiveUsersList.includes(:contacts).last
@@ -18,6 +23,11 @@ namespace :campaign do
         most_active_users_list.contacts.each do |contact|
           campaign.contacts << contact
         end
+        stats = {}
+        stats["emails_bounced"] = (campaign.contacts.size * 0.05).to_i
+        stats["emails_delivered"] = campaign.contacts.size - stats["emails_bounced"]
+        stats["emails_opened"] = (campaign.contacts.size * 0.25).to_i
+        campaign.update(stats: stats.to_json)
 
       # Abandoned Cart List
         abandoned_cart_list = Spree::Marketing::AbandonedCartList.includes(:contacts).last
@@ -26,6 +36,11 @@ namespace :campaign do
         abandoned_cart_list.contacts.each do |contact|
           campaign.contacts << contact
         end
+        stats = {}
+        stats["emails_bounced"] = (campaign.contacts.size * 0.05).to_i
+        stats["emails_delivered"] = campaign.contacts.size - stats["emails_bounced"]
+        stats["emails_opened"] = (campaign.contacts.size * 0.25).to_i
+        campaign.update(stats: stats.to_json)
 
       # Favourite Products (Product 2)
         second_favourite_product_list = Spree::Marketing::FavourableProductsList.last(2).first
@@ -34,6 +49,11 @@ namespace :campaign do
         second_favourite_product_list.contacts.each do |contact|
           campaign.contacts << contact
         end
+        stats = {}
+        stats["emails_bounced"] = (campaign.contacts.size * 0.05).to_i
+        stats["emails_delivered"] = campaign.contacts.size - stats["emails_bounced"]
+        stats["emails_opened"] = (campaign.contacts.size * 0.25).to_i
+        campaign.update(stats: stats.to_json)
 
     end
   end

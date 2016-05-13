@@ -10,6 +10,11 @@ namespace :campaign do
         most_discounted_orders_list.contacts.each do |contact|
           campaign.contacts << contact
         end
+        stats = {}
+        stats["emails_bounced"] = (campaign.contacts.size * 0.05).to_i
+        stats["emails_delivered"] = campaign.contacts.size - stats["emails_bounced"]
+        stats["emails_opened"] = (campaign.contacts.size * 0.25).to_i
+        campaign.update(stats: stats.to_json)
 
       # Most Zone Wise Orders List
         most_zone_wise_orders_list = Spree::Marketing::MostActiveUsersList.includes(:contacts).last
@@ -18,6 +23,12 @@ namespace :campaign do
         most_zone_wise_orders_list.contacts.each do |contact|
           campaign.contacts << contact
         end
+        stats = {}
+        stats["emails_bounced"] = (campaign.contacts.size * 0.05).to_i
+        stats["emails_delivered"] = campaign.contacts.size - stats["emails_bounced"]
+        stats["emails_opened"] = (campaign.contacts.size * 0.25).to_i
+        campaign.update(stats: stats.to_json)
+
 
       # Most Used Payment Methods List
         Spree::Marketing::MostUsedPaymentMethodsList.includes(:contacts).each do |list|
@@ -28,6 +39,11 @@ namespace :campaign do
             campaign.contacts << contact
           end
         end
+        stats = {}
+        stats["emails_bounced"] = (campaign.contacts.size * 0.05).to_i
+        stats["emails_delivered"] = campaign.contacts.size - stats["emails_bounced"]
+        stats["emails_opened"] = (campaign.contacts.size * 0.25).to_i
+        campaign.update(stats: stats.to_json)
 
       # Most Searched Keywords List
         Spree::Marketing::MostSearchedKeywordsList.includes(:contacts).each do |list|
@@ -37,6 +53,11 @@ namespace :campaign do
             campaign.contacts << contact
           end
         end
+        stats = {}
+        stats["emails_bounced"] = (campaign.contacts.size * 0.05).to_i
+        stats["emails_delivered"] = campaign.contacts.size - stats["emails_bounced"]
+        stats["emails_opened"] = (campaign.contacts.size * 0.25).to_i
+        campaign.update(stats: stats.to_json)
 
     end
   end
