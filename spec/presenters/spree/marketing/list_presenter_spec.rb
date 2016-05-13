@@ -69,6 +69,12 @@ describe Spree::Marketing::ListPresenter do
         end
       end
     end
+
+    describe '#description' do
+      it 'sets removes part of tooltip content for description' do
+        expect((Spree::Marketing::ListPresenter.new list).description).to eq view_names_hash['AbandonedCartList'][:tooltip_content].remove('View the contact list of ').capitalize
+      end
+    end
   end
 
 end

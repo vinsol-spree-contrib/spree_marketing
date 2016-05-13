@@ -13,6 +13,13 @@ module GibbonService
       campaigns
     end
 
+    def retrieve_report(campaign_id = nil)
+      p "Retrieving report for campaign_id #{ campaign_id }"
+      report = gibbon.reports(campaign_id || @campaign_id).retrieve
+      p 'Retrieved report'
+      report
+    end
+
     def retrieve_recipients(campaign_id = nil)
       p "Retrieving recipients for campaign_id #{ campaign_id }"
       @recipients = gibbon.reports(campaign_id || @campaign_id).sent_to.retrieve['sent_to']

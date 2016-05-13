@@ -2,10 +2,23 @@
   <%= @marketing_campaign.name.titleize %>
 <% end %>
 
+<h3>Stats</h3>
+<br />
+<h4>Sent: <%= @stats['emails_sent'] %></h4>
+<h4>Successfully Delivered: <%= @stats['emails_delivered'] %></h4>
+<h4>Opened: <%= @stats['emails_opened'] %></h4>
+<h4>Bounced: <%= @stats['emails_bounced'] %></h4>
+
+<hr />
+
+<h3><%= @marketing_campaign.list.name %> List</h3>
+<h4><i><%= @marketing_campaign.list.presenter.description %></h4></i>
+<h4>Users Count: <%= @stats['emails_sent'] %></h4>
+
+<hr />
+
 <h3>Reports</h3>
-
-<br>
-
+<br/ >
 <% if @reports.present? %>
   <table class="table">
     <thead>
@@ -18,8 +31,8 @@
       <% @reports.delete("emails_opened") %>
       <% @reports.each do |report_name, report_data| %>
         <tr>
-          <td class="col-md-4"><%= report_name.titleize %></td>
-          <td class="col-md-4 text-center"><%= report_data["count"].to_s + "/" + @recipients_count.to_s %></td>
+          <td class="col-md-4"><%= link_to report_name.titleize, display_recipient_emails_admin_marketing_campaign_path(report_key: report_name) %></td>
+          <td class="col-md-4 text-center"><%= report_data["count"].to_s + "/" + @stats['emails_sent'].to_s %></td>
         </tr>
       <% end %>
     </tbody>
