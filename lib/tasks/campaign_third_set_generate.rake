@@ -6,7 +6,7 @@ namespace :campaign do
       # All Lists
       Spree::Marketing::List.includes(:contacts).each do |list|
         p list.name
-        campaign = Spree::Marketing::Campaign.create(name: list.name + " Campaign" + list.entity_name.to_s, list: list,
+        campaign = Spree::Marketing::Campaign.create(name: list.name + " Campaign", list: list,
           uid: Devise.friendly_token, mailchimp_type: "html", scheduled_at: Time.current.beginning_of_day, stats: "{}")
         p campaign
         list.contacts.each do |contact|

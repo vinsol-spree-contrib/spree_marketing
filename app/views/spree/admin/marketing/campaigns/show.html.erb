@@ -13,6 +13,9 @@
       <th class="col-md-4 text-center"><%= Spree.t(:occurences) %></th>
     </thead>
     <tbody>
+      <% @reports.delete("emails_delivered") %>
+      <% @reports.delete("emails_bounced") %>
+      <% @reports.delete("emails_opened") %>
       <% @reports.each do |report_name, report_data| %>
         <tr>
           <td class="col-md-4"><%= report_name.titleize %></td>
