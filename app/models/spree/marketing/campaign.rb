@@ -74,18 +74,18 @@ module Spree
           4.times do |schedule_count|
             wait_until_time = scheduled_at + ((schedule_count + 1) * 6).hours
             if wait_until_time > Time.current
-              enqueue_stats_update_job
-              enqueue_reports_generation_job
+              enqueue_stats_update_job(wait_until_time)
+              enqueue_reports_generation_job(wait_until_time)
             end
           end
         end
 
-        def enqueue_stats_update_job
+        def enqueue_stats_update_job(wait_until_time)
           CampaignModificationJob.set(wait_until: wait_until_time).perform_later id
         end
 
-        def enqueue_reports_generation_job
-          ReportsGenerationJob.set(wait_until: scheduled_at.tomorrow).perform_later id
+        def enqueue_reports_generation_job(wait_until_time)
+          ReportsGenerationJob.set(wait_until: wait_until_time).perform_later id
         end
     end
   end
