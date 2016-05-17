@@ -1,3 +1,7 @@
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+
 <% content_for :page_title do %>
   <%= @marketing_campaign.name.titleize %>
 <% end %>
@@ -14,6 +18,8 @@
 <h3><%= @marketing_campaign.list.name %> List</h3>
 <h4><i><%= @marketing_campaign.list.presenter.description %></h4></i>
 <h4>Users Count: <%= @stats['emails_sent'] %></h4>
+
+<div id="report_pie_chart" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto;"></div>
 
 <hr />
 
@@ -39,3 +45,16 @@
     <%= Spree.t(:no_resource_found, resource: "Reports") %>
   </div>
 <% end %>
+
+<%= javascript_include_tag 'spree/backend/campaign_data_report' %>
+
+<%= javascript_tag do %>
+  var innerData = ([{ 'name': 'Received', 'y': <%= @stats['emails_delivered'] %> }, { 'name': 'Bounced', 'y': <%= @stats['emails_bounced'] %>}]);
+  var outerData = ([{ 'name': 'Opened', 'y': <%= @stats['emails_opened'] %> }, { 'name': 'Not Opened', 'y': (<%= @stats['emails_delivered'] - @stats['emails_opened'] %>)}, { 'name': 'Bounced', 'y': <%= @stats['emails_bounced'] %>}]);
+
+  $(function (){
+    var campaignDataReport = new CampaignDataReport($("#report_pie_chart"), innerData, outerData);
+    campaignDataReport.init();
+  });
+<% end %>
+
