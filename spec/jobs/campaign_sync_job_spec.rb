@@ -14,11 +14,29 @@ RSpec.describe CampaignSyncJob, type: :job do
       recipients: { list_id: list.uid }, send_time: Time.current.to_s }.with_indifferent_access] }
   let(:contact) { create(:marketing_contact) }
   let(:recipients_data) { [{ email_id: contact.uid, email_address: contact.email, status: 'sent' }.with_indifferent_access] }
+  let(:report_data) { { id: "42694e9e57",
+                        emails_sent: 200,
+                        bounces: {
+                          hard_bounces: 0,
+                          soft_bounces: 2,
+                          syntax_errors: 0
+                        },
+                        forwards: {
+                          forwards_count: 0,
+                          forwards_opens: 0
+                        },
+                        opens: {
+                          opens_total: 186,
+                          unique_opens: 100,
+                          open_rate: 42,
+                          last_open: "2015-09-15T19:15:47+00:00"
+                        } }.with_indifferent_access }
 
   before do
     allow(GibbonService::CampaignService).to receive(:new).and_return(gibbon_service)
     allow(gibbon_service).to receive(:retrieve_sent_campaigns).and_return(campaigns_data)
     allow(gibbon_service).to receive(:retrieve_recipients).and_return(recipients_data)
+    allow(gibbon_service).to receive(:retrieve_report).and_return(report_data)
   end
 
   subject(:job) { described_class.perform_later(since_send_time) }

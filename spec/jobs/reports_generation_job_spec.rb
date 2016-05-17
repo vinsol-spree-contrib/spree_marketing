@@ -20,8 +20,27 @@ RSpec.describe ReportsGenerationJob, type: :job do
   end
 
   context 'executes perform' do
-
-    before { campaign.save }
+    let(:report_data) { { id: "42694e9e57",
+                          emails_sent: 200,
+                          bounces: {
+                            hard_bounces: 0,
+                            soft_bounces: 2,
+                            syntax_errors: 0
+                          },
+                          forwards: {
+                            forwards_count: 0,
+                            forwards_opens: 0
+                          },
+                          opens: {
+                            opens_total: 186,
+                            unique_opens: 100,
+                            open_rate: 42,
+                            last_open: "2015-09-15T19:15:47+00:00"
+                          } }.with_indifferent_access }
+    before do
+      campaign.update_stats(report_data)
+      campaign.save
+    end
 
     subject(:job) { described_class.perform_later(campaign.id) }
 

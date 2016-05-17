@@ -39,8 +39,6 @@ module Spree
       end
 
       def populate(recipients_data)
-        self.stats = { recipients: recipients_data.map! { |data| data.slice(*STATS_PARAMS) },
-                       emails_sent: recipients_data.count }
         if save
           recipients_data.each do |recipient_data|
             contact = Spree::Marketing::Contact.find_by(uid: recipient_data['email_id'])
@@ -48,6 +46,15 @@ module Spree
           end
           # ignoring case when not saved
         end
+      end
+
+      def update_stats(report_data)
+        emails_bounced_count = report_data['bounces'].values.reduce(&:+)
+        self.stats = { emails_sent: report_data['emails_sent'],
+                       emails_bounced: emails_bounced_count,
+                       emails_opened: report_data['opens']['unique_opens'],
+                       emails_delivered: report_data['emails_sent'] - emails_bounced_count  }.to_json
+        save
       end
 
       private
