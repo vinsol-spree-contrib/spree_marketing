@@ -14,7 +14,7 @@ module Spree
       belongs_to :contact, class_name: "Spree::Marketing::Contact"
 
       #scopes
-      scope :unopened, -> { where(opened_at: nil) }
+      scope :email_unopened, -> { where(email_opened_at: nil) }
       scope :with_emails, ->(emails) { eager_load(:contact).where('spree_marketing_contacts.email IN (?)', emails) }
 
       #delegates
@@ -22,8 +22,9 @@ module Spree
 
       def self.update_opened_at(recipients_data)
         recipients_data.each do |data|
-          recipient = find_by(email: data['email_address'])
-          recipient.update(opened_at: data['last_open']) if recipient
+          contact = Spree::Marketing::Contact.find_by(email: data['email_address'])
+          recipient = find_by(contact: contact)
+          recipient.update(email_opened_at: data['last_open']) if recipient
         end
       end
 

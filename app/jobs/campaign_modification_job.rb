@@ -10,7 +10,7 @@ class CampaignModificationJob < ActiveJob::Base
       report_data = gibbon_service.retrieve_report
       if campaign.update_stats(report_data)
         recipients_data = gibbon_service.retrieve_recipients.select { |rec| rec['last_open'].present? }
-        campaign.recipients.unopened.update_opened_at(recipients_data)
+        campaign.recipients.email_unopened.update_opened_at(recipients_data)
       end
     end
   end

@@ -44,7 +44,7 @@ module Spree
             contact = Spree::Marketing::Contact.find_by(uid: recipient_data['email_id'])
             recipient = Spree::Marketing::Recipient.create(contact: contact,
                                                            campaign: self,
-                                                           opened_at: recipient_data['last_open'])
+                                                           email_opened_at: recipient_data['last_open'])
           end
           # ignoring case when not saved
         end

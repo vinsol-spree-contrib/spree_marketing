@@ -13,7 +13,7 @@
       <% @recipients.each do |recipient| %>
         <tr>
           <td><%= recipient.contact_email %></td>
-          <td><%= recipient.opened_at %></td>
+          <td><%= recipient.email_opened_at %></td>
         </tr>
       <% end %>
     </tbody>
