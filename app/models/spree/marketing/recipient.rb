@@ -15,6 +15,10 @@ module Spree
 
       #scopes
       scope :unopened, -> { where(opened_at: nil) }
+      scope :with_emails, ->(emails) { eager_load(:contact).where('spree_marketing_contacts.email IN (?)', emails) }
+
+      #delegates
+      delegate :email, to: :contact, prefix: true
 
       def self.update_opened_at(recipients_data)
         recipients_data.each do |data|
