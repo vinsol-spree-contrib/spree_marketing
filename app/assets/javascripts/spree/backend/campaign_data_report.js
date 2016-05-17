@@ -14,11 +14,11 @@ CampaignDataReport.prototype.fillData = function() {
       type: 'pie'
     },
     title: {
-      text: 'Email reports for the campaign'
+      text: ''
     },
     plotOptions: {
       pie: {
-        shadow: true,
+        shadow: false,
         center: ['50%', '50%']
       }
     },
@@ -31,7 +31,11 @@ CampaignDataReport.prototype.fillData = function() {
       size: '60%',
       dataLabels: {
         formatter: function(){
-          return this.point.name;
+          if(this.point.name == '') {
+            return '';
+          } else {
+            return this.point.name + ':</b> ' + this.y;
+          }
         },
         distance: -30
       }
