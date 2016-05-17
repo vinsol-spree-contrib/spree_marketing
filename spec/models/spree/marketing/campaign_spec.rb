@@ -9,9 +9,6 @@ describe Spree::Marketing::Campaign, type: :model do
       recipients: { list_id: list.uid }, send_time: Time.current.to_s }.with_indifferent_access] }
 
   describe 'Constants' do
-    it 'STATS_PARAMS equals to params to select from mailchimp data for stats' do
-      expect(Spree::Marketing::Campaign::STATS_PARAMS).to eq %w(email_id email_address status)
-    end
     it 'DEFAULT_SEND_TIME_GAP equals to time gap since which sent campaigns are synced' do
       expect(Spree::Marketing::Campaign::DEFAULT_SEND_TIME_GAP).to eq 1.day
     end
