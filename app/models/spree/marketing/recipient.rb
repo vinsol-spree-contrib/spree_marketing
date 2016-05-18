@@ -21,9 +21,12 @@ module Spree
       delegate :email, to: :contact, prefix: true
 
       def self.update_opened_at(recipients_data)
+        uids = recipients_data.map { |data| data['email_id'] }
+        contacts = Spree::Marketing::Contact.where(uid: uids).to_a
+        recipients = all.to_a
         recipients_data.each do |data|
-          contact = Spree::Marketing::Contact.find_by(uid: data['email_id'])
-          recipient = find_by(contact: contact) if contact
+          contact = contacts.find { |contact| contact.uid == data['email_id'] }
+          recipient = recipients.find { |recipient| recipient.contact_id == contact.id }
           recipient.update(email_opened_at: data['last_open']) if recipient
         end
       end
