@@ -12,7 +12,7 @@
     <tbody>
       <% @recipients.each do |recipient| %>
         <tr>
-          <td><%= recipient.contact_email %></td>
+          <td><%= recipient_email_or_link(report_key) %></td>
           <td><%= recipient.email_opened_at %></td>
         </tr>
       <% end %>
