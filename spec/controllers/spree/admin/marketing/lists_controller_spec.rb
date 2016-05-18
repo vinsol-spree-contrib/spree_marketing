@@ -20,8 +20,7 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
 
       before do
         Spree::Marketing::List.subclasses.each do |subclass|
-          allow(subclass).to receive(:includes).and_return(lists)
-          allow(lists).to receive(:order).and_return(lists)
+          allow(subclass).to receive(:order).and_return(lists)
           allow(lists).to receive(:all).and_return(lists)
         end
       end
@@ -30,8 +29,7 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
         after { do_index }
         it { expect(Spree::Marketing::List).to receive(:subclasses).and_return(Spree::Marketing::List.subclasses) }
         Spree::Marketing::List.subclasses.each do |subclass|
-          it { expect(subclass).to receive(:includes).with(:contacts).and_return(lists) }
-          it { expect(lists).to receive(:order).with(updated_at: :desc).and_return(lists) }
+          it { expect(subclass).to receive(:order).with(updated_at: :desc).and_return(lists) }
           it { expect(lists).to receive(:all).and_return(lists) }
         end
       end
