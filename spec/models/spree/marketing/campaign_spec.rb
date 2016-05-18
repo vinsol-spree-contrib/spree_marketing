@@ -3,7 +3,8 @@ require "spec_helper"
 describe Spree::Marketing::Campaign, type: :model do
   include ActiveJob::TestHelper
 
-  let(:campaign) { create(:marketing_campaign) }
+  let(:json_stats_data) { '{ "log_ins": { "emails": ["vinay@vinsol.com"], "count": 1 }, "emails_sent": 3, "emails_delivered": 3, "emails_opened": 3, "emails_bounced": 3 }' }
+  let(:campaign) { create(:marketing_campaign, stats: json_stats_data) }
   let(:list) { create(:marketing_list) }
   let(:campaigns_data) { [{ id: '12456', type: 'regular', settings: { title: 'test' },
       recipients: { list_id: list.uid }, send_time: Time.current.to_s }.with_indifferent_access] }
@@ -11,6 +12,9 @@ describe Spree::Marketing::Campaign, type: :model do
   describe 'Constants' do
     it 'DEFAULT_SEND_TIME_GAP equals to time gap since which sent campaigns are synced' do
       expect(Spree::Marketing::Campaign::DEFAULT_SEND_TIME_GAP).to eq 1.day
+    end
+    it 'STATS_COUNT_KEYS equals to the keys stored in stats for email counts' do
+      expect(Spree::Marketing::Campaign::STATS_COUNT_KEYS).to eq [:emails_sent, :emails_bounced, :emails_opened, :emails_delivered]
     end
   end
 
@@ -36,7 +40,7 @@ describe Spree::Marketing::Campaign, type: :model do
   end
 
   describe "Callbacks" do
-    it { is_expected.to callback(:enqueue_reports_generation_job).after(:create) }
+    it { is_expected.to callback(:enqueue_update).after(:create) }
   end
 
   describe '.generate' do
@@ -134,11 +138,61 @@ describe Spree::Marketing::Campaign, type: :model do
     end
   end
 
-  describe '#enqueue_reports_generation_job' do
-    let(:not_saved_campaign) { build(:marketing_campaign) }
+  describe '#enqueue_update' do
+    context 'when scheduled_at is of previous night' do
+      let(:not_saved_campaign) { build(:marketing_campaign, scheduled_at: Time.current - 4.hours) }
 
-    it 'enqueues report generation job to run a day after campaign\'s scheduled_at' do
-      expect { not_saved_campaign.save }.to have_enqueued_job(ReportsGenerationJob).at(not_saved_campaign.scheduled_at.tomorrow)
+      context '#enqueue_reports_generation_job' do
+        it 'enqueues report generation job to run 6 hours after campaign\'s scheduled_at' do
+          expect { not_saved_campaign.save }.to have_enqueued_job(ReportsGenerationJob).at(not_saved_campaign.scheduled_at + 6.hours)
+        end
+        it 'enqueues report generation job to run 12 hours after campaign\'s scheduled_at' do
+          expect { not_saved_campaign.save }.to have_enqueued_job(ReportsGenerationJob).at(not_saved_campaign.scheduled_at + 12.hours)
+        end
+        it 'enqueues report generation job to run 18 hours after campaign\'s scheduled_at' do
+          expect { not_saved_campaign.save }.to have_enqueued_job(ReportsGenerationJob).at(not_saved_campaign.scheduled_at + 18.hours)
+        end
+        it 'enqueues report generation job to run a day after campaign\'s scheduled_at' do
+          expect { not_saved_campaign.save }.to have_enqueued_job(ReportsGenerationJob).at(not_saved_campaign.scheduled_at.tomorrow)
+        end
+      end
+
+      context '#enqueue_stats_update_job' do
+        it 'enqueues report generation job to run 6 hours after campaign\'s scheduled_at' do
+          expect { not_saved_campaign.save }.to have_enqueued_job(CampaignModificationJob).at(not_saved_campaign.scheduled_at + 6.hours)
+        end
+        it 'enqueues report generation job to run 12 hours after campaign\'s scheduled_at' do
+          expect { not_saved_campaign.save }.to have_enqueued_job(CampaignModificationJob).at(not_saved_campaign.scheduled_at + 12.hours)
+        end
+        it 'enqueues report generation job to run 18 hours after campaign\'s scheduled_at' do
+          expect { not_saved_campaign.save }.to have_enqueued_job(CampaignModificationJob).at(not_saved_campaign.scheduled_at + 18.hours)
+        end
+        it 'enqueues report generation job to run a day after campaign\'s scheduled_at' do
+          expect { not_saved_campaign.save }.to have_enqueued_job(CampaignModificationJob).at(not_saved_campaign.scheduled_at.tomorrow)
+        end
+      end
+    end
+
+    context 'when scheduled_at is of previous morning' do
+      let(:not_saved_campaign) { build(:marketing_campaign, scheduled_at: Time.current - 20.hours) }
+
+      context '#enqueue_reports_generation_job' do
+        it 'enqueues report generation job to run a day after campaign\'s scheduled_at' do
+          expect { not_saved_campaign.save }.to have_enqueued_job(ReportsGenerationJob).at(not_saved_campaign.scheduled_at.tomorrow)
+        end
+      end
+
+      context '#enqueue_stats_update_job' do
+        it 'enqueues report generation job to run a day after campaign\'s scheduled_at' do
+          expect { not_saved_campaign.save }.to have_enqueued_job(CampaignModificationJob).at(not_saved_campaign.scheduled_at.tomorrow)
+        end
+      end
+    end
+  end
+
+  describe '#stat_counts' do
+    it 'returns a hash with stats corresponding to STATS_COUNT_KEYS only' do
+      expect(campaign.stat_counts).to eq(JSON.parse(json_stats_data).symbolize_keys.slice(*Spree::Marketing::Campaign::STATS_COUNT_KEYS))
     end
   end
 
