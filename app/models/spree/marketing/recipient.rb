@@ -20,14 +20,14 @@ module Spree
       #delegates
       delegate :email, :uid, :user, to: :contact, prefix: true
 
-      def self.update_opened_at(recipients_data)
+      def self.update_email_opened_at(recipients_data)
         uids = {}
         recipients_data.each do |data|
           uids[data['email_id']] = data['last_open']
         end
         all.each do |recipient|
           email_opened_at = uids[recipient.contact_uid]
-          recipient.update(email_opened_at: email_opened_at)
+          recipient.update(email_opened_at: email_opened_at) if email_opened_at
         end
       end
 
