@@ -39,6 +39,7 @@ describe Spree::Marketing::Recipient, type: :model do
   describe 'Delegates' do
     it { is_expected.to delegate_method(:uid).to(:contact).with_prefix(true) }
     it { is_expected.to delegate_method(:email).to(:contact).with_prefix(true) }
+    it { is_expected.to delegate_method(:user).to(:contact).with_prefix(true) }
   end
 
   describe '.update_email_opened_at' do

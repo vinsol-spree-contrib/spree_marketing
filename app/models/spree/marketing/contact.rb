@@ -23,7 +23,7 @@ module Spree
         find_or_create_by(email: data['email_address'],
                           uid: data['id'],
                           mailchimp_id: data['unique_email_id'],
-                          user: Spree.user_class.find_by(data['email_address']))
+                          user_id: data['user_id'])
       end
     end
   end
