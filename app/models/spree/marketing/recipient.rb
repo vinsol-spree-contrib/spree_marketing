@@ -18,16 +18,16 @@ module Spree
       scope :with_emails, ->(emails) { eager_load(:contact).where('spree_marketing_contacts.email IN (?)', emails) }
 
       #delegates
-      delegate :email, to: :contact, prefix: true
+      delegate :email, :uid, to: :contact, prefix: true
 
       def self.update_opened_at(recipients_data)
-        uids = recipients_data.map { |data| data['email_id'] }
-        contacts = Spree::Marketing::Contact.where(uid: uids).to_a
-        recipients = all.to_a
+        uids = {}
         recipients_data.each do |data|
-          contact = contacts.find { |contact| contact.uid == data['email_id'] }
-          recipient = recipients.find { |recipient| recipient.contact_id == contact.id }
-          recipient.update(email_opened_at: data['last_open']) if recipient
+          uids[data['email_id']] = data['last_open']
+        end
+        all.each do |recipient|
+          email_opened_at = uids[recipient.contact_uid]
+          recipient.update(email_opened_at: email_opened_at)
         end
       end
 

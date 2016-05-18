@@ -65,7 +65,7 @@ module Spree
       end
 
       def stat_counts
-        JSON.parse(stats).slice(*STATS_COUNT_KEYS)
+        JSON.parse(stats).symbolize_keys.slice(*STATS_COUNT_KEYS)
       end
 
       private
