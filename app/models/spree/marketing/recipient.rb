@@ -38,21 +38,19 @@ module Spree
                     .group(:actor_id)
                     .pluck(:actor_id, :created_at)
                     .to_h
-        Spree.user_class.where(id: hash.keys).pluck(:email, :id).to_h.each do |key, value|
-          value = hash[value]
-        end.to_h
+        data_hash = Spree.user_class.where(id: hash.keys).pluck(:email, :id).to_h
+        data_hash.each { |key, value| data_hash[key] = hash[value] }
       end
 
       def self.product_views_data campaign
-        Spree::PageEvent.of_registered_users
-                        .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
-                        .where(actor_id: user_ids, target_type: "Spree::Product", activity: :view)
-                        .group(:actor_id)
-                        .pluck(:actor_id, :created_at)
-                        .to_h
-        Spree.user_class.where(id: hash.keys).pluck(:email, :id).to_h.each do |key, value|
-          value = hash[value]
-        end.to_h
+        hash = Spree::PageEvent.of_registered_users
+                              .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
+                              .where(actor_id: user_ids, target_type: "Spree::Product", activity: :view)
+                              .group(:actor_id)
+                              .pluck(:actor_id, :created_at)
+                              .to_h
+        data_hash = Spree.user_class.where(id: hash.keys).pluck(:email, :id).to_h
+        data_hash.each { |key, value| data_hash[key] = hash[value] }
       end
 
       def self.cart_additions_data campaign

@@ -8,12 +8,14 @@
     <thead>
       <th><%= Spree.t(:email) %></th>
       <th><%= Spree.t(:email_opened_at) %></th>
+      <th><%= Spree.t(:first_activity_at) %></th>
     </thead>
     <tbody>
       <% @recipients.each do |recipient| %>
         <tr>
           <td><%= recipient_email_or_link(recipient) %></td>
           <td><%= recipient.email_opened_at %></td>
+          <td><%= @users_activity_hash[recipient.contact_email] %></td>
         </tr>
       <% end %>
     </tbody>
