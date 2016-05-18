@@ -1,5 +1,5 @@
 <% content_for :page_title do %>
-  <%= @marketing_campaign.name.titleize %> - <%= @report_name.titleize %> Report <span class="sent-at"> sent at <%= @marketing_campaign.scheduled_at %></span>
+  <%= @marketing_campaign.name.titleize %> - <%= @report_name.titleize %> Report <span class="sent-at"> sent at <%= @marketing_campaign.scheduled_at.to_formatted_s(:short) %></span>
 <% end %>
 <h3>Users</h3>
 <hr />
@@ -14,8 +14,8 @@
       <% @recipients.each do |recipient| %>
         <tr>
           <td><%= recipient.contact_email %></td>
-          <td><%= recipient.email_opened_at %></td>
-          <td><%= @users_activity_hash[recipient.contact_email] %></td>
+          <td><%= recipient.email_opened_at.to_formatted_s(:long) %></td>
+          <td><%= @users_activity_hash[recipient.contact_email].to_formatted_s(:long) %></td>
         </tr>
       <% end %>
     </tbody>
