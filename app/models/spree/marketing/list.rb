@@ -37,7 +37,10 @@ module Spree
       def update_list
         _users_data = users_data
         _old_users_data = old_users_data
-        ListModificationJob.perform_later id, (_users_data - _old_users_data), removable_contact_uids(_old_users_data.keys - _users_data.keys)
+        emails = _users_data.keys
+        old_emails = _old_users_data.keys
+        subscribable_users_data = users_data.slice(*(emails - old_emails))
+        ListModificationJob.perform_later id, subscribable_users_data, removable_contact_uids(old_emails - emails)
       end
 
       def self.generator
