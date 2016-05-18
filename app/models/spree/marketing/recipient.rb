@@ -33,11 +33,12 @@ module Spree
 
       def self.log_ins_data campaign
         hash = Spree::PageEvent.of_registered_users
-                    .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
-                    .where(actor_id: user_ids)
-                    .group(:actor_id)
-                    .pluck(:actor_id, :created_at)
-                    .to_h
+                               .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
+                               .where(actor_id: user_ids)
+                               .order(:created_at)
+                               .group(:actor_id)
+                               .pluck(:actor_id, :created_at)
+                               .to_h
         data_hash = Spree.user_class.where(id: hash.keys).pluck(:email, :id).to_h
         data_hash.each { |key, value| data_hash[key] = hash[value] }
       end
@@ -46,6 +47,7 @@ module Spree
         hash = Spree::PageEvent.of_registered_users
                               .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
                               .where(actor_id: user_ids, target_type: "Spree::Product", activity: :view)
+                              .order(:created_at)
                               .group(:actor_id)
                               .pluck(:actor_id, :created_at)
                               .to_h
@@ -54,22 +56,26 @@ module Spree
       end
 
       def self.cart_additions_data campaign
-        order_ids = Spree::CartEvent.where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
-                                    .where(activity: :add)
-                                    .uniq
-                                    .pluck(:actor_id)
-        Spree::Order.of_registered_users
-                    .where(id: order_ids)
-                    .where(user_id: user_ids)
-                    .group(:user_id)
-                    .pluck(:email, :updated_at)
-                    .to_h
+        hash = Spree::CartEvent.where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
+                               .where(activity: :add, actor_id: user_ids)
+                               .order(:created_at)
+                               .group(:actor_id)
+                               .pluck(:actor_id, :created_at)
+                               .to_h
+        data_hash = Spree::Order.of_registered_users
+                                .where(id: hash.keys)
+                                .where(user_id: user_ids)
+                                .group(:user_id)
+                                .pluck(:email, :id)
+                                .to_h
+        data_hash.each { |key, value| data_hash[key] = hash[value] }
       end
 
       def self.purchases_data campaign
         Spree::Order.of_registered_users
                     .where("completed_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
                     .where(user_id: user_ids)
+                    .order(:completed_at)
                     .group(:user_id)
                     .pluck(:email, :completed_at)
                     .to_h
