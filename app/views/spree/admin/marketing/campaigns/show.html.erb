@@ -1,25 +1,49 @@
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<%= javascript_include_tag 'spree/backend/campaign_data_report' %>
+<%= stylesheet_link_tag 'spree/backend/campaign_report' %>
+
 <% content_for :page_title do %>
   <%= @marketing_campaign.name.titleize %>
+  <p style="font-size: 15px;">
+    Sent To: <%= @marketing_campaign.list.name %>
+    <span class="icon icon-question-sign" data-toggle="tooltip" title="<%= @marketing_campaign.list.presenter.description %>"></span>
+  </p>
+  <p style="font-size: 15px;">Sent At: <%= @marketing_campaign.scheduled_at.to_formatted_s(:short) %></p>
 <% end %>
 
-<h3>Stats</h3>
-<br />
-<h4>Sent: <%= @stats['emails_sent'] %></h4>
-<h4>Successfully Delivered: <%= @stats['emails_delivered'] %></h4>
-<h4>Opened: <%= @stats['emails_opened'] %></h4>
-<h4>Bounced: <%= @stats['emails_bounced'] %></h4>
 
-<hr />
+<% unless @stats['emails_sent'] == 0  %>
+  <br />
+  <div id="report_pie_chart" class="pie-chart-report"></div>
+  <div class="pie-chart-data">
+    <ul id="campaign_email_reports" class="campaign-email-reports">
+      <li><div class="box delivered"></div>Delivered: <%= @stats['emails_delivered'] %></li>
+      <li><div class="box bounced"></div>Bounced: <%= @stats['emails_bounced'] %></li>
+      <li><div class="box opened"></div>Opened: <%= @stats['emails_opened'] %></li>
+      <li><div class="box unopened"></div>Unopened: <%= @stats['emails_delivered'] - @stats['emails_opened'] %></li>
+    </ul>
+  </div>
+  <div class="clear-fix"></div>
+  <hr />
 
-<h3><%= @marketing_campaign.list.name %> List</h3>
-<h4><i><%= @marketing_campaign.list.presenter.description %></h4></i>
-<h4>Users Count: <%= @stats['emails_sent'] %></h4>
+  <%= javascript_tag do %>
+    var innerData = ([{ 'name': 'Delivered', 'y': <%= @stats['emails_delivered'] %>, 'color': '#105A9C' },
+      { 'name': '', 'y': <%= @stats['emails_bounced'] %>, 'color': '#930F1C' }]);
+    var outerData = ([{ 'name': 'Opened', 'y': <%= @stats['emails_opened'] %>, 'color': '#829909' },
+      { 'name': 'Unopened', 'y': (<%= @stats['emails_delivered'] - @stats['emails_opened'] %>), 'color': '#ED7D05' },
+      { 'name': 'Bounced', 'y': <%= @stats['emails_bounced'] %>, 'color': '#930F1C' }]);
 
-<hr />
+    $(function (){
+      var campaignDataReport = new CampaignDataReport($("#report_pie_chart"), innerData, outerData);
+      campaignDataReport.init();
+    });
+  <% end %>
+<% end %>
 
 <h3>Reports</h3>
 <br/ >
-<% if @reports.present? %>
+<% if @reports.present? && @stats['emails_sent'] != 0 %>
   <table class="table">
     <thead>
       <th class="col-md-4"><%= Spree.t(:name) %></th>
