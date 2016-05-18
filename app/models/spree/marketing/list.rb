@@ -31,13 +31,13 @@ module Spree
       end
 
       def generate
-        ListGenerationJob.perform_later display_name, emails, self.class.name, entity_data
+        ListGenerationJob.perform_later display_name, users_data, self.class.name, entity_data
       end
 
       def update_list
-        _emails = emails
-        _old_emails = old_emails
-        ListModificationJob.perform_later id, (_emails - _old_emails), removable_contact_uids(_old_emails - _emails)
+        _users_data = users_data
+        _old_users_data = old_users_data
+        ListModificationJob.perform_later id, (_users_data - _old_users_data), removable_contact_uids(_old_users_data.keys - _users_data.keys)
       end
 
       def self.generator
@@ -51,12 +51,10 @@ module Spree
         end
       end
 
-      def populate(contacts_data)
-        users = Spree.user_class.where(email: contacts_data.map { |data| data['email_address'] }).pluck(:email, :id).to_h
-
+      def populate(contacts_data, users_data)
         contacts_data.each do |contact_data|
           contact = Spree::Marketing::Contact.load(contact_data.slice('email_address', 'id', 'unique_email_id')
-                                                               .merge('user_id' => users[contact_data['email_address']]))
+                                                               .merge('user_id' => users_data[contact_data['email_address']]))
           contacts << contact
         end
       end
@@ -83,16 +81,20 @@ module Spree
           @time_frame ||= self.class::TIME_FRAME
         end
 
-        def emails
-          Spree.user_class.where(id: user_ids).pluck(:email)
+        def users
+          Spree.user_class.where(id: user_ids)
+        end
+
+        def users_data
+          users.pluck(:email, :id).to_h
         end
 
         def removable_contact_uids(removable_emails)
           Spree::Marketing::Contact.where(email: removable_emails).pluck(:uid)
         end
 
-        def old_emails
-          contacts.pluck(:email)
+        def old_users_data
+          contacts.pluck(:email, :user_id).to_h
         end
 
         def entity_data

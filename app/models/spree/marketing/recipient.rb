@@ -30,7 +30,6 @@ module Spree
           recipient.update(email_opened_at: email_opened_at) if email_opened_at
         end
       end
-
     end
   end
 end
