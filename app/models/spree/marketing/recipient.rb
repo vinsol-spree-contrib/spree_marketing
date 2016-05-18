@@ -33,30 +33,30 @@ module Spree
 
       def self.log_ins_data campaign
         hash = Spree::PageEvent.of_registered_users
-                    .where("completed_at >= :scheduled_time", campaign.scheduled_at)
+                    .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
                     .where(actor_id: user_ids)
-                    .group(:user_id)
+                    .group(:actor_id)
                     .pluck(:actor_id, :created_at)
                     .to_h
         Spree.user_class.where(id: hash.keys).pluck(:email, :id).to_h.each do |key, value|
-          value = hash[id]
+          value = hash[value]
         end.to_h
       end
 
       def self.product_views_data campaign
         Spree::PageEvent.of_registered_users
-                        .where("created_at >= ?", campaign.scheduled_at)
+                        .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
                         .where(actor_id: user_ids, target_type: "Spree::Product", activity: :view)
                         .group(:actor_id)
-                        .pluck("spree_marketing_contacts.email", "spree_page_events.created_at")
+                        .pluck(:email, :created_at)
                         .to_h
         Spree.user_class.where(id: hash.keys).pluck(:email, :id).to_h.each do |key, value|
-          value = hash[id]
+          value = hash[value]
         end.to_h
       end
 
       def self.cart_additions_data campaign
-        order_ids = Spree::CartEvent.where("created_at >= ?", campaign.scheduled_at)
+        order_ids = Spree::CartEvent.where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
                                     .where(activity: :add)
                                     .uniq
                                     .pluck(:actor_id)
@@ -70,7 +70,7 @@ module Spree
 
       def self.purchases_data campaign
         Spree::Order.of_registered_users
-                    .where("completed_at >= :scheduled_time", campaign.scheduled_at)
+                    .where("completed_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
                     .where(user_id: user_ids)
                     .group(:user_id)
                     .pluck(:email, :completed_at)
