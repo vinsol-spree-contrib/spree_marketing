@@ -48,7 +48,7 @@ module Spree
                         .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
                         .where(actor_id: user_ids, target_type: "Spree::Product", activity: :view)
                         .group(:actor_id)
-                        .pluck(:email, :created_at)
+                        .pluck(:actor_id, :created_at)
                         .to_h
         Spree.user_class.where(id: hash.keys).pluck(:email, :id).to_h.each do |key, value|
           value = hash[value]
