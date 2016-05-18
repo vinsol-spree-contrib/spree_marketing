@@ -7,7 +7,8 @@ RSpec.describe ReportsGenerationJob, type: :job do
 
   class GibbonServiceTest; end
 
-  let(:campaign) { build(:marketing_campaign) }
+  let(:json_stats_data) { '{ "log_ins": { "emails": ["vinay@vinsol.com"], "count": 1 }, "emails_sent": 3, "emails_delivered": 3, "emails_opened": 3, "emails_bounced": 3 }' }
+  let(:campaign) { build(:marketing_campaign, stats: json_stats_data) }
 
   subject(:job) { described_class.perform_later(campaign.id) }
 

@@ -10,7 +10,7 @@ RSpec.shared_examples 'calculate_reports' do
   let(:contact_with_login_event) { create(:marketing_contact, email: user_with_login_event.email) }
   let(:new_users_list) { create(:new_users_list) }
   let(:timestamp) { campaign_with_recepients.scheduled_at - 1.day }
-  let!(:campaign_with_recepients) { create(:marketing_campaign, contacts: [contact_with_successful_purchase, contact_with_product_view_event, contact_with_cart_addition_event, contact_with_login_event], list: new_users_list) }
+  let!(:campaign_with_recepients) { create(:marketing_campaign, stats: json_stats_data, contacts: [contact_with_successful_purchase, contact_with_product_view_event, contact_with_cart_addition_event, contact_with_login_event], list: new_users_list) }
 
   describe 'constants' do
     it 'REPORT_TITLE_KEYS equals to the list of keys corresponding to various reports' do
@@ -213,6 +213,7 @@ RSpec.shared_examples 'calculate_reports' do
     let!(:second_product_view_event) { create(:marketing_product_view_event, actor: user_with_cart_addition_event) }
     let(:reports_data) {
       {
+        "emails_sent"=>4, "emails_bounced"=>2, "emails_opened"=>100, "emails_delivered"=>198,
         "log_ins" => {
           "emails" => [user_with_login_event.email, user_with_product_view_event.email, user_with_cart_addition_event.email].sort,
           "count" => 3
@@ -228,8 +229,7 @@ RSpec.shared_examples 'calculate_reports' do
         "product_views" => {
           "emails" => [user_with_product_view_event.email, user_with_cart_addition_event.email].sort,
           "count" => 2
-        },
-        "emails_sent"=>200, "emails_bounced"=>2, "emails_opened"=>100, "emails_delivered"=>198
+        }
       }
     }
     let(:report_data) { { id: "42694e9e57",
