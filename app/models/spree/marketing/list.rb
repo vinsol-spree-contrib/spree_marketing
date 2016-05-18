@@ -52,8 +52,11 @@ module Spree
       end
 
       def populate(contacts_data)
+        users = Spree.user_class.where(email: contacts_data.map { |data| data['email_address'] }).pluck(:email, :id).to_h
+
         contacts_data.each do |contact_data|
-          contact = Spree::Marketing::Contact.load(contact_data.slice('email_address', 'id', 'unique_email_id'))
+          contact = Spree::Marketing::Contact.load(contact_data.slice('email_address', 'id', 'unique_email_id')
+                                                               .merge('user_id' => users[contacts_data['email_address']]))
           contacts << contact
         end
       end
