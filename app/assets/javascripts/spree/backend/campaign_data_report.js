@@ -30,7 +30,7 @@ CampaignDataReport.prototype.fillData = function() {
       data: this.innerData,
       size: '60%',
       dataLabels: {
-        formatter: function(){
+        formatter: function() {
           if(this.point.name == '') {
             return '';
           } else {
@@ -45,7 +45,7 @@ CampaignDataReport.prototype.fillData = function() {
       size: '80%',
       innerSize: '60%',
       dataLabels: {
-        formatter: function(){
+        formatter: function() {
           return this.point.name + ':</b> ' + this.y;
         }
       }

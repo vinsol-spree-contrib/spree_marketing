@@ -28,8 +28,11 @@
   <hr />
 
   <%= javascript_tag do %>
-    var innerData = ([{ 'name': 'Delivered', 'y': <%= @stats['emails_delivered'] %>, 'color': '#105A9C' }, { 'name': '', 'y': <%= @stats['emails_bounced'] %>, 'color': '#930F1C' }]);
-    var outerData = ([{ 'name': 'Opened', 'y': <%= @stats['emails_opened'] %>, 'color': '#829909' }, { 'name': 'Unopened', 'y': (<%= @stats['emails_delivered'] - @stats['emails_opened'] %>), 'color': '#ED7D05' }, { 'name': 'Bounced', 'y': <%= @stats['emails_bounced'] %>, 'color': '#930F1C' }]);
+    var innerData = ([{ 'name': 'Delivered', 'y': <%= @stats['emails_delivered'] %>, 'color': '#105A9C' },
+      { 'name': '', 'y': <%= @stats['emails_bounced'] %>, 'color': '#930F1C' }]);
+    var outerData = ([{ 'name': 'Opened', 'y': <%= @stats['emails_opened'] %>, 'color': '#829909' },
+      { 'name': 'Unopened', 'y': (<%= @stats['emails_delivered'] - @stats['emails_opened'] %>), 'color': '#ED7D05' },
+      { 'name': 'Bounced', 'y': <%= @stats['emails_bounced'] %>, 'color': '#930F1C' }]);
 
     $(function (){
       var campaignDataReport = new CampaignDataReport($("#report_pie_chart"), innerData, outerData);
