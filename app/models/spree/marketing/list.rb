@@ -56,7 +56,7 @@ module Spree
 
         contacts_data.each do |contact_data|
           contact = Spree::Marketing::Contact.load(contact_data.slice('email_address', 'id', 'unique_email_id')
-                                                               .merge('user_id' => users[contacts_data['email_address']]))
+                                                               .merge('user_id' => users[contact_data['email_address']]))
           contacts << contact
         end
       end
