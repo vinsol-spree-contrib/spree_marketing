@@ -22,8 +22,8 @@ module Spree
 
       def self.update_opened_at(recipients_data)
         recipients_data.each do |data|
-          contact = Spree::Marketing::Contact.find_by(email: data['email_address'])
-          recipient = find_by(contact: contact)
+          contact = Spree::Marketing::Contact.find_by(uid: data['email_id'])
+          recipient = find_by(contact: contact) if contact
           recipient.update(email_opened_at: data['last_open']) if recipient
         end
       end
