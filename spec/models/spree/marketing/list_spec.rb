@@ -125,14 +125,16 @@ describe Spree::Marketing::List, type: :model do
   end
 
   describe '#populate' do
-    let(:contacts_data) { [{ email_address: 'test@a.com',
+    let(:user) { create(:user) }
+    let(:contacts_data) { [{ email_address: user.email,
                              id: '12344567',
                              unique_email_id: '12345678900000987654322222221' }.with_indifferent_access] }
 
     before { active_list.populate(contacts_data) }
 
     it { expect(active_list.contacts.count).to eq(1) }
-    it { expect(active_list.contacts.first.email).to eq(contacts_data.first[:email_address]) }
+    it { expect(active_list.contacts.first.email).to eq(user.email) }
+    it { expect(active_list.contacts.first.user).to eq(user) }
   end
 
   describe '#computed_time' do
