@@ -1,18 +1,19 @@
 <% content_for :page_title do %>
-  <%= @marketing_campaign.name.titleize %> - <%= @report_name.titleize %>
+  <%= @marketing_campaign.name.titleize %> - <%= @report_name.titleize %> Report <span class="sent-at"> sent at <%= @marketing_campaign.scheduled_at %></span>
 <% end %>
-
-<h3>Recipients</h3>
-<br/ >
-<% if @recipient_emails.present? %>
+<h3>Users</h3>
+<hr />
+<% if @recipients.present? %>
   <table class="table">
     <thead>
       <th><%= Spree.t(:email) %></th>
+      <th><%= Spree.t(:opened_at) %></th>
     </thead>
     <tbody>
-      <% @recipient_emails.each do |email| %>
+      <% @recipients.each do |recipient| %>
         <tr>
-          <td><%= email %></td>
+          <td><%= recipient_email_or_link(report_key) %></td>
+          <td><%= recipient.email_opened_at %></td>
         </tr>
       <% end %>
     </tbody>
@@ -23,4 +24,4 @@
   </div>
 <% end %>
 
-<%= paginate @recipient_emails %>
+<%= paginate @recipients %>

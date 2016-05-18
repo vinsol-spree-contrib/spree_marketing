@@ -8,6 +8,7 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
   let(:json_stats_data) { '{ "log_ins": { "emails": ["vinay@vinsol.com"], "count": 1 }, "emails_sent": 3 }' }
   let(:campaign) { create(:marketing_campaign, stats: json_stats_data) }
   let(:campaigns) { double(ActiveRecord::Relation) }
+  let(:recipients) { double(ActiveRecord::Relation) }
 
   describe 'GET display_recipient_emails' do
     let(:params) { { id: campaign.id, report_key: 'log_ins', page: 1 } }
@@ -18,6 +19,10 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
 
     before do
       allow(Spree::Marketing::Campaign).to receive(:find).and_return(campaign)
+      allow(campaign).to receive(:recipients).and_return(recipients)
+      allow(recipients).to receive(:with_emails).and_return(recipients)
+      allow(recipients).to receive(:page).and_return(recipients)
+      allow(recipients).to receive(:per).and_return(recipients)
     end
 
     context "response" do
@@ -31,9 +36,21 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
       end
     end
 
-    context "expects to receive" do
-      it "Spree::Marketing::Campaign to receive includes and return campaigns" do
+    context "with correct method flow" do
+      it "Spree::Marketing::Campaign expects to receive includes and return campaigns" do
         expect(Spree::Marketing::Campaign).to receive(:find).with(params[:id].to_s).and_return(campaign)
+      end
+      it "campaign expects to receive recipients and return recipients" do
+        expect(campaign).to receive(:recipients).and_return(recipients)
+      end
+      it "recipients expects to receive with_emails scope and return recipients" do
+        expect(recipients).to receive(:with_emails).with(JSON.parse(json_stats_data)['log_ins']['emails']).and_return(recipients)
+      end
+      it "recipients expects to receive page and return recipients" do
+        expect(recipients).to receive(:page).with(params[:page].to_s).and_return(recipients)
+      end
+      it "recipients expects to receive per and return recipients" do
+        expect(recipients).to receive(:per).with(20).and_return(recipients)
       end
 
       after { send_request params }
@@ -46,7 +63,7 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
         expect(assigns(:report_name)).to eq params[:report_key]
       end
       it "assigns recipient emails to an instance variable recipient_emails" do
-        expect(assigns(:recipient_emails)).to eq JSON.parse(json_stats_data)[params[:report_key]]['emails']
+        expect(assigns(:recipients)).to eq recipients
       end
     end
   end

@@ -14,7 +14,7 @@ module Spree
 
         def display_recipient_emails
           @report_name = params[:report_key]
-          @recipient_emails = Kaminari.paginate_array(@reports[params[:report_key]]['emails']).page(params[:page]).per(20)
+          @recipients = @marketing_campaign.recipients.with_emails(@reports[params[:report_key]]['emails']).page(params[:page]).per(20)
         end
 
         private
