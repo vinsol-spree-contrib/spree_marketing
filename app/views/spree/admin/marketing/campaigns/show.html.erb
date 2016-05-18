@@ -12,10 +12,9 @@
   <p style="font-size: 15px;">Sent At: <%= @marketing_campaign.scheduled_at.to_formatted_s(:short) %></p>
 <% end %>
 
-<br />
 
 <% unless @stats['emails_sent'] == 0  %>
-
+  <br />
   <div id="report_pie_chart" class="pie-chart-report"></div>
   <div class="pie-chart-data">
     <ul id="campaign_email_reports" class="campaign-email-reports">
@@ -37,8 +36,6 @@
       campaignDataReport.init();
     });
   <% end %>
-<% else %>
-
 <% end %>
 
 <h3>Reports</h3>
