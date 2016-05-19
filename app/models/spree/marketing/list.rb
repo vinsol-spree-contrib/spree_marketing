@@ -78,11 +78,7 @@ module Spree
       private
 
         def computed_time
-          Time.current - time_frame
-        end
-
-        def time_frame
-          @time_frame ||= self.class::TIME_FRAME
+          self.class.send :computed_time
         end
 
         def emails

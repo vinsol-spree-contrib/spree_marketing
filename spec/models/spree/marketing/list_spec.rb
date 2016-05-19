@@ -135,12 +135,12 @@ describe Spree::Marketing::List, type: :model do
     it { expect(active_list.contacts.first.email).to eq(contacts_data.first[:email_address]) }
   end
 
-  describe '#computed_time' do
-    it { expect(active_list.send(:computed_time).day).to eq((Time.current - active_list.send(:time_frame)).day) }
-  end
+  describe '.computed_time' do
+    let(:timestamp) { Time.current - Spree::Marketing::List::TIME_FRAME }
 
-  describe '#time_frame' do
-    it { expect(active_list.send(:time_frame)).to eq(Spree::Marketing::List::TIME_FRAME) }
+    it 'returns time stamp which acts as least time for user ids calculation' do
+      expect(Spree::Marketing::List.send(:computed_time).to_date).to eq timestamp.to_date
+    end
   end
 
   describe '#emails' do
