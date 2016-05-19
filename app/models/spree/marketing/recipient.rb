@@ -57,7 +57,7 @@ module Spree
 
       def self.cart_additions_data campaign
         hash = Spree::CartEvent.where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
-                               .where(activity: :add, actor_id: user_ids)
+                               .where(activity: :add)
                                .order(:created_at)
                                .group(:actor_id)
                                .pluck(:actor_id, :created_at)

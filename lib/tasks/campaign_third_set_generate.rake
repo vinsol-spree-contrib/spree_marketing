@@ -19,6 +19,15 @@ namespace :campaign do
         campaign.update(stats: stats.to_json)
       end
 
+      Spree::Marketing::Campaign.all.each do |campaign|
+        stats = {}
+        stats["emails_bounced"] = (campaign.contacts.size * 0.05).to_i
+        stats["emails_delivered"] = campaign.contacts.size - stats["emails_bounced"]
+        stats["emails_opened"] = (campaign.contacts.size * 0.25).to_i
+        campaign.update(stats: stats.to_json)
+        campaign.generate_reports
+      end
+
     end
   end
 end

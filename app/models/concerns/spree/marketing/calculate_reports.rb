@@ -29,6 +29,7 @@ module Spree
                                     .pluck(:actor_id)
 
         Spree::Order.of_registered_users
+                    .where("updated_at >= :scheduled_time", scheduled_time: scheduled_at)
                     .where(id: actor_ids, user_id: contact_ids)
                     .uniq
                     .pluck(:email)
