@@ -26,6 +26,7 @@ module Spree
 
       def self.data
         Spree::Payment.joins(:payment_method, :order)
+                      .where('spree_orders.completed_at >= :time_frame', time_frame: computed_time)
                       .where(state: :completed)
                       .group('spree_payment_methods.id')
                       .order('COUNT(spree_orders.id) DESC')

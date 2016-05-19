@@ -27,6 +27,7 @@ module Spree
 
       def self.data
         Spree::PageEvent.where(activity: 'search')
+                        .where('created_at >= :time_frame', time_frame: computed_time)
                         .group(:search_keywords)
                         .order('COUNT(spree_page_events.id) DESC')
                         .limit(MOST_SEARCHRD_KEYWORD_COUNT)

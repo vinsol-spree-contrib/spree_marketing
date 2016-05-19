@@ -104,6 +104,16 @@ describe Spree::Marketing::MostSearchedKeywordsList, type: :model do
           expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to_not include sixth_searched_keyword
         end
       end
+
+      context 'with old search events of keywords' do
+        let(:other_searched_keyword) { "Ruby" }
+        let(:timestamp) { Time.current - 1.month }
+        let!(:search_page_events_for_second_searched_keyword) { create_list(:marketing_search_page_event, 6, search_keywords: other_searched_keyword, created_at: timestamp) }
+
+        it 'returns keywords which will not include keyword having searh events only before time frame' do
+          expect(Spree::Marketing::MostSearchedKeywordsList.send :data).to_not include other_searched_keyword
+        end
+      end
     end
 
     context '#entity_name' do

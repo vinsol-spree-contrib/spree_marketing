@@ -59,6 +59,15 @@ describe Spree::Marketing::MostZoneWiseOrdersList, type: :model do
           expect(Spree::Marketing::MostZoneWiseOrdersList.send :data).to_not include sixth_state.id
         end
       end
+
+      context 'with old completed orders of state' do
+        let(:other_state) { create(:state, name: 'Other State') }
+        let!(:old_orders_in_other_state) { create_list(:order_with_given_billing_state, 6, :with_custom_completed_at, state: other_state) }
+
+        it 'returns state ids which will not include orders completed before time frame' do
+          expect(Spree::Marketing::MostZoneWiseOrdersList.send :data).to_not include other_state.id
+        end
+      end
     end
 
     describe '#user_ids' do
