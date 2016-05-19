@@ -29,7 +29,7 @@ module Spree
                     .group("spree_products.id")
                     .order("COUNT(spree_orders.id) DESC")
                     .limit(FAVOURABLE_PRODUCT_COUNT)
-                    .pluck(:product_id)
+                    .pluck("spree_products.id")
       end
       private_class_method :data
     end
