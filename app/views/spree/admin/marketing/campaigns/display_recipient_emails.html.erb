@@ -1,5 +1,10 @@
 <% content_for :page_title do %>
-  <%= @marketing_campaign.name.titleize %> - <%= @report_name.titleize %> Report <span class="sent-at"> sent at <%= @marketing_campaign.scheduled_at.to_formatted_s(:short) %></span>
+  <%= @marketing_campaign.name.titleize %> - <%= @report_name.titleize %> Report
+  <p style="font-size: 15px;">
+    Sent To: <%= @marketing_campaign.list.name %>
+    <span class="icon icon-question-sign" data-toggle="tooltip" title="<%= @marketing_campaign.list.presenter.description %>"></span>
+  </p>
+  <p style="font-size: 15px;">Sent At: <%= @marketing_campaign.scheduled_at.to_formatted_s(:short) %></p>
 <% end %>
 <h3>Users</h3>
 <hr />
