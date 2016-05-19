@@ -12,6 +12,7 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
 
   describe 'GET display_recipient_emails' do
     let(:params) { { id: campaign.id, report_key: 'log_ins', page: 1 } }
+    let(:users_activity_hash) { { "vinay@vinsol.com" => Time.current } }
 
     def send_request(params)
       spree_get :display_recipient_emails, params
@@ -23,6 +24,7 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
       allow(recipients).to receive(:with_emails).and_return(recipients)
       allow(recipients).to receive(:page).and_return(recipients)
       allow(recipients).to receive(:per).and_return(recipients)
+      allow(recipients).to receive(:activity_data).and_return(users_activity_hash)
     end
 
     context "response" do
@@ -52,6 +54,9 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
       it "recipients expects to receive per and return recipients" do
         expect(recipients).to receive(:per).with(20).and_return(recipients)
       end
+      it "recipients expects to receive activity_data and return users activity hash" do
+        expect(recipients).to receive(:activity_data).with(*[params[:report_key], campaign.scheduled_at]).and_return(users_activity_hash)
+      end
 
       after { send_request params }
     end
@@ -64,6 +69,9 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
       end
       it "assigns recipient emails to an instance variable recipient_emails" do
         expect(assigns(:recipients)).to eq recipients
+      end
+      it "assigns users_activity_hash to a hash with emails as keys and activity time as its value" do
+        expect(assigns(:users_activity_hash)).to eq users_activity_hash
       end
     end
   end
