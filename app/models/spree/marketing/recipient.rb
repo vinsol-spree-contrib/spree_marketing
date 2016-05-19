@@ -32,43 +32,43 @@ module Spree
       end
 
       def self.log_ins_data campaign
-        hash = Spree::PageEvent.of_registered_users
-                               .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
-                               .where(actor_id: user_ids)
-                               .order(:created_at)
-                               .group(:actor_id)
-                               .pluck(:actor_id, :created_at)
-                               .to_h
-        data_hash = Spree.user_class.where(id: hash.keys).pluck(:email, :id).to_h
-        data_hash.each { |key, value| data_hash[key] = hash[value] }
+        timestamp_to_ids_hash = Spree::PageEvent.of_registered_users
+                                                .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
+                                                .where(actor_id: user_ids)
+                                                .order(:created_at)
+                                                .group(:actor_id)
+                                                .pluck(:actor_id, :created_at)
+                                                .to_h
+        id_to_emails_hash = Spree.user_class.where(id: timestamp_to_ids_hash.keys).pluck(:email, :id).to_h
+        timestamp_to_emails_hash = id_to_emails_hash.each { |key, value| id_to_emails_hash[key] = timestamp_to_ids_hash[value] }
       end
 
       def self.product_views_data campaign
-        hash = Spree::PageEvent.of_registered_users
-                              .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
-                              .where(actor_id: user_ids, target_type: "Spree::Product", activity: :view)
-                              .order(:created_at)
-                              .group(:actor_id)
-                              .pluck(:actor_id, :created_at)
-                              .to_h
-        data_hash = Spree.user_class.where(id: hash.keys).pluck(:email, :id).to_h
-        data_hash.each { |key, value| data_hash[key] = hash[value] }
+        timestamp_to_ids_hash = Spree::PageEvent.of_registered_users
+                                                .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
+                                                .where(actor_id: user_ids, target_type: "Spree::Product", activity: :view)
+                                                .order(:created_at)
+                                                .group(:actor_id)
+                                                .pluck(:actor_id, :created_at)
+                                                .to_h
+        id_to_emails_hash = Spree.user_class.where(id: timestamp_to_ids_hash.keys).pluck(:email, :id).to_h
+        timestamp_to_emails_hash = id_to_emails_hash.each { |key, value| id_to_emails_hash[key] = timestamp_to_ids_hash[value] }
       end
 
       def self.cart_additions_data campaign
-        hash = Spree::CartEvent.where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
-                               .where(activity: :add, actor_id: user_ids)
-                               .order(:created_at)
-                               .group(:actor_id)
-                               .pluck(:actor_id, :created_at)
-                               .to_h
-        data_hash = Spree::Order.of_registered_users
-                                .where(id: hash.keys)
+        timestamp_to_ids_hash = Spree::CartEvent.where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
+                                                .where(activity: :add, actor_id: user_ids)
+                                                .order(:created_at)
+                                                .group(:actor_id)
+                                                .pluck(:actor_id, :created_at)
+                                                .to_h
+        id_to_emails_hash = Spree::Order.of_registered_users
+                                .where(id: timestamp_to_ids_hash.keys)
                                 .where(user_id: user_ids)
                                 .group(:user_id)
                                 .pluck(:email, :id)
                                 .to_h
-        data_hash.each { |key, value| data_hash[key] = hash[value] }
+        timestamp_to_emails_hash = id_to_emails_hash.each { |key, value| id_to_emails_hash[key] = timestamp_to_ids_hash[value] }
       end
 
       def self.purchases_data campaign
