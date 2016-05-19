@@ -190,4 +190,12 @@ describe Spree::Marketing::List, type: :model do
   describe '#entity_name' do
     it { expect(active_list.entity_name).to be_nil }
   end
+
+  describe '.computed_time' do
+    let(:timestamp) { Time.current - Spree::Marketing::List::TIME_FRAME }
+
+    it 'returns time stamp which acts as least time for data calculation' do
+      expect(Spree::Marketing::List.send(:computed_time).to_date).to eq timestamp.to_date
+    end
+  end
 end

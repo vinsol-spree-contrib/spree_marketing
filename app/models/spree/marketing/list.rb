@@ -70,6 +70,11 @@ module Spree
         nil
       end
 
+      def self.computed_time
+        Time.current - self::TIME_FRAME
+      end
+      private_class_method :computed_time
+
       private
 
         def computed_time

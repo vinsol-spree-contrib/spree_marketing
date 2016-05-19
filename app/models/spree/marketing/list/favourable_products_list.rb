@@ -25,7 +25,7 @@ module Spree
 
       def self.data
         Spree::Order.joins(line_items: { variant: :product })
-                    .where('spree_orders.completed_at >= :time_frame', time_frame: new.send(:computed_time))
+                    .where('spree_orders.completed_at >= :time_frame', time_frame: computed_time)
                     .group("spree_products.id")
                     .order("COUNT(spree_orders.id) DESC")
                     .limit(FAVOURABLE_PRODUCT_COUNT)
