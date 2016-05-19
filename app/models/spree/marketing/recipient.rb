@@ -31,9 +31,9 @@ module Spree
         end
       end
 
-      def self.log_ins_data campaign
+      def self.log_ins_data scheduled_at
         timestamp_to_ids_hash = Spree::PageEvent.of_registered_users
-                                                .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
+                                                .where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
                                                 .where(actor_id: user_ids)
                                                 .order(:created_at)
                                                 .group(:actor_id)
@@ -43,9 +43,9 @@ module Spree
         timestamp_to_emails_hash = id_to_emails_hash.each { |key, value| id_to_emails_hash[key] = timestamp_to_ids_hash[value] }
       end
 
-      def self.product_views_data campaign
+      def self.product_views_data scheduled_at
         timestamp_to_ids_hash = Spree::PageEvent.of_registered_users
-                                                .where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
+                                                .where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
                                                 .where(actor_id: user_ids, target_type: "Spree::Product", activity: :view)
                                                 .order(:created_at)
                                                 .group(:actor_id)
@@ -55,8 +55,8 @@ module Spree
         timestamp_to_emails_hash = id_to_emails_hash.each { |key, value| id_to_emails_hash[key] = timestamp_to_ids_hash[value] }
       end
 
-      def self.cart_additions_data campaign
-        timestamp_to_ids_hash = Spree::CartEvent.where("created_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
+      def self.cart_additions_data scheduled_at
+        timestamp_to_ids_hash = Spree::CartEvent.where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
                                                 .where(activity: :add)
                                                 .order(:created_at)
                                                 .group(:actor_id)
@@ -71,9 +71,9 @@ module Spree
         timestamp_to_emails_hash = id_to_emails_hash.each { |key, value| id_to_emails_hash[key] = timestamp_to_ids_hash[value] }
       end
 
-      def self.purchases_data campaign
+      def self.purchases_data scheduled_at
         Spree::Order.of_registered_users
-                    .where("completed_at >= :scheduled_time", scheduled_time: campaign.scheduled_at)
+                    .where("completed_at >= :scheduled_time", scheduled_time: scheduled_at)
                     .where(user_id: user_ids)
                     .order(:completed_at)
                     .group(:user_id)
@@ -85,8 +85,8 @@ module Spree
         includes(:contact).pluck("spree_marketing_contacts.user_id")
       end
 
-      def self.activity_data report_key, campaign
-        send("#{ report_key }_data", campaign)
+      def self.activity_data report_key, scheduled_at
+        send("#{ report_key }_data", scheduled_at)
       end
     end
   end
