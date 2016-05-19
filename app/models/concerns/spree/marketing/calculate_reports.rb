@@ -29,7 +29,7 @@ module Spree
                                     .pluck(:actor_id)
 
         Spree::Order.of_registered_users
-                    .where(id: actor_ids, user_id: contact_ids)
+                    .where(id: actor_ids, user_id: user_ids)
                     .uniq
                     .pluck(:email)
       end
