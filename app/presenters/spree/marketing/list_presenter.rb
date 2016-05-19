@@ -50,7 +50,7 @@ module Spree
       end
 
       def sub_list_name
-        @list.entity_name || 'Contacts'
+        @list.entity_name || @list.name
       end
 
       def description

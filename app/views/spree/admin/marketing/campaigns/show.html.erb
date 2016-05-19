@@ -9,6 +9,9 @@
     Sent To: <%= @marketing_campaign.list.name %>
     <span class="icon icon-question-sign" data-toggle="tooltip" title="<%= @marketing_campaign.list.presenter.description %>"></span>
   </p>
+  <p style="font-size: 15px">
+    Total Recipients: <%= @stats['emails_sent'] %>
+  </p>
   <p style="font-size: 15px;">Sent At: <%= @marketing_campaign.scheduled_at.to_formatted_s(:short) %></p>
 <% end %>
 
