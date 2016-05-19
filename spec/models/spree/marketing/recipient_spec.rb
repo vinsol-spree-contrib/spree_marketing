@@ -1,8 +1,9 @@
 require "spec_helper"
 
 describe Spree::Marketing::Recipient, type: :model do
+  let(:user) { create(:user) }
+  let(:contact) { create(:marketing_contact, user: user) }
   let(:campaign) { build(:marketing_campaign) }
-  let(:contact) { create(:marketing_contact) }
 
   describe "Validations" do
     it { is_expected.to validate_presence_of(:campaign) }
@@ -56,4 +57,7 @@ describe Spree::Marketing::Recipient, type: :model do
       expect(recipient.reload.email_opened_at).to eq(recipients_data[0][:last_open])
     end
   end
+
+
+
 end
