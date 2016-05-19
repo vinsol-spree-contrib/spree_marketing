@@ -18,7 +18,7 @@
     <tbody>
       <% @recipients.each do |recipient| %>
         <tr>
-          <td><%= recipient.contact_email %></td>
+          <td><%= recipient_email_or_link(recipient) %></td>
           <td><%= recipient.email_opened_at.to_formatted_s(:long) %></td>
           <td><%= @users_activity_hash[recipient.contact_email].to_formatted_s(:long) %></td>
         </tr>
