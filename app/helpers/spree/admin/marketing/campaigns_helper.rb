@@ -9,7 +9,7 @@ module Spree
           else
             path = spree.edit_admin_user_path(id: user.id)
           end
-          link_to(text, path)
+          link_to(text, path, target: '_blank')
         end
 
         def recipient_email_or_link(recipient)
