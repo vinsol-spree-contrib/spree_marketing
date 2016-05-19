@@ -28,6 +28,22 @@ namespace :campaign do
         campaign.generate_reports
       end
 
+
+      Spree::Marketing::Campaign.all.each do |campaign|
+        stats = JSON.parse campaign.stats
+        if stats["cart_additions"].present?
+          emails = stats["cart_additions"]["emails"]
+        else
+          emails = []
+        end
+        emails.each do |email|
+          unless campaign.contacts.find_by(email: email)
+            campaign.contacts << Spree::Marketing::Contact.find_by(email: email)
+          end
+        end
+        campaign.recipients.update_all(email_opened_at: campaign.scheduled_at + 2.hour)
+      end
+
     end
   end
 end
