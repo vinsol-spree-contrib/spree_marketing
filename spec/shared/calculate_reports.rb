@@ -4,10 +4,10 @@ RSpec.shared_examples 'calculate_reports' do
   let(:user_with_product_view_event) { create(:user) }
   let(:user_with_cart_addition_event) { create(:user) }
   let(:user_with_login_event) { create(:user) }
-  let(:contact_with_successful_purchase) { create(:marketing_contact, email: user_with_successful_purchase.email) }
-  let(:contact_with_product_view_event) { create(:marketing_contact, email: user_with_product_view_event.email) }
-  let(:contact_with_cart_addition_event) { create(:marketing_contact, email: user_with_cart_addition_event.email) }
-  let(:contact_with_login_event) { create(:marketing_contact, email: user_with_login_event.email) }
+  let(:contact_with_successful_purchase) { create(:marketing_contact, email: user_with_successful_purchase.email, user: user_with_successful_purchase) }
+  let(:contact_with_product_view_event) { create(:marketing_contact, email: user_with_product_view_event.email, user: user_with_product_view_event) }
+  let(:contact_with_cart_addition_event) { create(:marketing_contact, email: user_with_cart_addition_event.email, user: user_with_cart_addition_event) }
+  let(:contact_with_login_event) { create(:marketing_contact, email: user_with_login_event.email, user: user_with_login_event) }
   let(:new_users_list) { create(:new_users_list) }
   let(:timestamp) { campaign_with_recepients.scheduled_at - 1.day }
   let!(:campaign_with_recepients) { create(:marketing_campaign, stats: json_stats_data, contacts: [contact_with_successful_purchase, contact_with_product_view_event, contact_with_cart_addition_event, contact_with_login_event], list: new_users_list) }
