@@ -24,11 +24,12 @@ module Spree
       end
 
       def self.data
-        Spree::InventoryUnit.joins(variant: :product)
-                            .group("spree_products.id")
-                            .order("COUNT(spree_inventory_units.id) DESC")
-                            .limit(FAVOURABLE_PRODUCT_COUNT)
-                            .pluck(:product_id)
+        Spree::Order.joins(line_items: { variant: :product })
+                    .where('spree_orders.completed_at >= :time_frame', time_frame: new.send(:computed_time))
+                    .group("spree_products.id")
+                    .order("COUNT(spree_orders.id) DESC")
+                    .limit(FAVOURABLE_PRODUCT_COUNT)
+                    .pluck(:product_id)
       end
       private_class_method :data
     end

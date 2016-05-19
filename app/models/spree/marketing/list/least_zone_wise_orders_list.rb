@@ -27,6 +27,7 @@ module Spree
 
       def self.data
         Spree::Order.joins(bill_address: :state)
+                    .where('spree_orders.completed_at >= :time_frame', time_frame: new.send(:computed_time))
                     .group('spree_states.id')
                     .order('COUNT(spree_orders.id)')
                     .limit(LEAST_ZONE_WISE_ORDER_COUNT)

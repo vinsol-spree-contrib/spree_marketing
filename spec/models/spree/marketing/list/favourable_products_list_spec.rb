@@ -70,6 +70,16 @@ describe Spree::Marketing::FavourableProductsList, type: :model do
           expect(Spree::Marketing::FavourableProductsList.send :data).to_not include eleventh_product.id
         end
       end
+
+      context 'with old completed orders of other product' do
+        let(:other_product) { create(:product, name: 'Other Product') }
+        let(:timestamp) { Time.current - 2.month }
+        let!(:old_orders_of_other_product) { create_list(:order_with_given_product, 2, :with_custom_completed_at, product: other_product, completed_at: timestamp) }
+
+        it 'returns product ids which will not include products having orders before time frame' do
+          expect(Spree::Marketing::FavourableProductsList.send :data).to_not include other_product.id
+        end
+      end
     end
 
     describe '#user_ids' do

@@ -95,6 +95,16 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
         it { expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to_not include sixth_payment_method.id }
       end
     end
+
+    context 'with payment methods having old orders' do
+      let(:other_payment_method) { create(:credit_card_payment_method) }
+      let(:timestamp) { Time.current - 1.month }
+      let!(:other_payment_method_old_completed_orders) { create_list(:order_with_given_payment_method, 6, :with_custom_completed_at, payment_method: other_payment_method, completed_at: timestamp) }
+
+      it 'returns payment method ids which will not include payment methods having orders only before time frame' do
+        expect(Spree::Marketing::MostUsedPaymentMethodsList.send :data).to_not include other_payment_method.id
+      end
+    end
   end
 
 end
