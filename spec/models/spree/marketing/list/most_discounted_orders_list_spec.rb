@@ -37,7 +37,7 @@ describe Spree::Marketing::MostDiscountedOrdersList, type: :model do
         let!(:guest_user_order) { create_list(:order_with_promotion, 6, user_id: nil, email: guest_user_email) }
 
         it "doesn't include guest users having completed orders with promotion" do
-          expect(Spree::Marketing::MostDiscountedOrdersList.new.send :emails).to_not include guest_user_email
+          expect(Spree::Marketing::MostDiscountedOrdersList.new.send(:users_data).keys).to_not include guest_user_email
         end
       end
 

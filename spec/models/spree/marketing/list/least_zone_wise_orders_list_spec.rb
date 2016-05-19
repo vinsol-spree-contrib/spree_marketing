@@ -82,7 +82,7 @@ describe Spree::Marketing::LeastZoneWiseOrdersList, type: :model do
         let!(:guest_user_orders) { create_list(:order_with_given_billing_state, 1, user_id: nil, email: guest_user_email, state: state) }
 
         it "doesn't include guest users who have ordered in the entity state" do
-          expect(Spree::Marketing::LeastZoneWiseOrdersList.new(params).send :emails).to_not include guest_user_email
+          expect(Spree::Marketing::LeastZoneWiseOrdersList.new(params).send(:users_data).keys).to_not include guest_user_email
         end
       end
 
