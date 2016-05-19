@@ -9,7 +9,8 @@
 .pie-chart-data {
   margin-left: 150px;
   float: left;
-  height: 400px;
+  height: 50px;
+  padding-top: 70px;
 }
 
 .campaign-email-reports {
