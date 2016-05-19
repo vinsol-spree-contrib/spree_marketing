@@ -5,9 +5,9 @@ module Spree
 
         def recipient_user_link(text, report_key, user)
           if report_key == :purchases
-            path = orders_admin_user_path(id: user.id)
+            path = spree.orders_admin_user_path(id: user.id)
           else
-            path = edit_admin_user_path(id: user.id)
+            path = spree.edit_admin_user_path(id: user.id)
           end
           link_to(text, path)
         end

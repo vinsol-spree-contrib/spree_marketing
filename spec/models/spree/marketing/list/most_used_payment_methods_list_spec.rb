@@ -62,7 +62,7 @@ describe Spree::Marketing::MostUsedPaymentMethodsList, type: :model do
         let(:guest_user_email) { 'spree@example.com' }
         let!(:guest_user_having_more_than_5_completed_order_with_given_payment_method) { create_list(:guest_user_order_with_given_payment_method, 6, email: guest_user_email, payment_method: payment_method) }
 
-        it { expect(Spree::Marketing::MostUsedPaymentMethodsList.new(entity_id: payment_method.id, entity_type: 'Spree::PaymentMethod').send :emails).to_not include guest_user_email }
+        it { expect(Spree::Marketing::MostUsedPaymentMethodsList.new(entity_id: payment_method.id, entity_type: 'Spree::PaymentMethod').send(:users_data).keys).to_not include guest_user_email }
       end
     end
 

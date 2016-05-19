@@ -53,21 +53,24 @@ describe Spree::Marketing::List, type: :model do
       allow(active_list).to receive(:user_ids).and_return([])
     end
 
-    it { expect(ListGenerationJob).to receive(:perform_later).with(active_list.display_name, active_list.send(:emails), active_list.class.name, active_list.send(:entity_data)) }
+    it { expect(ListGenerationJob).to receive(:perform_later).with(active_list.display_name, active_list.send(:users_data), active_list.class.name, active_list.send(:entity_data)) }
 
     after { active_list.generate }
   end
 
   describe '#update_list' do
-    let(:emails) { active_list.send(:emails) }
-    let(:old_emails) { active_list.send(:old_emails) }
+    let(:users_data) { active_list.send(:users_data) }
+    let(:old_users_data) { active_list.send(:old_users_data) }
+    let(:emails) { users_data.keys }
+    let(:old_emails) { old_users_data.keys }
+    let(:subscribable_users_data) { users_data.slice(*(emails - old_emails)) }
 
     before do
       allow(ListModificationJob).to receive(:perform_later).and_return(true)
       allow(active_list).to receive(:user_ids).and_return([])
     end
 
-    it { expect(ListModificationJob).to receive(:perform_later).with(active_list.id, emails - old_emails, old_emails - emails) }
+    it { expect(ListModificationJob).to receive(:perform_later).with(active_list.id, subscribable_users_data, old_emails - emails) }
 
     after { active_list.update_list }
   end
@@ -129,8 +132,9 @@ describe Spree::Marketing::List, type: :model do
     let(:contacts_data) { [{ email_address: user.email,
                              id: '12344567',
                              unique_email_id: '12345678900000987654322222221' }.with_indifferent_access] }
+    let(:users_data) { { user.email => user.id } }
 
-    before { active_list.populate(contacts_data) }
+    before { active_list.populate(contacts_data, users_data) }
 
     it { expect(active_list.contacts.count).to eq(1) }
     it { expect(active_list.contacts.first.email).to eq(user.email) }
@@ -145,23 +149,34 @@ describe Spree::Marketing::List, type: :model do
     it { expect(active_list.send(:time_frame)).to eq(Spree::Marketing::List::TIME_FRAME) }
   end
 
-  describe '#emails' do
+  describe '#users_data' do
     let(:user) { create(:user) }
 
     before do
       allow(active_list).to receive(:user_ids).and_return([user.id])
     end
 
-    it { expect(active_list.send(:emails)).to include(user.email) }
+    it { expect(active_list.send(:users)).to include(user) }
   end
 
-  describe '#old_emails' do
-    let(:contact) { create(:marketing_contact) }
+  describe '#users' do
+    let(:user) { create(:user) }
+
+    before do
+      allow(active_list).to receive(:user_ids).and_return([user.id])
+    end
+
+    it { expect(active_list.send(:users)).to include(user) }
+  end
+
+  describe '#old_users_data' do
+    let(:user) { create(:user) }
+    let(:contact) { create(:marketing_contact, user: user) }
     let(:contacts_list) { create(:contacts_list, list: active_list, contact: contact) }
 
     before { active_list.contacts << contact }
 
-    it { expect(active_list.send(:old_emails)).to include(contact.email) }
+    it { expect(active_list.send(:old_users_data)).to eq({ contact.email => contact.user_id }) }
   end
 
   describe '#removable_contact_uids' do

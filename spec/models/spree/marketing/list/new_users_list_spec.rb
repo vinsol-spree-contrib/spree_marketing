@@ -16,8 +16,8 @@ describe Spree::Marketing::NewUsersList, type: :model do
 
   describe 'methods' do
     context '#emails' do
-      it { expect(Spree::Marketing::NewUsersList.new.send :emails).to include new_user.email }
-      it { expect(Spree::Marketing::NewUsersList.new.send :emails).to_not include old_user.email }
+      it { expect(Spree::Marketing::NewUsersList.new.send(:users_data).keys).to include new_user.email }
+      it { expect(Spree::Marketing::NewUsersList.new.send(:users_data).keys).to_not include old_user.email }
     end
   end
 

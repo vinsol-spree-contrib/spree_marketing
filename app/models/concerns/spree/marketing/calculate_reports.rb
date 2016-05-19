@@ -45,7 +45,7 @@ module Spree
       end
 
       def user_ids
-        Spree.user_class.where(email: contacts.pluck(:email)).ids
+        contacts.pluck(:user_id)
       end
 
       def generate_reports
