@@ -91,7 +91,7 @@ describe Spree::Marketing::FavourableProductsList, type: :model do
         let!(:guest_user_complete_order) { create(:order_with_given_product, product: product, email: guest_user_email, user_id: nil) }
 
         it "doesn't include guest users who have ordered the entity product" do
-          expect(Spree::Marketing::FavourableProductsList.new(list_param).send :emails).to_not include guest_user_complete_order.email
+          expect(Spree::Marketing::FavourableProductsList.new(list_param).send(:users_data).keys).to_not include guest_user_complete_order.email
         end
       end
 

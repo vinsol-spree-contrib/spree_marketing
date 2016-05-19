@@ -11,6 +11,7 @@ RSpec.describe ListGenerationJob, type: :job do
   let(:list) { create(:marketing_list) }
   let(:list_name) { 'test' }
   let(:emails) { ['test@example.com'] }
+  let(:users_data) { { 'test@example.com' => 1 } }
   let(:list_class_name) { Spree::Marketing::List.subclasses.first.name }
   let(:list_data) { { id: '12345678', name: list_name }.with_indifferent_access }
   let(:contacts_data) { [{ id: '12345678', email_address: emails.first, unique_email_id: 'test' }.with_indifferent_access] }
@@ -21,7 +22,7 @@ RSpec.describe ListGenerationJob, type: :job do
     allow(gibbon_service).to receive(:subscribe_members).and_return(contacts_data)
   end
 
-  subject(:job) { described_class.perform_later(list_name, emails, list_class_name) }
+  subject(:job) { described_class.perform_later(list_name, users_data, list_class_name) }
 
   it 'queues the job' do
     expect { job }.to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)

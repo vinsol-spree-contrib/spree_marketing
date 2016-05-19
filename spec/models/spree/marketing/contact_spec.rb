@@ -2,7 +2,8 @@ require "spec_helper"
 
 describe Spree::Marketing::Contact, type: :model do
 
-  let(:contact) { create(:marketing_contact) }
+  let(:user) { create(:user) }
+  let(:contact) { create(:marketing_contact, user: user) }
   let(:active_contact) { create(:marketing_contact, active: true) }
   let(:inactive_contact) { create(:marketing_contact, active: false) }
 
@@ -34,7 +35,7 @@ describe Spree::Marketing::Contact, type: :model do
 
   describe "methods" do
     context ".load" do
-      let(:data) { { email_address: contact.email, id: contact.uid, unique_email_id: contact.mailchimp_id }.with_indifferent_access }
+      let(:data) { { email_address: contact.email, id: contact.uid, unique_email_id: contact.mailchimp_id, user_id: user.id }.with_indifferent_access }
       it { expect(Spree::Marketing::Contact.load data).to eq contact }
     end
   end

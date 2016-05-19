@@ -10,6 +10,7 @@ module Spree
       has_many :lists, through: :contacts_lists
       has_many :recipients, class_name: "Spree::Marketing::Recipient", dependent: :restrict_with_error
       has_many :campaigns, through: :recipients
+      belongs_to :user, class_name: Spree.user_class
 
       # Validations
       validates :uid, :email, :mailchimp_id, presence: true
@@ -21,7 +22,8 @@ module Spree
       def self.load(data)
         find_or_create_by(email: data['email_address'],
                           uid: data['id'],
-                          mailchimp_id: data['unique_email_id'])
+                          mailchimp_id: data['unique_email_id'],
+                          user_id: data['user_id'])
       end
     end
   end
