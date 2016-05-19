@@ -84,6 +84,10 @@ module Spree
       def self.user_ids
         includes(:contact).pluck("spree_marketing_contacts.user_id")
       end
+
+      def self.activity_data report_key, campaign
+        send("#{ report_key }_data", campaign)
+      end
     end
   end
 end
