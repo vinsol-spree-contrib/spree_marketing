@@ -42,19 +42,19 @@ describe Spree::Admin::Marketing::CampaignsController, type: :controller do
       it "Spree::Marketing::Campaign expects to receive includes and return campaigns" do
         expect(Spree::Marketing::Campaign).to receive(:find).with(params[:id].to_s).and_return(campaign)
       end
-      it "campaign expects to receive recipients and return recipients" do
+      it "expects campaign to receive recipients and return recipients" do
         expect(campaign).to receive(:recipients).and_return(recipients)
       end
-      it "recipients expects to receive with_emails scope and return recipients" do
+      it "expects recipients to receive with_emails scope and return recipients" do
         expect(recipients).to receive(:with_emails).with(JSON.parse(json_stats_data)['log_ins']['emails']).and_return(recipients)
       end
-      it "recipients expects to receive page and return recipients" do
+      it "expects recipients to receive page and return recipients" do
         expect(recipients).to receive(:page).with(params[:page].to_s).and_return(recipients)
       end
-      it "recipients expects to receive per and return recipients" do
+      it "expects recipients to receive per and return recipients" do
         expect(recipients).to receive(:per).with(20).and_return(recipients)
       end
-      it "recipients expects to receive activity_data and return users activity hash" do
+      it "expects recipients to receive activity_data and return users activity hash" do
         expect(recipients).to receive(:activity_data).with(*[params[:report_key], campaign.scheduled_at]).and_return(users_activity_hash)
       end
 
