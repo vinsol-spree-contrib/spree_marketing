@@ -15,6 +15,7 @@ module Spree
         def display_recipient_emails
           @report_name = params[:report_key]
           @recipients = @marketing_campaign.recipients.with_emails(@reports[params[:report_key]]['emails']).page(params[:page]).per(20)
+          @users_activity_hash = @recipients.activity_data params[:report_key], @marketing_campaign.scheduled_at
         end
 
         private
