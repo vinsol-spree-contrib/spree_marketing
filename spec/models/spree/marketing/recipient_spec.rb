@@ -6,6 +6,7 @@ describe Spree::Marketing::Recipient, type: :model do
   let(:one_day_earlier_time) { Time.current - 1.day }
   let(:campaign) { build(:marketing_campaign, scheduled_at: one_day_earlier_time) }
   let(:recipient) { create(:marketing_recipient, contact: contact, campaign: campaign) }
+  let(:time_after_two_hours) { Time.current + 2.hour }
 
   before do
     allow(campaign).to receive_messages(enqueue_update: nil)
@@ -68,7 +69,7 @@ describe Spree::Marketing::Recipient, type: :model do
 
   describe '.activity_data' do
     let!(:campaign_user_first_page_event) { create(:marketing_page_event, actor: campaign_recipients_user) }
-    let!(:campaign_user_second_page_event) { create(:marketing_page_event, actor: campaign_recipients_user, created_at: Time.current + 2.hour) }
+    let!(:campaign_user_second_page_event) { create(:marketing_page_event, actor: campaign_recipients_user, created_at: time_after_two_hours) }
     let(:log_ins_data_hash) { { campaign_recipients_user.email=>campaign_user_first_page_event.created_at } }
 
     it 'returns hash of recipients emails and their first activity in the category passed as an argument' do
@@ -78,7 +79,7 @@ describe Spree::Marketing::Recipient, type: :model do
 
   describe '.log_ins_data' do
     let!(:campaign_user_first_page_event) { create(:marketing_page_event, actor: campaign_recipients_user) }
-    let!(:campaign_user_second_page_event) { create(:marketing_page_event, actor: campaign_recipients_user) }
+    let!(:campaign_user_second_page_event) { create(:marketing_page_event, actor: campaign_recipients_user, created_at: time_after_two_hours) }
     let(:log_ins_data_hash) { { campaign_recipients_user.email=>campaign_user_first_page_event.created_at } }
 
     context 'with correct method flow' do
@@ -120,8 +121,9 @@ describe Spree::Marketing::Recipient, type: :model do
 
   describe '.cart_additions_data' do
     let(:campaign_recipients_user_order) { create(:order, user: campaign_recipients_user) }
-    let!(:campaign_user_cart_addition_event) { create(:cart_addition_event, actor: campaign_recipients_user_order) }
-    let(:cart_additions_data_hash) { { campaign_recipients_user.email=>campaign_user_cart_addition_event.created_at } }
+    let!(:campaign_user_first_cart_addition_event) { create(:cart_addition_event, actor: campaign_recipients_user_order) }
+    let!(:campaign_user_second_cart_addition_event) { create(:cart_addition_event, actor: campaign_recipients_user_order, created_at: time_after_two_hours) }
+    let(:cart_additions_data_hash) { { campaign_recipients_user.email=>campaign_user_first_cart_addition_event.created_at } }
 
     context 'with correct method flow' do
       it 'returns hash of recipients emails and to time of their first cart addition activity' do
@@ -176,8 +178,9 @@ describe Spree::Marketing::Recipient, type: :model do
   end
 
   describe '.purchases_data' do
-    let!(:completed_order_of_campaigns_user) { create(:completed_order_with_totals, user: campaign_recipients_user) }
-    let(:purchases_data_hash) { { campaign_recipients_user.email=>completed_order_of_campaigns_user.completed_at } }
+    let!(:first_completed_order_of_campaigns_user) { create(:completed_order_with_totals, user: campaign_recipients_user) }
+    let!(:second_completed_order_of_campaigns_user) { create(:order_with_promotion, :with_custom_completed_at, user: campaign_recipients_user, completed_at: time_after_two_hours) }
+    let(:purchases_data_hash) { { campaign_recipients_user.email=>first_completed_order_of_campaigns_user.completed_at } }
 
     context 'with correct method flow' do
       it 'returns hash of recipients emails and time of their first purchase' do
@@ -216,8 +219,9 @@ describe Spree::Marketing::Recipient, type: :model do
   end
 
   describe '.product_views_data' do
-    let!(:campaign_user_product_view_event) { create(:marketing_product_view_event, actor: campaign_recipients_user) }
-    let(:product_views_data_hash) { { campaign_recipients_user.email=>campaign_user_product_view_event.created_at } }
+    let!(:campaign_user_first_product_view_event) { create(:marketing_product_view_event, actor: campaign_recipients_user) }
+    let!(:campaign_user_second_product_view_event) { create(:marketing_product_view_event, actor: campaign_recipients_user, created_at: time_after_two_hours) }
+    let(:product_views_data_hash) { { campaign_recipients_user.email=>campaign_user_first_product_view_event.created_at } }
 
     context 'with correct method flow' do
       it 'returns hash of recipients emails and time of their first product view activity' do

@@ -35,8 +35,8 @@ module Spree
         timestamp_to_ids_hash = Spree::PageEvent.of_registered_users
                                                 .where("created_at >= :scheduled_time", scheduled_time: campaign_scheduled_at)
                                                 .where(actor_id: user_ids)
-                                                .order(:created_at)
                                                 .group(:actor_id)
+                                                .having("created_at = MIN(created_at)")
                                                 .pluck(:actor_id, :created_at)
                                                 .to_h
         id_to_emails_hash = Spree.user_class.where(id: timestamp_to_ids_hash.keys).pluck(:email, :id).to_h
@@ -47,8 +47,8 @@ module Spree
         timestamp_to_ids_hash = Spree::PageEvent.of_registered_users
                                                 .where("created_at >= :scheduled_time", scheduled_time: campaign_scheduled_at)
                                                 .where(actor_id: user_ids, target_type: "Spree::Product", activity: :view)
-                                                .order(:created_at)
                                                 .group(:actor_id)
+                                                .having("created_at = MIN(created_at)")
                                                 .pluck(:actor_id, :created_at)
                                                 .to_h
         id_to_emails_hash = Spree.user_class.where(id: timestamp_to_ids_hash.keys).pluck(:email, :id).to_h
@@ -58,8 +58,8 @@ module Spree
       def self.cart_additions_data campaign_scheduled_at
         timestamp_to_ids_hash = Spree::CartEvent.where("created_at >= :scheduled_time", scheduled_time: campaign_scheduled_at)
                                                 .where(activity: :add)
-                                                .order(:created_at)
                                                 .group(:actor_id)
+                                                .having("created_at = MIN(created_at)")
                                                 .pluck(:actor_id, :created_at)
                                                 .to_h
         id_to_emails_hash = Spree::Order.of_registered_users
@@ -75,8 +75,8 @@ module Spree
         Spree::Order.of_registered_users
                     .where("completed_at >= :scheduled_time", scheduled_time: campaign_scheduled_at)
                     .where(user_id: user_ids)
-                    .order(:completed_at)
                     .group(:user_id)
+                    .having("completed_at = MIN(completed_at)")
                     .pluck(:email, :completed_at)
                     .to_h
       end
