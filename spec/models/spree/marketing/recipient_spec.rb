@@ -1,9 +1,16 @@
 require "spec_helper"
 
 describe Spree::Marketing::Recipient, type: :model do
-  let(:user) { create(:user) }
-  let(:contact) { create(:marketing_contact, user: user) }
-  let(:campaign) { build(:marketing_campaign) }
+  let(:campaign_recipients_user) { create(:user) }
+  let(:contact) { create(:marketing_contact, user: campaign_recipients_user) }
+  let(:one_day_earlier_time) { Time.current - 1.day }
+  let(:campaign) { build(:marketing_campaign, scheduled_at: one_day_earlier_time) }
+  let(:recipient) { create(:marketing_recipient, contact: contact, campaign: campaign) }
+
+  before do
+    allow(campaign).to receive_messages(enqueue_update: nil)
+    campaign.recipients << recipient
+  end
 
   describe "Validations" do
     it { is_expected.to validate_presence_of(:campaign) }
@@ -17,8 +24,6 @@ describe Spree::Marketing::Recipient, type: :model do
   end
 
   describe 'Scopes' do
-    before { allow(campaign).to receive_messages(enqueue_update: nil) }
-
     context '.email_unopened' do
       let(:recipient_with_email_opened_at) { create(:marketing_recipient, campaign: campaign, email_opened_at: Time.current) }
       let(:recipient_without_email_opened_at) { create(:marketing_recipient, campaign: campaign, email_opened_at: nil) }
@@ -28,7 +33,7 @@ describe Spree::Marketing::Recipient, type: :model do
     end
 
     context '.with_emails' do
-      let(:recipient_with_contact_email) { create(:marketing_recipient, campaign: campaign, contact: contact) }
+      let(:recipient_with_contact_email) { recipient }
       let(:recipient_without_contact_email) { create(:marketing_recipient, campaign: campaign) }
       let(:recipients_with_email) { Spree::Marketing::Recipient.with_emails([contact.email]) }
 
@@ -44,12 +49,9 @@ describe Spree::Marketing::Recipient, type: :model do
   end
 
   describe '.update_email_opened_at' do
-    let(:recipient) { create(:marketing_recipient, contact: contact, campaign: campaign) }
     let(:recipients_data) { [{ email_id: contact.uid, email_address: contact.email, last_open: Time.current }.with_indifferent_access] }
 
     before do
-      allow(campaign).to receive_messages(enqueue_update: nil)
-      campaign.recipients << recipient
       campaign.recipients.includes(:contact).update_email_opened_at(recipients_data)
     end
 
@@ -58,6 +60,222 @@ describe Spree::Marketing::Recipient, type: :model do
     end
   end
 
+  describe '.user_ids' do
+    it 'returns user_ids corresponding to the recipients of campaign' do
+      expect(campaign.recipients.user_ids).to include campaign_recipients_user.id
+    end
+  end
 
+  describe '.activity_data' do
+    let!(:campaign_user_page_event) { create(:marketing_page_event, actor: campaign_recipients_user) }
+    let(:log_ins_data_hash) { { campaign_recipients_user.email=>campaign_user_page_event.created_at } }
+
+    it 'returns emails of users to their first activities corresponding to the activity key passed' do
+      expect(campaign.recipients.activity_data("log_ins", campaign.scheduled_at)).to eq log_ins_data_hash
+    end
+  end
+
+  describe '.log_ins_data' do
+    let!(:campaign_user_page_event) { create(:marketing_page_event, actor: campaign_recipients_user) }
+    let(:log_ins_data_hash) { { campaign_recipients_user.email=>campaign_user_page_event.created_at } }
+
+    context 'with correct method flow' do
+      it 'returns hash of emails of users to time of thier first activities' do
+        expect(campaign.recipients.log_ins_data(campaign.scheduled_at)).to include log_ins_data_hash
+      end
+    end
+
+    context 'with page events by guest users' do
+      let!(:guest_user_page_event) { create(:marketing_page_event, actor: nil) }
+      it 'returns hash of emails of users to time of first activities which will not include guest users' do
+        expect(campaign.recipients.log_ins_data(campaign.scheduled_at).keys).to_not include nil
+      end
+    end
+
+    context 'with page events of campaign users before campaign scheduled at' do
+      let(:user_with_activity_before_campaign_sheduled_at) { create(:user) }
+      let(:user_with_activity_before_campaign_sheduled_at_contact) { create(:marketing_contact, user: user_with_activity_before_campaign_sheduled_at) }
+      let!(:user_with_activity_before_campaign_sheduled_at_recipient) { create(:marketing_recipient, campaign: campaign, contact: user_with_activity_before_campaign_sheduled_at_contact) }
+      let(:time_before_campaign_scheduled_at) { Time.current - 2.day }
+      let!(:user_with_activity_before_campaign_sheduled_at_page_event) { create(:marketing_page_event, actor: user_with_activity_before_campaign_sheduled_at, created_at: time_before_campaign_scheduled_at) }
+      let(:user_with_activity_before_campaign_sheduled_at_hash) { { user_with_activity_before_campaign_sheduled_at.email=>user_with_activity_before_campaign_sheduled_at_page_event.created_at } }
+
+      it 'returns hash of emails of users to time of first activities which will not include activities before campaign scheduled at' do
+        expect(campaign.recipients.log_ins_data(campaign.scheduled_at)).to_not include user_with_activity_before_campaign_sheduled_at_hash
+      end
+    end
+
+    context 'with other users having page events not belonging to that campaign' do
+      let(:user_not_belonging_to_campaign) { create(:user) }
+      let!(:user_not_belonging_to_campaign_page_event) { create(:marketing_page_event, actor: user_not_belonging_to_campaign) }
+      let(:user_not_belonging_to_campaign_hash) { { user_not_belonging_to_campaign.email=>user_not_belonging_to_campaign_page_event.created_at } }
+
+      it 'returns hash of emails of users to first activities which will not include users not belonging to that campaign' do
+        expect(campaign.recipients.log_ins_data(campaign.scheduled_at)).to_not include user_not_belonging_to_campaign_hash
+      end
+    end
+  end
+
+  describe '.cart_additions_data' do
+    let(:campaign_recipients_user_order) { create(:order, user: campaign_recipients_user) }
+    let!(:campaign_user_cart_addition_event) { create(:cart_addition_event, actor: campaign_recipients_user_order) }
+    let(:cart_additions_data_hash) { { campaign_recipients_user.email=>campaign_user_cart_addition_event.created_at } }
+
+    context 'with correct method flow' do
+      it 'returns hash of emails of users to time of thier first activities' do
+        expect(campaign.recipients.cart_additions_data(campaign.scheduled_at)).to include cart_additions_data_hash
+      end
+    end
+
+    context 'with page events by guest users' do
+      let(:guest_user_order) { create(:order, user_id: nil) }
+      let!(:guest_user_cart_addition_event) { create(:cart_addition_event, actor: guest_user_order) }
+
+      it 'returns hash of emails of users to time of first activities which will not include guest users' do
+        expect(campaign.recipients.cart_additions_data(campaign.scheduled_at).keys).to_not include nil
+      end
+    end
+
+    context 'with page events of campaign users before campaign scheduled at' do
+      let(:user_with_activity_before_campaign_sheduled_at) { create(:user) }
+      let(:user_with_activity_before_campaign_sheduled_at_order) { create(:order, user: user_with_activity_before_campaign_sheduled_at) }
+      let(:user_with_activity_before_campaign_sheduled_at_contact) { create(:marketing_contact, user: user_with_activity_before_campaign_sheduled_at) }
+      let!(:user_with_activity_before_campaign_sheduled_at_recipient) { create(:marketing_recipient, campaign: campaign, contact: user_with_activity_before_campaign_sheduled_at_contact) }
+      let(:time_before_campaign_scheduled_at) { Time.current - 2.day }
+      let!(:user_with_activity_before_campaign_sheduled_at_cart_addition_event) { create(:cart_addition_event, actor: user_with_activity_before_campaign_sheduled_at_order, created_at: time_before_campaign_scheduled_at) }
+      let(:user_with_activity_before_campaign_sheduled_at_hash) { { user_with_activity_before_campaign_sheduled_at.email=>user_with_activity_before_campaign_sheduled_at_cart_addition_event.created_at } }
+
+      it 'returns hash of emails of users to time of first activities which will not include activities before campaign scheduled at' do
+        expect(campaign.recipients.cart_additions_data(campaign.scheduled_at)).to_not include user_with_activity_before_campaign_sheduled_at_hash
+      end
+    end
+
+    context 'with other users having page events not belonging to that campaign' do
+      let(:user_not_belonging_to_campaign) { create(:user) }
+      let(:user_not_belonging_to_campaign_order) { create(:order, user: user_not_belonging_to_campaign) }
+      let!(:user_not_belonging_to_campaign_cart_addition_event) { create(:cart_addition_event, actor: user_not_belonging_to_campaign_order) }
+      let(:user_not_belonging_to_campaign_hash) { { user_not_belonging_to_campaign.email=>user_not_belonging_to_campaign_cart_addition_event.created_at } }
+
+      it 'returns hash of emails of users to first activities which will not include users not belonging to that campaign' do
+        expect(campaign.recipients.cart_additions_data(campaign.scheduled_at)).to_not include user_not_belonging_to_campaign_hash
+      end
+    end
+
+    context 'with users having cart activities other than addition' do
+      let(:user_with_cart_activity_other_than_add) { create(:user) }
+      let(:user_with_cart_activity_other_than_add_order) { create(:order, user: user_with_cart_activity_other_than_add) }
+      let!(:user_with_cart_activity_other_than_add_cart_activity) { create(:cart_addition_event, activity: :remove, actor: user_with_cart_activity_other_than_add_order) }
+      let(:user_with_cart_activity_other_than_add_hash) { { user_with_cart_activity_other_than_add.email=>user_with_cart_activity_other_than_add_cart_activity.created_at } }
+
+      it 'returns hash of emails of users to first activities which will not activity other than add' do
+        expect(campaign.recipients.cart_additions_data(campaign.scheduled_at)).to_not include user_with_cart_activity_other_than_add_hash
+      end
+    end
+  end
+
+  describe '.purchases_data' do
+    let!(:completed_order_of_campaigns_user) { create(:completed_order_with_totals, user: campaign_recipients_user) }
+    let(:purchases_data_hash) { { campaign_recipients_user.email=>completed_order_of_campaigns_user.completed_at } }
+
+    context 'with correct method flow' do
+      it 'returns hash emails of users to thier first purchase time' do
+        expect(campaign.recipients.purchases_data(campaign.scheduled_at)).to include purchases_data_hash
+      end
+    end
+
+    context 'with guest user completed orders' do
+      let!(:guest_user_completed_order) { create(:completed_order_with_totals, user_id: nil) }
+
+      it 'returns hash emails of users to their first purchase time which will not include guest users' do
+        expect(campaign.recipients.purchases_data(campaign.scheduled_at).keys).to_not include nil
+      end
+    end
+
+    context 'with orders of users not belonging to that campaign' do
+      let(:user_not_belonging_to_campaign) { create(:user) }
+      let!(:user_not_belonging_to_campaign_completed_order) { create(:completed_order_with_totals, user: user_not_belonging_to_campaign) }
+      let(:user_not_belonging_to_campaign_hash) { { user_not_belonging_to_campaign.email=>user_not_belonging_to_campaign_completed_order.completed_at } }
+
+      it 'returns hash of emails of users to their first purchase time which will not include users not belonging to that campaign' do
+        expect(campaign.recipients.purchases_data(campaign.scheduled_at)).to_not include user_not_belonging_to_campaign_hash
+      end
+    end
+
+    context 'with orders of users belonging to campaign before campaign scheduled_at' do
+      let(:campaign_recipients_user_having_old_completed_order) { create(:user) }
+      let(:time_before_campaign_scheduled_at) { Time.current - 2.day }
+      let!(:old_completed_order) { create(:order_with_promotion, :with_custom_completed_at, completed_at: time_before_campaign_scheduled_at, user: campaign_recipients_user_having_old_completed_order) }
+      let(:campaign_recipients_user_having_old_completed_order_hash) { { campaign_recipients_user_having_old_completed_order.email=>old_completed_order.completed_at } }
+
+      it 'returns hash of emails of users to their first purchase time which will not include users having orders completed before campaign scheduled time' do
+        expect(campaign.recipients.purchases_data(campaign.scheduled_at)).to_not include campaign_recipients_user_having_old_completed_order_hash
+      end
+    end
+  end
+
+  describe '.product_views_data' do
+    let!(:campaign_user_product_view_event) { create(:marketing_product_view_event, actor: campaign_recipients_user) }
+    let(:product_views_data_hash) { { campaign_recipients_user.email=>campaign_user_product_view_event.created_at } }
+
+    context 'with correct method flow' do
+      it 'returns hash of emails of users to time of their first activities' do
+        expect(campaign.recipients.product_views_data(campaign.scheduled_at)).to include product_views_data_hash
+      end
+    end
+
+    context 'with page events by guest users' do
+      let!(:guest_user_product_view_event) { create(:marketing_product_view_event, actor: nil) }
+      it 'returns hash of emails of users to time of first activities which will not include guest users' do
+        expect(campaign.recipients.product_views_data(campaign.scheduled_at).keys).to_not include nil
+      end
+    end
+
+    context 'with page events of campaign users before campaign scheduled at' do
+      let(:user_with_activity_before_campaign_sheduled_at) { create(:user) }
+      let(:user_with_activity_before_campaign_sheduled_at_contact) { create(:marketing_contact, user: user_with_activity_before_campaign_sheduled_at) }
+      let!(:user_with_activity_before_campaign_sheduled_at_recipient) { create(:marketing_recipient, campaign: campaign, contact: user_with_activity_before_campaign_sheduled_at_contact) }
+      let(:time_before_campaign_scheduled_at) { Time.current - 2.day }
+      let!(:user_with_activity_before_campaign_sheduled_at_product_view_event) { create(:marketing_product_view_event, actor: user_with_activity_before_campaign_sheduled_at, created_at: time_before_campaign_scheduled_at) }
+      let(:user_with_activity_before_campaign_sheduled_at_hash) { { user_with_activity_before_campaign_sheduled_at.email=>user_with_activity_before_campaign_sheduled_at_product_view_event.created_at } }
+
+      it 'returns hash of emails of users to time of first activities which will not include activities before campaign scheduled at' do
+        expect(campaign.recipients.product_views_data(campaign.scheduled_at)).to_not include user_with_activity_before_campaign_sheduled_at_hash
+      end
+    end
+
+    context 'with other users having page events not belonging to that campaign' do
+      let(:user_not_belonging_to_campaign) { create(:user) }
+      let!(:user_not_belonging_to_campaign_product_view_event) { create(:marketing_product_view_event, actor: user_not_belonging_to_campaign) }
+      let(:user_not_belonging_to_campaign_hash) { { user_not_belonging_to_campaign.email=>user_not_belonging_to_campaign_product_view_event.created_at } }
+
+      it 'returns hash of emails of users to first activities which will not include users not belonging to that campaign' do
+        expect(campaign.recipients.product_views_data(campaign.scheduled_at)).to_not include user_not_belonging_to_campaign_hash
+      end
+    end
+
+    context 'with users belonging to campaign having view events for targets other than Spree::Product' do
+      let(:user_with_view_event_of_other_than_product) { create(:user) }
+      let(:user_with_view_event_of_other_than_product_contact) { create(:marketing_contact, user: user_with_view_event_of_other_than_product) }
+      let!(:user_with_view_event_of_other_than_product_recipient) { create(:marketing_recipient, campaign: campaign, contact: user_with_view_event_of_other_than_product_contact) }
+      let!(:user_with_view_event_of_other_than_product_product_view_event) { create(:marketing_product_view_event, actor: user_with_view_event_of_other_than_product, target: nil) }
+      let(:user_with_view_event_of_other_than_product_hash) { { user_with_view_event_of_other_than_product.email=>user_with_view_event_of_other_than_product_product_view_event.created_at } }
+
+      it 'returns hash of emails of users to first activities which will not include users having view events of target other than Spree::Product' do
+        expect(campaign.recipients.product_views_data(campaign.scheduled_at)).to_not include user_with_view_event_of_other_than_product_hash
+      end
+    end
+
+    context 'with users having page events of other than view type' do
+      let(:user_with_page_event_of_other_than_view) { create(:user) }
+      let(:user_with_page_event_of_other_than_view_contact) { create(:marketing_contact, user: user_with_page_event_of_other_than_view) }
+      let!(:user_with_page_event_of_other_than_view_recipient) { create(:marketing_recipient, contact: user_with_page_event_of_other_than_view_contact, campaign: campaign) }
+      let!(:user_with_page_event_of_other_than_view_product_event) { create(:marketing_product_view_event, actor: user_with_page_event_of_other_than_view, activity: :index) }
+      let!(:user_with_page_event_of_other_than_view_hash) { { user_with_page_event_of_other_than_view.email=>user_with_page_event_of_other_than_view_product_event.created_at } }
+
+      it 'returns hash of emails of users to first activities which will not include activity other than view type' do
+        expect(campaign.recipients.product_views_data(campaign.scheduled_at)).to_not include user_with_page_event_of_other_than_view_hash
+      end
+    end
+  end
 
 end

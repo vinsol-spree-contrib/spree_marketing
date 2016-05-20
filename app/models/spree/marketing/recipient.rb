@@ -63,11 +63,11 @@ module Spree
                                                 .pluck(:actor_id, :created_at)
                                                 .to_h
         id_to_emails_hash = Spree::Order.of_registered_users
-                                .where(id: timestamp_to_ids_hash.keys)
-                                .where(user_id: user_ids)
-                                .group(:user_id)
-                                .pluck(:email, :id)
-                                .to_h
+                                        .where(id: timestamp_to_ids_hash.keys)
+                                        .where(user_id: user_ids)
+                                        .group(:user_id)
+                                        .pluck(:email, :id)
+                                        .to_h
         timestamp_to_emails_hash = id_to_emails_hash.each { |key, value| id_to_emails_hash[key] = timestamp_to_ids_hash[value] }
       end
 
