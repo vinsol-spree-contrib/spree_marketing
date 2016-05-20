@@ -88,14 +88,14 @@ describe Spree::Marketing::Recipient, type: :model do
       end
     end
 
-    context 'with page events by guest users' do
+    context 'when no registered user performs an activity' do
       let!(:guest_user_page_event) { create(:marketing_page_event, actor: nil) }
       it 'returns hash of registered recipients emails and their time of first log in' do
         expect(campaign.recipients.log_ins_data(campaign.scheduled_at).keys).to_not include nil
       end
     end
 
-    context 'with page events of campaign users before campaign scheduled at' do
+    context 'when recipients users log ins before campaign scheduled_at' do
       let(:user_with_activity_before_campaign_sheduled_at) { create(:user) }
       let(:user_with_activity_before_campaign_sheduled_at_contact) { create(:marketing_contact, user: user_with_activity_before_campaign_sheduled_at) }
       let!(:user_with_activity_before_campaign_sheduled_at_recipient) { create(:marketing_recipient, campaign: campaign, contact: user_with_activity_before_campaign_sheduled_at_contact) }
@@ -108,13 +108,13 @@ describe Spree::Marketing::Recipient, type: :model do
       end
     end
 
-    context 'with other users having page events not belonging to those recipients' do
-      let(:user_not_belonging_to_campaign) { create(:user) }
-      let!(:user_not_belonging_to_campaign_page_event) { create(:marketing_page_event, actor: user_not_belonging_to_campaign) }
-      let(:user_not_belonging_to_campaign_hash) { { user_not_belonging_to_campaign.email=>user_not_belonging_to_campaign_page_event.created_at } }
+    context 'when non-recipient user performs log ins' do
+      let(:user_not_belonging_to_recipients) { create(:user) }
+      let!(:user_not_belonging_to_recipients_page_event) { create(:marketing_page_event, actor: user_not_belonging_to_recipients) }
+      let(:user_not_belonging_to_recipients_hash) { { user_not_belonging_to_recipients.email=>user_not_belonging_to_recipients_page_event.created_at } }
 
       it 'returns hash of only recipients emails and time of their first log in' do
-        expect(campaign.recipients.log_ins_data(campaign.scheduled_at)).to_not include user_not_belonging_to_campaign_hash
+        expect(campaign.recipients.log_ins_data(campaign.scheduled_at)).to_not include user_not_belonging_to_recipients_hash
       end
     end
   end
@@ -131,7 +131,7 @@ describe Spree::Marketing::Recipient, type: :model do
       end
     end
 
-    context 'with cart addition events by guest users' do
+    context 'when non registered users adds an item to the cart' do
       let(:guest_user_order) { create(:order, user_id: nil) }
       let!(:guest_user_cart_addition_event) { create(:cart_addition_event, actor: guest_user_order) }
 
@@ -140,7 +140,7 @@ describe Spree::Marketing::Recipient, type: :model do
       end
     end
 
-    context 'with page events of recipients before campaign scheduled at' do
+    context 'when recipients users add an item to the cart before campaign scheduled at' do
       let(:user_with_activity_before_campaign_sheduled_at) { create(:user) }
       let(:user_with_activity_before_campaign_sheduled_at_order) { create(:order, user: user_with_activity_before_campaign_sheduled_at) }
       let(:user_with_activity_before_campaign_sheduled_at_contact) { create(:marketing_contact, user: user_with_activity_before_campaign_sheduled_at) }
@@ -154,18 +154,18 @@ describe Spree::Marketing::Recipient, type: :model do
       end
     end
 
-    context 'with other users having page events not belonging to those recipients' do
-      let(:user_not_belonging_to_campaign) { create(:user) }
-      let(:user_not_belonging_to_campaign_order) { create(:order, user: user_not_belonging_to_campaign) }
-      let!(:user_not_belonging_to_campaign_cart_addition_event) { create(:cart_addition_event, actor: user_not_belonging_to_campaign_order) }
-      let(:user_not_belonging_to_campaign_hash) { { user_not_belonging_to_campaign.email=>user_not_belonging_to_campaign_cart_addition_event.created_at } }
+    context 'when non recipient users adds an item to the cart' do
+      let(:user_not_belonging_to_recipients) { create(:user) }
+      let(:user_not_belonging_to_recipients_order) { create(:order, user: user_not_belonging_to_recipients) }
+      let!(:user_not_belonging_to_recipients_cart_addition_event) { create(:cart_addition_event, actor: user_not_belonging_to_recipients_order) }
+      let(:user_not_belonging_to_recipients_hash) { { user_not_belonging_to_recipients.email=>user_not_belonging_to_recipients_cart_addition_event.created_at } }
 
       it 'returns hash of only recipients emails and time of their first cart addition activity' do
-        expect(campaign.recipients.cart_additions_data(campaign.scheduled_at)).to_not include user_not_belonging_to_campaign_hash
+        expect(campaign.recipients.cart_additions_data(campaign.scheduled_at)).to_not include user_not_belonging_to_recipients_hash
       end
     end
 
-    context 'with recipients having cart activity other than addition' do
+    context 'when recipients users performs cart activity other than addition type' do
       let(:user_with_cart_activity_other_than_add) { create(:user) }
       let(:user_with_cart_activity_other_than_add_order) { create(:order, user: user_with_cart_activity_other_than_add) }
       let!(:user_with_cart_activity_other_than_add_cart_activity) { create(:cart_addition_event, activity: :remove, actor: user_with_cart_activity_other_than_add_order) }
@@ -188,7 +188,7 @@ describe Spree::Marketing::Recipient, type: :model do
       end
     end
 
-    context 'with guest user completed orders' do
+    context 'when non registered user makes a purchase' do
       let!(:guest_user_completed_order) { create(:completed_order_with_totals, user_id: nil) }
 
       it 'returns hash of registered recipients emails and time of their first purchase' do
@@ -196,17 +196,17 @@ describe Spree::Marketing::Recipient, type: :model do
       end
     end
 
-    context 'with orders of users not belonging to those recipients' do
-      let(:user_not_belonging_to_campaign) { create(:user) }
-      let!(:user_not_belonging_to_campaign_completed_order) { create(:completed_order_with_totals, user: user_not_belonging_to_campaign) }
-      let(:user_not_belonging_to_campaign_hash) { { user_not_belonging_to_campaign.email=>user_not_belonging_to_campaign_completed_order.completed_at } }
+    context 'when non recipients users makes a purchase' do
+      let(:user_not_belonging_to_recipients) { create(:user) }
+      let!(:user_not_belonging_to_recipients_completed_order) { create(:completed_order_with_totals, user: user_not_belonging_to_recipients) }
+      let(:user_not_belonging_to_recipients_hash) { { user_not_belonging_to_recipients.email=>user_not_belonging_to_recipients_completed_order.completed_at } }
 
       it 'returns hash of only recipients emails and time of their first purchase' do
-        expect(campaign.recipients.purchases_data(campaign.scheduled_at)).to_not include user_not_belonging_to_campaign_hash
+        expect(campaign.recipients.purchases_data(campaign.scheduled_at)).to_not include user_not_belonging_to_recipients_hash
       end
     end
 
-    context 'with orders of users belonging to campaign before campaign scheduled_at' do
+    context 'when recipients users makes purchases only before campaign scheduled_at' do
       let(:campaign_recipients_user_having_old_completed_order) { create(:user) }
       let(:time_before_campaign_scheduled_at) { Time.current - 2.day }
       let!(:old_completed_order) { create(:order_with_promotion, :with_custom_completed_at, completed_at: time_before_campaign_scheduled_at, user: campaign_recipients_user_having_old_completed_order) }
@@ -229,14 +229,14 @@ describe Spree::Marketing::Recipient, type: :model do
       end
     end
 
-    context 'with page events by guest users' do
+    context 'when non registered user views a product' do
       let!(:guest_user_product_view_event) { create(:marketing_product_view_event, actor: nil) }
       it 'returns hash of registered recipients emails and time of their first product view activity' do
         expect(campaign.recipients.product_views_data(campaign.scheduled_at).keys).to_not include nil
       end
     end
 
-    context 'with page events of campaign users before campaign scheduled at' do
+    context 'when non recipients users views product before campaign scheduled_at' do
       let(:user_with_activity_before_campaign_sheduled_at) { create(:user) }
       let(:user_with_activity_before_campaign_sheduled_at_contact) { create(:marketing_contact, user: user_with_activity_before_campaign_sheduled_at) }
       let!(:user_with_activity_before_campaign_sheduled_at_recipient) { create(:marketing_recipient, campaign: campaign, contact: user_with_activity_before_campaign_sheduled_at_contact) }
@@ -249,17 +249,17 @@ describe Spree::Marketing::Recipient, type: :model do
       end
     end
 
-    context 'with other users having page events not belonging to those recipients' do
-      let(:user_not_belonging_to_campaign) { create(:user) }
-      let!(:user_not_belonging_to_campaign_product_view_event) { create(:marketing_product_view_event, actor: user_not_belonging_to_campaign) }
-      let(:user_not_belonging_to_campaign_hash) { { user_not_belonging_to_campaign.email=>user_not_belonging_to_campaign_product_view_event.created_at } }
+    context 'when non recipients users views a product' do
+      let(:user_not_belonging_to_recipients) { create(:user) }
+      let!(:user_not_belonging_to_recipients_product_view_event) { create(:marketing_product_view_event, actor: user_not_belonging_to_recipients) }
+      let(:user_not_belonging_to_recipients_hash) { { user_not_belonging_to_recipients.email=>user_not_belonging_to_recipients_product_view_event.created_at } }
 
       it 'returns hash of only recipients emails and time of their first product view activity' do
-        expect(campaign.recipients.product_views_data(campaign.scheduled_at)).to_not include user_not_belonging_to_campaign_hash
+        expect(campaign.recipients.product_views_data(campaign.scheduled_at)).to_not include user_not_belonging_to_recipients_hash
       end
     end
 
-    context 'with users belonging to campaign having view events for targets other than Spree::Product' do
+    context 'when recipients users performs an activity other than view' do
       let(:user_with_view_event_of_other_than_product) { create(:user) }
       let(:user_with_view_event_of_other_than_product_contact) { create(:marketing_contact, user: user_with_view_event_of_other_than_product) }
       let!(:user_with_view_event_of_other_than_product_recipient) { create(:marketing_recipient, campaign: campaign, contact: user_with_view_event_of_other_than_product_contact) }
@@ -271,7 +271,7 @@ describe Spree::Marketing::Recipient, type: :model do
       end
     end
 
-    context 'with users having page events of other than view type' do
+    context 'when recipients users performs view activity other than product' do
       let(:user_with_page_event_of_other_than_view) { create(:user) }
       let(:user_with_page_event_of_other_than_view_contact) { create(:marketing_contact, user: user_with_page_event_of_other_than_view) }
       let!(:user_with_page_event_of_other_than_view_recipient) { create(:marketing_recipient, contact: user_with_page_event_of_other_than_view_contact, campaign: campaign) }
