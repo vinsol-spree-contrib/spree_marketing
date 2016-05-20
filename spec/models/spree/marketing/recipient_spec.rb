@@ -108,7 +108,7 @@ describe Spree::Marketing::Recipient, type: :model do
       end
     end
 
-    context 'with other users having page events not belonging to that campaign' do
+    context 'with other users having page events not belonging to those recipients' do
       let(:user_not_belonging_to_campaign) { create(:user) }
       let!(:user_not_belonging_to_campaign_page_event) { create(:marketing_page_event, actor: user_not_belonging_to_campaign) }
       let(:user_not_belonging_to_campaign_hash) { { user_not_belonging_to_campaign.email=>user_not_belonging_to_campaign_page_event.created_at } }
@@ -196,7 +196,7 @@ describe Spree::Marketing::Recipient, type: :model do
       end
     end
 
-    context 'with orders of users not belonging to that campaign' do
+    context 'with orders of users not belonging to those recipients' do
       let(:user_not_belonging_to_campaign) { create(:user) }
       let!(:user_not_belonging_to_campaign_completed_order) { create(:completed_order_with_totals, user: user_not_belonging_to_campaign) }
       let(:user_not_belonging_to_campaign_hash) { { user_not_belonging_to_campaign.email=>user_not_belonging_to_campaign_completed_order.completed_at } }
@@ -249,7 +249,7 @@ describe Spree::Marketing::Recipient, type: :model do
       end
     end
 
-    context 'with other users having page events not belonging to that campaign' do
+    context 'with other users having page events not belonging to those recipients' do
       let(:user_not_belonging_to_campaign) { create(:user) }
       let!(:user_not_belonging_to_campaign_product_view_event) { create(:marketing_product_view_event, actor: user_not_belonging_to_campaign) }
       let(:user_not_belonging_to_campaign_hash) { { user_not_belonging_to_campaign.email=>user_not_belonging_to_campaign_product_view_event.created_at } }
