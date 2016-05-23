@@ -28,8 +28,8 @@ module Spree
           description: 'Users who are part of the purchase family mostly for discounted orders'
         },
         'MostSearchedKeywordsList' => {
-          tooltip_content: 'View the contact list of users corresponding to top 10 keywords',
-          description: 'Users corresponding to top 10 keywords'
+          tooltip_content: 'View the contact list of users corresponding to top 5 keywords',
+          description: 'Users corresponding to top 5 keywords'
         },
         'MostUsedPaymentMethodsList' => {
           tooltip_content: 'View the contact list of users corresponding to most used payment methods',
@@ -50,7 +50,7 @@ module Spree
       end
 
       def sub_list_name
-        @list.entity_name || 'Contacts'
+        @list.entity_name || @list.name
       end
 
       def description

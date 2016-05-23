@@ -35,8 +35,8 @@ describe Spree::Marketing::ListPresenter do
         description: 'Users who are part of the purchase family mostly for discounted orders'
       },
       'MostSearchedKeywordsList' => {
-        tooltip_content: 'View the contact list of users corresponding to top 10 keywords',
-        description: 'Users corresponding to top 10 keywords'
+        tooltip_content: 'View the contact list of users corresponding to top 5 keywords',
+        description: 'Users corresponding to top 5 keywords'
       },
       'MostUsedPaymentMethodsList' => {
         tooltip_content: 'View the contact list of users corresponding to most used payment methods',
@@ -74,8 +74,8 @@ describe Spree::Marketing::ListPresenter do
       end
 
       context 'when list is of single list type' do
-        it 'returns Contacts string' do
-          expect(list_presenter.sub_list_name).to eq 'Contacts'
+        it 'returns List name' do
+          expect(list_presenter.sub_list_name).to eq list.name
         end
       end
     end

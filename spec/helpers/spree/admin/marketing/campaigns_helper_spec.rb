@@ -15,12 +15,12 @@ describe Spree::Admin::Marketing::CampaignsHelper, type: :helper do
       context 'when report_name is purchases' do
         before { @report_name = 'purchases' }
         it 'returns link tag for user\'s orders path' do
-          expect(helper.recipient_email_or_link(recipient)).to include("<a href=\"/admin/users/1/orders\">")
+          expect(helper.recipient_email_or_link(recipient)).to include("<a target=\"_blank\" href=\"/admin/users/1/orders\">")
         end
       end
       context 'when report_name is ' do
         it 'returns link tag for user\'s edit path' do
-          expect(helper.recipient_email_or_link(recipient)).to include("<a href=\"/admin/users/1/edit\">")
+          expect(helper.recipient_email_or_link(recipient)).to include("<a target=\"_blank\" href=\"/admin/users/1/edit\">")
         end
       end
     end
