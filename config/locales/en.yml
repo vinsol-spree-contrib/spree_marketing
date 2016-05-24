@@ -5,6 +5,37 @@ en:
   spree:
     no_reports_found: 'No Reports Found. Please check again after some time.'
     marketing:
+      lists:
+        abandoned_cart:
+          tooltip_content: 'View the contact list of users who have products left in their cart'
+          description: 'Users who have abandoned the cart'
+        favourable_products:
+          tooltip_content: 'View the contact list of users who have purchased any of the top 10 selling products'
+          description: 'Users who are part of the purchase family for top 10 most selling products'
+        least_active:
+          tooltip_content: 'View the contact list of users who have the performed less than 5 activities'
+          description: 'Users corresponding to least activities'
+        cold_zone:
+          tooltip_content: 'View the contact list of users who have made purchase(s) in any of the 5 lowest ordering Zone'
+          description: 'Users in 5 lowest ordering Zone'
+        most_active:
+          tooltip_content: 'View the contact list of users who have the performed more than 5 activities'
+          description: 'Users corresponding to most activities'
+        most_discounted_orders:
+          tooltip_content: 'View the contact list of users who have made more than 5 purchases after applying a discount coupon'
+          description: 'Users who are part of the purchase family mostly for discounted orders'
+        most_searched_keywords:
+          tooltip_content: 'View the contact list of users who have searched amongst top 5 searched keywords'
+          description: 'Users corresponding to top 5 keywords'
+        most_used_payment_methods:
+          tooltip_content: 'View the contact list of users who have used the top payment methods in more than 5 purchases'
+          description: 'Users corresponding to most used payment methods'
+        hot_zone:
+          tooltip_content: 'View the contact list of users who have made purchase(s) in any of the 5 most ordering Zone'
+          description: 'Users in 5 most ordering Zone'
+        new_users:
+          tooltip_content: 'View the contact list of users who have signed up in last week'
+          description: 'Users who have signed up in last week'
       mailchimp_error_notifier:
         notify_failure:
           subject: '--Exception Triggered--'

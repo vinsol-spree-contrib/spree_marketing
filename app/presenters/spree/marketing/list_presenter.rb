@@ -4,44 +4,44 @@ module Spree
 
       VIEW_NAMES_HASH = {
         'AbandonedCartList' => {
-          tooltip_content: 'View the contact list of users who have abandoned the cart',
-          description: 'Users who have abandoned the cart'
+          tooltip_content: Spree.t('marketing.lists.abandoned_cart.tooltip_content'),
+          description: Spree.t('marketing.lists.abandoned_cart.description')
         },
         'FavourableProductsList' => {
-          tooltip_content: 'View the contact list of users who are part of the purchase family for top 10 most selling products',
-          description: 'Users who are part of the purchase family for top 10 most selling products'
+          tooltip_content: Spree.t('marketing.lists.favourable_products.tooltip_content'),
+          description: Spree.t('marketing.lists.favourable_products.description')
         },
         'LeastActiveUsersList' => {
-          tooltip_content: 'View the contact list of users corresponding to least activities',
-          description: 'Users corresponding to least activities'
+          tooltip_content: Spree.t('marketing.lists.least_active.tooltip_content'),
+          description: Spree.t('marketing.lists.least_active.description')
         },
         'LeastZoneWiseOrdersList' => {
-          tooltip_content: 'View the contact list of users in 5 lowest ordering Zone',
-          description: 'Users in 5 lowest ordering Zone'
+          tooltip_content: Spree.t('marketing.lists.cold_zone.tooltip_content'),
+          description: Spree.t('marketing.lists.cold_zone.description')
         },
         'MostActiveUsersList' => {
-          tooltip_content: 'View the contact list of users corresponding to most activities',
-          description: 'Users corresponding to most activities'
+          tooltip_content: Spree.t('marketing.lists.most_active.tooltip_content'),
+          description: Spree.t('marketing.lists.most_active.description')
         },
         'MostDiscountedOrdersList' => {
-          tooltip_content: 'View the contact list of users who are part of the purchase family mostly for discounted orders',
-          description: 'Users who are part of the purchase family mostly for discounted orders'
+          tooltip_content: Spree.t('marketing.lists.most_discounted_orders.tooltip_content'),
+          description: Spree.t('marketing.lists.most_discounted_orders.description')
         },
         'MostSearchedKeywordsList' => {
-          tooltip_content: 'View the contact list of users corresponding to top 5 keywords',
-          description: 'Users corresponding to top 5 keywords'
+          tooltip_content: Spree.t('marketing.lists.most_searched_keywords.tooltip_content'),
+          description: Spree.t('marketing.lists.most_searched_keywords.description')
         },
         'MostUsedPaymentMethodsList' => {
-          tooltip_content: 'View the contact list of users corresponding to most used payment methods',
-          description: 'Users corresponding to most used payment methods'
+          tooltip_content: Spree.t('marketing.lists.most_used_payment_methods.tooltip_content'),
+          description: Spree.t('marketing.lists.most_used_payment_methods.description')
         },
         'MostZoneWiseOrdersList' => {
-          tooltip_content: 'View the contact list of users in 5 most ordering Zone',
-          description: 'Users in 5 most ordering Zone'
+          tooltip_content: Spree.t('marketing.lists.hot_zone.tooltip_content'),
+          description: Spree.t('marketing.lists.hot_zone.description')
         },
         'NewUsersList' => {
-          tooltip_content: 'View the contact list of users who have signed up in last week',
-          description: 'Users who have signed up in last week'
+          tooltip_content: Spree.t('marketing.lists.new_users.tooltip_content'),
+          description: Spree.t('marketing.lists.new_users.description')
         }
       }
 
