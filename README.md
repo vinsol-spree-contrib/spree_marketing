@@ -27,7 +27,9 @@ Installation
   ```
   This installer will also run installer for spree_events_tracker.
 
-  4. Restart your server if your server is running so that it can find assets properly.
+  4. After installer runs, it will create a `config/spree_marketing.yml.example` which is to be converted into `config/spree_marketing.yml` with correct user credentials.
+
+  5. Restart your server if your server is running so that it can find assets properly.
 
 
 Testing
