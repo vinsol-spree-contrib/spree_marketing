@@ -3,31 +3,31 @@
 Installation
 -------------
 
-1. Add this extension to your Gemfile by this line.
-```ruby
- gem 'spree_marketing', github: '[your-github-handle]/spree_marketing', branch: 'x-x-stable'
-```
-  Specify branch corresponding to the spree version you are using like `3-0-stable` for spree `3.0.x`
-  Also this gem has dependency on spree_events_tracker. So make sure spree_events_tracker gem is added in your `Gemfile` like
-```ruby
- gem 'spree_events_tracker', github: '[your-github-handle]/spree_events_tracker', branch: 'x-x-stable'
-```
+  1. Add this extension to your Gemfile by this line.
 
+  ```ruby
+   gem 'spree_marketing', github: '[your-github-handle]/spree_marketing', branch: 'x-x-stable'
+  ```
+    Specify branch corresponding to the spree version you are using like `3-0-stable` for spree `3.0.x`
+    Also this gem has dependency on spree_events_tracker. So make sure spree_events_tracker gem is added in your `Gemfile` like
+  ```ruby
+   gem 'spree_events_tracker', github: '[your-github-handle]/spree_events_tracker', branch: 'x-x-stable'
+  ```
 
-2. Install the gem using bundler.
-```ruby
- bundle install
-```
+  2. Install the gem using bundler.
 
+  ```ruby
+   bundle install
+  ```
 
-3. Copy & run migrations using installer.
-```ruby
- bundle exec rails g spree_marketing:install
-```
-This installer will also run installer for spree_events_tracker.
+  3. Copy & run migrations using installer.
 
+  ```ruby
+   bundle exec rails g spree_marketing:install
+  ```
+  This installer will also run installer for spree_events_tracker.
 
-4. Restart your server if your server is running so that it can find assets properly.
+  4. Restart your server if your server is running so that it can find assets properly.
 
 
 Testing
