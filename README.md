@@ -1,4 +1,13 @@
-# spree_marketing
+# Spree Marketing
+
+Introduction
+-------------
+
+Marketing is one of the most important aspect of any Ecommerce business.
+
+This extension gives you a lot of reports synced with Mailchimp to help you in creating different subscribers list on Mailchimp.
+
+This extension provides reports like "Most Selling Products", "Abandoned Carts", "Most searched keywords", etc. to give better insights.
 
 Installation
 -------------
@@ -6,12 +15,12 @@ Installation
   1. Add this extension to your Gemfile by this line.
 
   ```ruby
-   gem 'spree_marketing', github: '[your-github-handle]/spree_marketing', branch: 'x-x-stable'
+   gem 'spree_marketing', github: 'vinsol-spree-contrib/spree_marketing'
   ```
     Specify branch corresponding to the spree version you are using like `3-0-stable` for spree `3.0.x`
     Also this gem has dependency on spree_events_tracker. So make sure spree_events_tracker gem is added in your `Gemfile` like
   ```ruby
-   gem 'spree_events_tracker', github: '[your-github-handle]/spree_events_tracker', branch: 'x-x-stable'
+   gem 'spree_events_tracker', github: 'vinsol-spree-contrib/spree_events_tracker'
   ```
 
   2. Install the gem using bundler.
@@ -54,9 +63,9 @@ When testing your applications integration with this extension you may use it's 
   require 'spree_marketing/factories'
 ```
 
-Contributing
--------------
+Credits
+-------
 
-If you'd like to contribute, please take a look at the instructions for installing dependencies and crafting a good pull request.
+[![vinsol.com: Ruby on Rails, iOS and Android developers](http://vinsol.com/vin_logo.png "Ruby on Rails, iOS and Android developers")](http://vinsol.com)
 
-Copyright (c) 2016 [name of extension creator], released under the New BSD License
+Copyright (c) 2016 [vinsol.com](http://vinsol.com "Ruby on Rails, iOS and Android developers"), released under the New MIT License

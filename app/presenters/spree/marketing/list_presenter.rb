@@ -3,43 +3,43 @@ module Spree
     class ListPresenter
 
       VIEW_NAMES_HASH = {
-        'AbandonedCartList' => {
+        'AbandonedCart' => {
           tooltip_content: Spree.t('marketing.lists.abandoned_cart.tooltip_content'),
           description: Spree.t('marketing.lists.abandoned_cart.description')
         },
-        'FavourableProductsList' => {
+        'FavourableProducts' => {
           tooltip_content: Spree.t('marketing.lists.favourable_products.tooltip_content'),
           description: Spree.t('marketing.lists.favourable_products.description')
         },
-        'LeastActiveUsersList' => {
+        'LeastActiveUsers' => {
           tooltip_content: Spree.t('marketing.lists.least_active.tooltip_content'),
           description: Spree.t('marketing.lists.least_active.description')
         },
-        'LeastZoneWiseOrdersList' => {
+        'LeastZoneWiseOrders' => {
           tooltip_content: Spree.t('marketing.lists.cold_zone.tooltip_content'),
           description: Spree.t('marketing.lists.cold_zone.description')
         },
-        'MostActiveUsersList' => {
+        'MostActiveUsers' => {
           tooltip_content: Spree.t('marketing.lists.most_active.tooltip_content'),
           description: Spree.t('marketing.lists.most_active.description')
         },
-        'MostDiscountedOrdersList' => {
+        'MostDiscountedOrders' => {
           tooltip_content: Spree.t('marketing.lists.most_discounted_orders.tooltip_content'),
           description: Spree.t('marketing.lists.most_discounted_orders.description')
         },
-        'MostSearchedKeywordsList' => {
+        'MostSearchedKeywords' => {
           tooltip_content: Spree.t('marketing.lists.most_searched_keywords.tooltip_content'),
           description: Spree.t('marketing.lists.most_searched_keywords.description')
         },
-        'MostUsedPaymentMethodsList' => {
+        'MostUsedPaymentMethods' => {
           tooltip_content: Spree.t('marketing.lists.most_used_payment_methods.tooltip_content'),
           description: Spree.t('marketing.lists.most_used_payment_methods.description')
         },
-        'MostZoneWiseOrdersList' => {
+        'MostZoneWiseOrders' => {
           tooltip_content: Spree.t('marketing.lists.hot_zone.tooltip_content'),
           description: Spree.t('marketing.lists.hot_zone.description')
         },
-        'NewUsersList' => {
+        'NewUsers' => {
           tooltip_content: Spree.t('marketing.lists.new_users.tooltip_content'),
           description: Spree.t('marketing.lists.new_users.description')
         }

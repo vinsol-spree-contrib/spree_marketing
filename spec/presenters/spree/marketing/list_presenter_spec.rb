@@ -2,51 +2,51 @@ require 'spec_helper'
 
 describe Spree::Marketing::ListPresenter do
 
-  let(:list) { create(:abandoned_cart_list, name: 'abandoned_cart_list') }
+  let(:list) { create(:abandoned_cart, name: 'abandoned_cart') }
   let(:product_name) { 'Sample Product' }
   let(:product) { create(:product, name: product_name) }
-  let(:multilist) { create(:favourable_products_list, entity: product, name: "favourable_products_list_#{ product_name }") }
+  let(:multilist) { create(:favourable_products, entity: product, name: "favourable_products_list_#{ product_name }") }
   let(:list_presenter) { Spree::Marketing::ListPresenter.new list }
   let(:multilist_presenter) { Spree::Marketing::ListPresenter.new multilist }
   let(:view_names_hash) {
     {
-      'AbandonedCartList' => {
+      'AbandonedCart' => {
         tooltip_content: Spree.t('marketing.lists.abandoned_cart.tooltip_content'),
         description: Spree.t('marketing.lists.abandoned_cart.description')
       },
-      'FavourableProductsList' => {
+      'FavourableProducts' => {
         tooltip_content: Spree.t('marketing.lists.favourable_products.tooltip_content'),
         description: Spree.t('marketing.lists.favourable_products.description')
       },
-      'LeastActiveUsersList' => {
+      'LeastActiveUsers' => {
         tooltip_content: Spree.t('marketing.lists.least_active.tooltip_content'),
         description: Spree.t('marketing.lists.least_active.description')
       },
-      'LeastZoneWiseOrdersList' => {
+      'LeastZoneWiseOrders' => {
         tooltip_content: Spree.t('marketing.lists.cold_zone.tooltip_content'),
         description: Spree.t('marketing.lists.cold_zone.description')
       },
-      'MostActiveUsersList' => {
+      'MostActiveUsers' => {
         tooltip_content: Spree.t('marketing.lists.most_active.tooltip_content'),
         description: Spree.t('marketing.lists.most_active.description')
       },
-      'MostDiscountedOrdersList' => {
+      'MostDiscountedOrders' => {
         tooltip_content: Spree.t('marketing.lists.most_discounted_orders.tooltip_content'),
         description: Spree.t('marketing.lists.most_discounted_orders.description')
       },
-      'MostSearchedKeywordsList' => {
+      'MostSearchedKeywords' => {
         tooltip_content: Spree.t('marketing.lists.most_searched_keywords.tooltip_content'),
         description: Spree.t('marketing.lists.most_searched_keywords.description')
       },
-      'MostUsedPaymentMethodsList' => {
+      'MostUsedPaymentMethods' => {
         tooltip_content: Spree.t('marketing.lists.most_used_payment_methods.tooltip_content'),
         description: Spree.t('marketing.lists.most_used_payment_methods.description')
       },
-      'MostZoneWiseOrdersList' => {
+      'MostZoneWiseOrders' => {
         tooltip_content: Spree.t('marketing.lists.hot_zone.tooltip_content'),
         description: Spree.t('marketing.lists.hot_zone.description')
       },
-      'NewUsersList' => {
+      'NewUsers' => {
         tooltip_content: Spree.t('marketing.lists.new_users.tooltip_content'),
         description: Spree.t('marketing.lists.new_users.description')
       }
@@ -82,7 +82,7 @@ describe Spree::Marketing::ListPresenter do
 
     describe '#description' do
       it 'provides description for list' do
-        expect((Spree::Marketing::ListPresenter.new list).description).to eq view_names_hash['AbandonedCartList'][:description]
+        expect((Spree::Marketing::ListPresenter.new list).description).to eq view_names_hash['AbandonedCart'][:description]
       end
     end
   end

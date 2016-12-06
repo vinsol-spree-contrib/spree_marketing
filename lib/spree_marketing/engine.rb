@@ -8,6 +8,10 @@ module SpreeMarketing
       g.test_framework :rspec
     end
 
+    config.before_initialize do
+      config.i18n.load_path += Dir["#{config.root}/config/locales/**/*.yml"]
+    end
+
     initializer 'load spree_marketing config', group: :all do |app|
       app_config = Rails.root.join('config', 'spree_marketing.yml').to_s
       if File.exists?( app_config )
@@ -27,12 +31,12 @@ module SpreeMarketing
     end
 
     def self.activate
-      [
-        Dir[config.root.join('app/models/spree/marketing/*.rb')],
-        Dir[config.root.join('app/models/spree/marketing/list/*.rb')],
-        Dir.glob(File.join(File.dirname(__FILE__), '../../app/**/*_decorator*.rb'))
-      ].flatten.each do |c|
+      Dir.glob(File.join(File.dirname(__FILE__), '../../app/**/*_decorator*.rb')) do |c|
         Rails.configuration.cache_classes ? require(c) : load(c)
+      end
+
+      Dir.glob(File.join(File.dirname(__FILE__), '../../app/models/**/*.rb')) do |c|
+        require(c)
       end
     end
 
