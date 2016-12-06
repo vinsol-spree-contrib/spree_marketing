@@ -2,53 +2,53 @@ require 'spec_helper'
 
 describe Spree::Marketing::ListPresenter do
 
-  let(:list) { create(:abandoned_cart_list, name: 'abandoned_cart_list') }
+  let(:list) { create(:abandoned_cart, name: 'abandoned_cart') }
   let(:product_name) { 'Sample Product' }
   let(:product) { create(:product, name: product_name) }
-  let(:multilist) { create(:favourable_products_list, entity: product, name: "favourable_products_list_#{ product_name }") }
+  let(:multilist) { create(:favourable_products, entity: product, name: "favourable_products_list_#{ product_name }") }
   let(:list_presenter) { Spree::Marketing::ListPresenter.new list }
   let(:multilist_presenter) { Spree::Marketing::ListPresenter.new multilist }
   let(:view_names_hash) {
     {
-      'AbandonedCartList' => {
-        tooltip_content: 'View the contact list of users who have abandoned the cart',
-        description: 'Users who have abandoned the cart'
+      'AbandonedCart' => {
+        tooltip_content: Spree.t('marketing.lists.abandoned_cart.tooltip_content'),
+        description: Spree.t('marketing.lists.abandoned_cart.description')
       },
-      'FavourableProductsList' => {
-        tooltip_content: 'View the contact list of users who are part of the purchase family for top 10 most selling products',
-        description: 'Users who are part of the purchase family for top 10 most selling products'
+      'FavourableProducts' => {
+        tooltip_content: Spree.t('marketing.lists.favourable_products.tooltip_content'),
+        description: Spree.t('marketing.lists.favourable_products.description')
       },
-      'LeastActiveUsersList' => {
-        tooltip_content: 'View the contact list of users corresponding to least activities',
-        description: 'Users corresponding to least activities'
+      'LeastActiveUsers' => {
+        tooltip_content: Spree.t('marketing.lists.least_active.tooltip_content'),
+        description: Spree.t('marketing.lists.least_active.description')
       },
-      'LeastZoneWiseOrdersList' => {
-        tooltip_content: 'View the contact list of users in 5 lowest ordering Zone',
-        description: 'Users in 5 lowest ordering Zone'
+      'LeastZoneWiseOrders' => {
+        tooltip_content: Spree.t('marketing.lists.cold_zone.tooltip_content'),
+        description: Spree.t('marketing.lists.cold_zone.description')
       },
-      'MostActiveUsersList' => {
-        tooltip_content: 'View the contact list of users corresponding to most activities',
-        description: 'Users corresponding to most activities'
+      'MostActiveUsers' => {
+        tooltip_content: Spree.t('marketing.lists.most_active.tooltip_content'),
+        description: Spree.t('marketing.lists.most_active.description')
       },
-      'MostDiscountedOrdersList' => {
-        tooltip_content: 'View the contact list of users who are part of the purchase family mostly for discounted orders',
-        description: 'Users who are part of the purchase family mostly for discounted orders'
+      'MostDiscountedOrders' => {
+        tooltip_content: Spree.t('marketing.lists.most_discounted_orders.tooltip_content'),
+        description: Spree.t('marketing.lists.most_discounted_orders.description')
       },
-      'MostSearchedKeywordsList' => {
-        tooltip_content: 'View the contact list of users corresponding to top 10 keywords',
-        description: 'Users corresponding to top 10 keywords'
+      'MostSearchedKeywords' => {
+        tooltip_content: Spree.t('marketing.lists.most_searched_keywords.tooltip_content'),
+        description: Spree.t('marketing.lists.most_searched_keywords.description')
       },
-      'MostUsedPaymentMethodsList' => {
-        tooltip_content: 'View the contact list of users corresponding to most used payment methods',
-        description: 'Users corresponding to most used payment methods'
+      'MostUsedPaymentMethods' => {
+        tooltip_content: Spree.t('marketing.lists.most_used_payment_methods.tooltip_content'),
+        description: Spree.t('marketing.lists.most_used_payment_methods.description')
       },
-      'MostZoneWiseOrdersList' => {
-        tooltip_content: 'View the contact list of users in 5 most ordering Zone',
-        description: 'Users in 5 most ordering Zone'
+      'MostZoneWiseOrders' => {
+        tooltip_content: Spree.t('marketing.lists.hot_zone.tooltip_content'),
+        description: Spree.t('marketing.lists.hot_zone.description')
       },
-      'NewUsersList' => {
-        tooltip_content: 'View the contact list of users who have signed up in last week',
-        description: 'Users who have signed up in last week'
+      'NewUsers' => {
+        tooltip_content: Spree.t('marketing.lists.new_users.tooltip_content'),
+        description: Spree.t('marketing.lists.new_users.description')
       }
     }
   }
@@ -74,15 +74,15 @@ describe Spree::Marketing::ListPresenter do
       end
 
       context 'when list is of single list type' do
-        it 'returns Contacts string' do
-          expect(list_presenter.sub_list_name).to eq 'Contacts'
+        it 'returns List name' do
+          expect(list_presenter.sub_list_name).to eq list.name
         end
       end
     end
 
     describe '#description' do
       it 'provides description for list' do
-        expect((Spree::Marketing::ListPresenter.new list).description).to eq view_names_hash['AbandonedCartList'][:description]
+        expect((Spree::Marketing::ListPresenter.new list).description).to eq view_names_hash['AbandonedCart'][:description]
       end
     end
   end

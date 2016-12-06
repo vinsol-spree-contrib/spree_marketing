@@ -9,7 +9,7 @@ module Spree
 
           def collection
             Spree::Marketing::List.subclasses
-                                  .map { |sub_class| sub_class.includes(:contacts).order(updated_at: :desc).all }
+                                  .map { |sub_class| sub_class.order(updated_at: :desc).all }
           end
 
           def load_contacts

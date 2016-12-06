@@ -5,7 +5,7 @@ describe Spree::Marketing::ContactsList, type: :model do
   let(:active_contact) { create(:marketing_contact, active: true) }
   let(:another_contact) { create(:marketing_contact, active: true, email: 'test@a.com') }
   let(:active_list) { create(:marketing_list, active: true) }
-  let(:contacts_list) { create(:marketing_contacts_list, list: active_list, contact: active_contact) }
+  let(:contacts_list) { create(:marketing_contacts, list: active_list, contact: active_contact) }
 
   describe "Validations" do
     it { is_expected.to validate_presence_of(:contact) }

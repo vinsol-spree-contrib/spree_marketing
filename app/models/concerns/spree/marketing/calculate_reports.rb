@@ -29,7 +29,7 @@ module Spree
                                     .pluck(:actor_id)
 
         Spree::Order.of_registered_users
-                    .where(id: actor_ids, user_id: contact_ids)
+                    .where(id: actor_ids, user_id: user_ids)
                     .uniq
                     .pluck(:email)
       end
@@ -45,7 +45,7 @@ module Spree
       end
 
       def user_ids
-        Spree.user_class.where(email: contacts.pluck(:email)).ids
+        contacts.pluck(:user_id)
       end
 
       def generate_reports
@@ -56,7 +56,7 @@ module Spree
           report_stats[report.to_s.remove("_by")] = { "emails" => emails, "count" => count }
         end
         report_stats["emails_sent"] = contacts.count
-        update(stats: report_stats.merge(JSON.parse(stats)).to_json)
+        update(stats: (JSON.parse(stats).merge(report_stats)).to_json)
       end
     end
   end

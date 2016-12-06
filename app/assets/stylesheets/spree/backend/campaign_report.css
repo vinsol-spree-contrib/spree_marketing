@@ -1,0 +1,53 @@
+.pie-chart-report {
+  min-width: 590px;
+  height: 400px;
+  max-width: 600px;
+  margin-left: 100px;
+  float: left;
+}
+
+.pie-chart-data {
+  margin-left: 50px;
+  float: left;
+  height: 400px;
+  padding-top: 70px;
+}
+
+.campaign-email-reports {
+  display: inline;
+  list-style: none;
+  float: left;
+}
+
+.campaign-email-reports li {
+  padding: 15px;
+}
+
+.clear-fix {
+  clear: both;
+}
+
+.box {
+  width: 15px;
+  height: 15px;
+  display: inline;
+  float: left;
+  margin-right: 10px;
+  border: 1px solid rgba(0, 0, 0, .2);
+}
+
+.unopened {
+  background-color: #ED7D05;
+}
+
+.opened {
+  background-color: #829909;
+}
+
+.bounced {
+  background-color: #930F1C;
+}
+
+.delivered {
+  background-color: #105A9C;
+}
