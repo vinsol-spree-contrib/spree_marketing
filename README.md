@@ -15,10 +15,9 @@ Installation
   1. Add this extension to your Gemfile by this line.
 
   ```ruby
-   gem 'spree_marketing', github: 'vinsol-spree-contrib/spree_marketing'
+   gem 'spree_marketing', github: 'vinsol-spree-contrib/spree_marketing', branch: '3-1-stable'
   ```
-    Specify branch corresponding to the spree version you are using like `3-0-stable` for spree `3.0.x`
-    Also this gem has dependency on spree_events_tracker. So make sure spree_events_tracker gem is added in your `Gemfile` like
+
   ```ruby
    gem 'spree_events_tracker', github: 'vinsol-spree-contrib/spree_events_tracker'
   ```
@@ -54,7 +53,7 @@ And then run specs using `rspec spec/`
 ```ruby
  bundle
  bundle exec rake test_app
- rspec spec/
+ bundle exec rspec spec
 ```
 
 When testing your applications integration with this extension you may use it's factories. Simply add this require statement to your spec_helper:
