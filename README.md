@@ -19,7 +19,7 @@ Installation
   ```
 
   ```ruby
-   gem 'spree_events_tracker', github: 'vinsol-spree-contrib/spree_events_tracker'
+   gem 'spree_events_tracker', github: 'vinsol-spree-contrib/spree_events_tracker', branch: '3-0-stable'
   ```
 
   2. Install the gem using bundler.
