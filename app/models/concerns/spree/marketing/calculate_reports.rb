@@ -8,7 +8,7 @@ module Spree
         actor_ids = Spree::PageEvent.of_registered_users
                                     .where(actor_id: user_ids, actor_type: Spree.user_class)
                                     .where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
-                                    .uniq
+                                    .distinct
                                     .pluck(:actor_id)
 
         Spree.user_class.where(id: actor_ids).pluck(:email)
@@ -18,19 +18,19 @@ module Spree
         Spree::Order.of_registered_users
                     .where("completed_at >= :scheduled_time", scheduled_time: scheduled_at)
                     .where(email: contacts.pluck(:email))
-                    .uniq
+                    .distinct
                     .pluck(:email)
       end
 
       def cart_additions_by
         actor_ids = Spree::CartEvent.where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
                                     .where(activity: "add")
-                                    .uniq
+                                    .distinct
                                     .pluck(:actor_id)
 
         Spree::Order.of_registered_users
                     .where(id: actor_ids, user_id: user_ids)
-                    .uniq
+                    .distinct
                     .pluck(:email)
       end
 
@@ -38,7 +38,7 @@ module Spree
         actor_ids = Spree::PageEvent.of_registered_users
                                     .where(actor_id: user_ids, actor_type: Spree.user_class, target_type: "Spree::Product", activity: "view")
                                     .where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
-                                    .uniq
+                                    .distinct
                                     .pluck(:actor_id)
 
         Spree.user_class.where(id: actor_ids).pluck(:email)
