@@ -5,9 +5,9 @@ Introduction
 
 Marketing is one of the most important aspect of any Ecommerce business.
 
-This extension gives you a lot of reports synced with Mailchimp to help you in creating different subscribers list on Mailchimp.
+This extension gives you a lot of lists synced with Mailchimp to help you in creating different subscribers list on Mailchimp.
 
-This extension provides reports like "Most Selling Products", "Abandoned Carts", "Most searched keywords", etc. to give better insights.
+This extension provides user lists for "Most Selling Products", "Abandoned Carts", "Most searched keywords", etc. to give better insights.
 
 Installation
 -------------
