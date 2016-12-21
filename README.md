@@ -44,7 +44,7 @@ Installation
 
   5. Restart your server if your server was running so that it can now find assets properly.
 
-
+**[Here](http://vinsol.com/spreecommerce-marketing) is an article with screenshots**
 Testing
 --------
 
