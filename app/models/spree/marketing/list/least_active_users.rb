@@ -13,7 +13,7 @@ module Spree
                           .having('COUNT(spree_page_events.id) < :maximum_count', maximum_count: MAXIMUM_PAGE_EVENT_COUNT)
                           .of_registered_users
                           .where('created_at >= :time_frame', time_frame: computed_time)
-                          .where(actor_type: Spree.user_class)
+                          .where(actor_type: Spree.user_class.name)
                           .pluck(:actor_id)
         end
       end

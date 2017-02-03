@@ -6,7 +6,7 @@ module Spree
 
       def log_ins_by
         actor_ids = Spree::PageEvent.of_registered_users
-                                    .where(actor_id: user_ids, actor_type: Spree.user_class)
+                                    .where(actor_id: user_ids, actor_type: Spree.user_class.name)
                                     .where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
                                     .distinct
                                     .pluck(:actor_id)
@@ -36,7 +36,7 @@ module Spree
 
       def product_views_by
         actor_ids = Spree::PageEvent.of_registered_users
-                                    .where(actor_id: user_ids, actor_type: Spree.user_class, target_type: "Spree::Product", activity: "view")
+                                    .where(actor_id: user_ids, actor_type: Spree.user_class.name, target_type: "Spree::Product", activity: "view")
                                     .where("created_at >= :scheduled_time", scheduled_time: scheduled_at)
                                     .distinct
                                     .pluck(:actor_id)

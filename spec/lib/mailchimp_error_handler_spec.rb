@@ -5,7 +5,9 @@ describe MailchimpErrorHandler, type: :module do
 
   let(:retry_attempt) { 2 }
 
-  SpreeMarketing::CONFIG = { Rails.env => { campaign_defaults: { from_email: 'a@test.com' }} }
+  before do
+    stub_const("SpreeMarketing::CONFIG", { Rails.env => { campaign_defaults: { from_email: 'a@test.com' }} })
+  end
 
   class TestJob < ActiveJob::Base
     include MailchimpErrorHandler

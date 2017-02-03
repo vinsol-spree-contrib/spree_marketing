@@ -2,7 +2,10 @@ require 'spec_helper'
 
 RSpec.describe Spree::Marketing::MailchimpErrorNotifier do
 
-  SpreeMarketing::CONFIG = { Rails.env => { campaign_defaults: { from_email: 'a@test.com' }} }
+
+  before do
+    stub_const("SpreeMarketing::CONFIG", { Rails.env => { campaign_defaults: { from_email: 'a@test.com' }} })
+  end
 
   describe 'notify_failure' do
 

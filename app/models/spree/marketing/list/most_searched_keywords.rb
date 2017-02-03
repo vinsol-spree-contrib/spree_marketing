@@ -17,7 +17,7 @@ module Spree
           Spree::PageEvent.where(search_keywords: searched_keyword)
                           .where('created_at >= :time_frame', time_frame: computed_time)
                           .of_registered_users
-                          .where(actor_type: Spree.user_class)
+                          .where(actor_type: Spree.user_class.name)
                           .group(:actor_id)
                           .pluck(:actor_id)
         end

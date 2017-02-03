@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'spree', github: 'spree/spree'
-gem 'spree_auth_devise', github: 'spree/spree_auth_devise'
-gem 'spree_events_tracker', git: 'https://github.com/vinsol/spree_events_tracker'
+gem 'spree', github: 'spree/spree', branch: '3-2-stable'
+gem 'spree_auth_devise', github: 'spree/spree_auth_devise', branch: 'master'
+gem 'spree_events_tracker', github: 'vinsol-spree-contrib/spree_events_tracker', branch: 'master'
 
 group :test do
   gem 'rails-controller-testing'
