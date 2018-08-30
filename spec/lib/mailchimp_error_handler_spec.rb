@@ -3,9 +3,11 @@ require 'spec_helper'
 describe MailchimpErrorHandler, type: :module do
   include ActiveJob::TestHelper
 
+  subject(:job) { TestJob.new }
+
   let(:retry_attempt) { 2 }
 
-  SpreeMarketing::CONFIG = { Rails.env => { campaign_defaults: { from_email: 'a@test.com' }} }
+  SpreeMarketing::CONFIG = { Rails.env => { campaign_defaults: { from_email: 'a@test.com' } } }.freeze
 
   class TestJob < ActiveJob::Base
     include MailchimpErrorHandler
@@ -14,8 +16,6 @@ describe MailchimpErrorHandler, type: :module do
       raise Gibbon::MailChimpError
     end
   end
-
-  subject(:job) { TestJob.new }
 
   describe 'constants' do
     it 'RETRY_LIMIT equals to the limit for retrying failed job' do
@@ -60,16 +60,21 @@ describe MailchimpErrorHandler, type: :module do
 
   describe '#notify_admin' do
     let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
+
     before { allow(message_delivery).to receive(:deliver_later) }
+
+    after { job.notify_admin(Gibbon::MailChimpError.new) }
+
     it 'Spree::Marketing::MailchimpErrorNotifier to receive notify_failure' do
       expect(Spree::Marketing::MailchimpErrorNotifier).to receive(:notify_failure).and_return(message_delivery)
     end
-    after { job.notify_admin(Gibbon::MailChimpError.new) }
   end
 
   describe '#rescue_with_handler' do
     subject(:job) { TestJob.perform_later }
+
     before { perform_enqueued_jobs { job } }
+
     it 'notifies admin after more than RETRY_LIMIT failed attempts' do
       expect(ActionMailer::Base.deliveries.count).to eq(1)
     end

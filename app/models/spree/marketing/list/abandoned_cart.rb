@@ -2,10 +2,9 @@ module Spree
   module Marketing
     class List
       class AbandonedCart < Spree::Marketing::List
-
         # Constants
         NAME_TEXT = 'Abandoned Cart'
-        AVAILABLE_REPORTS = [:purchases_by]
+        AVAILABLE_REPORTS = [:purchases_by].freeze
 
         def user_ids
           # FIXME: There is a case where guest user has an incomplete order and we
@@ -17,7 +16,6 @@ module Spree
                       .distinct
                       .pluck(:user_id)
         end
-
       end
     end
   end

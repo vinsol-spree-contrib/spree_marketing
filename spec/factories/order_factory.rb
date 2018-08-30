@@ -1,8 +1,7 @@
-FactoryGirl.define do
-
+FactoryBot.define do
   factory :order_with_given_payment_method, parent: :completed_order_with_totals, class: Spree::Order do
     transient do
-      payment_method nil
+      payment_method { nil }
     end
 
     after(:create) do |order, evaluator|
@@ -14,7 +13,7 @@ FactoryGirl.define do
 
     trait :with_custom_completed_at do
       transient do
-        completed_at nil
+        completed_at { nil }
       end
 
       after(:create) do |order, evaluator|
@@ -23,7 +22,7 @@ FactoryGirl.define do
     end
 
     trait :incomplete_payment do
-      after(:create) do |order, evaluator|
+      after(:create) do |order, _evaluator|
         order.payments.update_all(state: :pending)
       end
     end
@@ -31,7 +30,7 @@ FactoryGirl.define do
 
   factory :order_with_given_billing_state, parent: :completed_order_with_totals, class: Spree::Order do
     transient do
-      state nil
+      state { nil }
     end
 
     after(:create) do |order, evaluator|
@@ -41,7 +40,7 @@ FactoryGirl.define do
 
     trait :with_custom_completed_at do
       transient do
-        completed_at nil
+        completed_at { nil }
       end
 
       after(:create) do |order, evaluator|
@@ -51,14 +50,14 @@ FactoryGirl.define do
   end
 
   factory :order_with_promotion, parent: :completed_order_with_totals, class: Spree::Order do
-    after(:create) do |order, evaluator|
+    after(:create) do |order, _evaluator|
       promotion = create(:promotion_with_order_adjustment)
       order.promotions << promotion
     end
 
     trait :with_custom_completed_at do
       transient do
-        completed_at nil
+        completed_at { nil }
       end
 
       after(:create) do |order, evaluator|
@@ -69,7 +68,7 @@ FactoryGirl.define do
 
   factory :order_with_given_product, parent: :completed_order_with_totals, class: Spree::Order do
     transient do
-      product nil
+      product { nil }
     end
 
     after(:create) do |order, evaluator|
@@ -80,7 +79,7 @@ FactoryGirl.define do
 
     trait :with_custom_completed_at do
       transient do
-        completed_at nil
+        completed_at { nil }
       end
 
       after(:create) do |order, evaluator|
@@ -91,7 +90,7 @@ FactoryGirl.define do
 
   factory :guest_user_order_with_given_payment_method, parent: :completed_order_with_totals, class: Spree::Order do
     transient do
-      payment_method nil
+      payment_method { nil }
     end
 
     after(:create) do |order, evaluator|
@@ -103,12 +102,11 @@ FactoryGirl.define do
 
   factory :completed_order_with_custom_completion_time, parent: :completed_order_with_totals, class: Spree::Order do
     transient do
-      completed_at nil
+      completed_at { nil }
     end
 
     after(:create) do |order, evaluator|
       order.update_columns(completed_at: evaluator.completed_at)
     end
   end
-
 end

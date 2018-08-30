@@ -1,13 +1,12 @@
 module Spree
   module Marketing
     class List < Spree::Base
-
       acts_as_paranoid
 
       # Constants
       TIME_FRAME = 1.week
       NAME_TEXT = 'List'
-      AVAILABLE_REPORTS = [:cart_additions_by, :log_ins_by, :product_views_by, :purchases_by]
+      AVAILABLE_REPORTS = %i[cart_additions_by log_ins_by product_views_by purchases_by].freeze
 
       # Configurations
       self.table_name = 'spree_marketing_lists'
@@ -15,7 +14,7 @@ module Spree
       # Associations
       has_many :contacts_lists, class_name: 'Spree::Marketing::ContactsList', dependent: :destroy
       has_many :contacts, through: :contacts_lists
-      has_many :campaigns, class_name: "Spree::Marketing::Campaign", dependent: :restrict_with_error
+      has_many :campaigns, class_name: 'Spree::Marketing::Campaign', dependent: :restrict_with_error
       # entity is the associated record for which the list is defined(e.g. Spree::Product for 'Favourable Products')
       belongs_to :entity, polymorphic: true
 
@@ -49,9 +48,7 @@ module Spree
       end
 
       def self.generate_all
-        subclasses.each do |list_type|
-          list_type.generator
-        end
+        subclasses.each(&:generator)
       end
 
       def populate(contacts_data, users_data)
@@ -80,7 +77,6 @@ module Spree
       private_class_method :computed_time
 
       private
-
         def computed_time
           self.class.send :computed_time
         end

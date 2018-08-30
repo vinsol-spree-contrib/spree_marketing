@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Spree::Marketing::List::MostDiscountedOrders, type: :model do
-
   let!(:user_having_6_completed_orders_with_promotion) { create(:user_with_completed_orders, :with_promotion, orders_count: 6) }
 
   describe 'Constants' do
@@ -15,7 +14,7 @@ describe Spree::Marketing::List::MostDiscountedOrders, type: :model do
       expect(Spree::Marketing::List::MostDiscountedOrders::MINIMUM_COUNT).to eq 5
     end
     it 'AVAILABLE_REPORTS equals to array of reports for this list type' do
-      expect(Spree::Marketing::List::MostDiscountedOrders::AVAILABLE_REPORTS).to eq [:cart_additions_by, :purchases_by, :product_views_by]
+      expect(Spree::Marketing::List::MostDiscountedOrders::AVAILABLE_REPORTS).to eq %i[cart_additions_by purchases_by product_views_by]
     end
   end
 
@@ -55,5 +54,4 @@ describe Spree::Marketing::List::MostDiscountedOrders, type: :model do
       end
     end
   end
-
 end

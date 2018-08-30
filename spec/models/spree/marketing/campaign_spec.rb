@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Spree::Marketing::Campaign, type: :model do
   include ActiveJob::TestHelper
@@ -6,40 +6,45 @@ describe Spree::Marketing::Campaign, type: :model do
   let(:json_stats_data) { '{ "log_ins": { "emails": ["vinay@vinsol.com"], "count": 1 }, "emails_sent": 3, "emails_delivered": 3, "emails_opened": 3, "emails_bounced": 3 }' }
   let(:campaign) { create(:marketing_campaign, stats: json_stats_data) }
   let(:list) { create(:marketing_list) }
-  let(:campaigns_data) { [{ id: '12456', type: 'regular', settings: { title: 'test' },
-      recipients: { list_id: list.uid }, send_time: Time.current.to_s }.with_indifferent_access] }
+  let(:campaigns_data) do
+    [{ id: '12456', type: 'regular', settings: { title: 'test' },
+       recipients: { list_id: list.uid }, send_time: Time.current.to_s }.with_indifferent_access]
+  end
+
+  after { clear_enqueued_jobs }
 
   describe 'Constants' do
     it 'DEFAULT_SEND_TIME_GAP equals to time gap since which sent campaigns are synced' do
       expect(Spree::Marketing::Campaign::DEFAULT_SEND_TIME_GAP).to eq 1.day
     end
     it 'STATS_COUNT_KEYS equals to the keys stored in stats for email counts' do
-      expect(Spree::Marketing::Campaign::STATS_COUNT_KEYS).to eq [:emails_sent, :emails_bounced, :emails_opened, :emails_delivered]
+      expect(Spree::Marketing::Campaign::STATS_COUNT_KEYS).to eq %i[emails_sent emails_bounced emails_opened emails_delivered]
     end
   end
 
-  it_behaves_like "calculate_reports"
+  it_behaves_like 'calculate_reports'
 
-  describe "Validations" do
+  describe 'Validations' do
     it { is_expected.to validate_presence_of(:uid) }
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:list) }
     it { is_expected.to validate_presence_of(:stats) }
     it { is_expected.to validate_presence_of(:mailchimp_type) }
     it { is_expected.to validate_presence_of(:scheduled_at) }
-    context "validates uniqueness of" do
+    context 'validates uniqueness of' do
       subject { campaign }
+
       it { is_expected.to validate_uniqueness_of(:uid).case_insensitive }
     end
   end
 
-  describe "Associations" do
-    it { is_expected.to belong_to(:list).class_name("Spree::Marketing::List") }
-    it { is_expected.to have_many(:recipients).class_name("Spree::Marketing::Recipient").dependent(:restrict_with_error) }
+  describe 'Associations' do
+    it { is_expected.to belong_to(:list).class_name('Spree::Marketing::List') }
+    it { is_expected.to have_many(:recipients).class_name('Spree::Marketing::Recipient').dependent(:restrict_with_error) }
     it { is_expected.to have_many(:contacts).through(:recipients) }
   end
 
-  describe "Callbacks" do
+  describe 'Callbacks' do
     it { is_expected.to callback(:enqueue_update).after(:create) }
   end
 
@@ -52,6 +57,7 @@ describe Spree::Marketing::Campaign, type: :model do
         expect(Spree::Marketing::Campaign.generate(campaigns_data).first.list).to eq list
       end
     end
+
     context 'when list is destroyed' do
       before { list.destroy }
 
@@ -65,40 +71,42 @@ describe Spree::Marketing::Campaign, type: :model do
   end
 
   describe '.sync' do
-    SpreeMarketing::CONFIG ||= { Rails.env => {} }
+    SpreeMarketing::CONFIG ||= { Rails.env => {} }.freeze
 
     before do
       allow(CampaignSyncJob).to receive(:perform_later).and_return(true)
     end
 
+    after { Spree::Marketing::Campaign.sync(Time.current.to_s) }
+
     it 'schedules CampaignSyncJob with since_send_time' do
       expect(CampaignSyncJob).to receive(:perform_later).with(Time.current.to_s)
     end
-
-    after { Spree::Marketing::Campaign.sync(Time.current.to_s) }
   end
 
   describe '#populate' do
     let(:contact) { create(:marketing_contact) }
     let(:recipients_data) { [{ email_id: contact.uid, email_address: contact.email, status: 'sent' }.with_indifferent_access] }
-    let (:stats) { "{\"emails_sent\":200,\"emails_bounced\":2,\"emails_opened\":100,\"emails_delivered\":198}" }
-    let(:report_data) { { id: "42694e9e57",
-                          emails_sent: 200,
-                          bounces: {
-                            hard_bounces: 0,
-                            soft_bounces: 2,
-                            syntax_errors: 0
-                          },
-                          forwards: {
-                            forwards_count: 0,
-                            forwards_opens: 0
-                          },
-                          opens: {
-                            opens_total: 186,
-                            unique_opens: 100,
-                            open_rate: 42,
-                            last_open: "2015-09-15T19:15:47+00:00"
-                          } }.with_indifferent_access }
+    let (:stats) { '{"emails_sent":200,"emails_bounced":2,"emails_opened":100,"emails_delivered":198}' }
+    let(:report_data) do
+      { id: '42694e9e57',
+        emails_sent: 200,
+        bounces: {
+          hard_bounces: 0,
+          soft_bounces: 2,
+          syntax_errors: 0
+        },
+        forwards: {
+          forwards_count: 0,
+          forwards_opens: 0
+        },
+        opens: {
+          opens_total: 186,
+          unique_opens: 100,
+          open_rate: 42,
+          last_open: '2015-09-15T19:15:47+00:00'
+        } }.with_indifferent_access
+    end
 
     context 'when mailchimp campaign data is valid' do
       let(:synced_campaign) { Spree::Marketing::Campaign.generate(campaigns_data).first }
@@ -123,8 +131,10 @@ describe Spree::Marketing::Campaign, type: :model do
     end
 
     context 'when mailcimp campaign is not valid' do
-      let(:invalid_campaigns_data) { [{ id: '12456', type: 'regular', settings: { title: 'test' },
-        recipients: { list_id: 'test' }, send_time: Time.current.to_s }.with_indifferent_access] }
+      let(:invalid_campaigns_data) do
+        [{ id: '12456', type: 'regular', settings: { title: 'test' },
+           recipients: { list_id: 'test' }, send_time: Time.current.to_s }.with_indifferent_access]
+      end
       let(:synced_campaign) { Spree::Marketing::Campaign.generate(invalid_campaigns_data).first }
 
       before { synced_campaign.populate(recipients_data) }
@@ -195,6 +205,4 @@ describe Spree::Marketing::Campaign, type: :model do
       expect(campaign.stat_counts).to eq(JSON.parse(json_stats_data).symbolize_keys.slice(*Spree::Marketing::Campaign::STATS_COUNT_KEYS))
     end
   end
-
-  after { clear_enqueued_jobs }
 end

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Spree::Marketing::List::MostUsedPaymentMethods, type: :model do
-
   let(:payment_method) { create(:credit_card_payment_method) }
   let(:entity_id) { payment_method.id }
   let(:entity_name) { payment_method.name }
@@ -71,8 +70,8 @@ describe Spree::Marketing::List::MostUsedPaymentMethods, type: :model do
         let(:other_payment_method) { create(:check_payment_method) }
         let!(:order_with_incomplete_payment) { create(:order_with_given_payment_method, :incomplete_payment, payment_method: other_payment_method) }
 
-        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send :data).to include payment_method.id }
-        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send :data).to_not include other_payment_method.id }
+        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send(:data)).to include payment_method.id }
+        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send(:data)).to_not include other_payment_method.id }
       end
 
       context 'limit to MOST_USED_PAYMENT_METHODS_COUNT' do
@@ -87,12 +86,12 @@ describe Spree::Marketing::List::MostUsedPaymentMethods, type: :model do
         let!(:completed_orders_with_fifth_payment_method) { create_list(:order_with_given_payment_method, 6, payment_method: fifth_payment_method) }
         let!(:completed_orders_with_sixth_payment_method) { create_list(:order_with_given_payment_method, 1, payment_method: sixth_payment_method) }
 
-        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send :data).to include payment_method.id }
-        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send :data).to include second_payment_method.id }
-        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send :data).to include third_payment_method.id }
-        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send :data).to include fourth_payment_method.id }
-        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send :data).to include fifth_payment_method.id }
-        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send :data).to_not include sixth_payment_method.id }
+        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send(:data)).to include payment_method.id }
+        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send(:data)).to include second_payment_method.id }
+        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send(:data)).to include third_payment_method.id }
+        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send(:data)).to include fourth_payment_method.id }
+        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send(:data)).to include fifth_payment_method.id }
+        it { expect(Spree::Marketing::List::MostUsedPaymentMethods.send(:data)).to_not include sixth_payment_method.id }
       end
     end
 
@@ -102,9 +101,8 @@ describe Spree::Marketing::List::MostUsedPaymentMethods, type: :model do
       let!(:other_payment_method_old_completed_orders) { create_list(:order_with_given_payment_method, 6, :with_custom_completed_at, payment_method: other_payment_method, completed_at: timestamp) }
 
       it 'returns payment method ids which will not include payment methods having orders only before time frame' do
-        expect(Spree::Marketing::List::MostUsedPaymentMethods.send :data).to_not include other_payment_method.id
+        expect(Spree::Marketing::List::MostUsedPaymentMethods.send(:data)).to_not include other_payment_method.id
       end
     end
   end
-
 end

@@ -1,23 +1,22 @@
 module Spree
   module Marketing
     class Campaign < Spree::Base
-
       # Constants
       DEFAULT_SEND_TIME_GAP = 1.day
-      STATS_COUNT_KEYS = [:emails_sent, :emails_bounced, :emails_opened, :emails_delivered]
+      STATS_COUNT_KEYS = %i[emails_sent emails_bounced emails_opened emails_delivered].freeze
 
       include Spree::Marketing::CalculateReports
 
       # Configurations
-      self.table_name = "spree_marketing_campaigns"
+      self.table_name = 'spree_marketing_campaigns'
 
       # Validations
       validates :uid, :name, :stats, :list, :scheduled_at, :mailchimp_type, presence: true
       validates :uid, uniqueness: { case_sensitive: false }, allow_blank: true
 
       # Associations
-      belongs_to :list, -> { with_deleted }, class_name: "Spree::Marketing::List"
-      has_many :recipients, class_name: "Spree::Marketing::Recipient", dependent: :restrict_with_error
+      belongs_to :list, -> { with_deleted }, class_name: 'Spree::Marketing::List'
+      has_many :recipients, class_name: 'Spree::Marketing::Recipient', dependent: :restrict_with_error
       has_many :contacts, through: :recipients
 
       # Callbacks
@@ -53,11 +52,11 @@ module Spree
       def update_stats(report_data)
         emails_bounced_count = report_data['bounces'].values.reduce(&:+)
         updated_stat_counts = {
-                         emails_sent: report_data['emails_sent'],
-                         emails_bounced: emails_bounced_count,
-                         emails_opened: report_data['opens']['unique_opens'],
-                         emails_delivered: report_data['emails_sent'] - emails_bounced_count
-                       }.to_json
+          emails_sent: report_data['emails_sent'],
+          emails_bounced: emails_bounced_count,
+          emails_opened: report_data['opens']['unique_opens'],
+          emails_delivered: report_data['emails_sent'] - emails_bounced_count
+        }.to_json
         if !stats || (stats && stat_counts != updated_stat_counts)
           self.stats = updated_stat_counts
           save
@@ -69,7 +68,6 @@ module Spree
       end
 
       private
-
         def enqueue_update
           4.times do |schedule_count|
             wait_until_time = scheduled_at + ((schedule_count + 1) * 6).hours

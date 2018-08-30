@@ -1,7 +1,6 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Spree::Admin::Marketing::ListsController, type: :controller do
-
   stub_authorization!
 
   let(:list) { create(:marketing_list) }
@@ -9,8 +8,8 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
   let(:contacts) { double(ActiveRecord::Relation) }
   let(:lists) { double(ActiveRecord::Relation) }
 
-  describe "Method Overrides" do
-    context "#collection" do
+  describe 'Method Overrides' do
+    context '#collection' do
       def do_index
         spree_get :index
       end
@@ -25,8 +24,9 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
         end
       end
 
-      context "expects to receive" do
+      context 'expects to receive' do
         after { do_index }
+
         it { expect(Spree::Marketing::List).to receive(:subclasses).and_return(Spree::Marketing::List.subclasses) }
         Spree::Marketing::List.subclasses.each do |subclass|
           it { expect(subclass).to receive(:order).with(updated_at: :desc).and_return(lists) }
@@ -36,7 +36,7 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
     end
   end
 
-  describe "callbacks" do
+  describe 'callbacks' do
     def do_show
       spree_get :show, id: list.id
     end
@@ -49,17 +49,18 @@ describe Spree::Admin::Marketing::ListsController, type: :controller do
       allow(contacts).to receive(:order).and_return(contacts)
     end
 
-    context "expects to receive" do
+    context 'expects to receive' do
+      after { do_show }
+
       it { expect(Spree::Marketing::List).to receive(:find).with(list.id.to_s).and_return(list) }
       it { expect(list).to receive(:contacts).and_return(contacts) }
       it { expect(contacts).to receive(:order).with(updated_at: :desc).and_return(contacts) }
-      after { do_show }
     end
 
-    context "assigns" do
+    context 'assigns' do
       before { do_show }
+
       it { expect(assigns(:contacts)).to eq contacts }
     end
   end
-
 end

@@ -12,5 +12,4 @@ class ListGenerationJob < ActiveJob::Base
       list.populate(contacts_data, users_data) if contacts_data.present?
     end
   end
-
 end

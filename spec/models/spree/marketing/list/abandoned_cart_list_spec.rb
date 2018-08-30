@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Spree::Marketing::List::AbandonedCart, type: :model do
-
   let!(:first_user) { create(:user) }
   let!(:second_user) { create(:user) }
   let!(:registered_user_complete_order) { create(:completed_order_with_totals, user_id: second_user.id) }
@@ -27,8 +26,8 @@ describe Spree::Marketing::List::AbandonedCart, type: :model do
       context 'user is not registered' do
         let!(:guest_user_incomplete_order) { create(:order, user_id: nil, email: 'spree@example.com') }
 
-        it { expect(Spree::Marketing::List::AbandonedCart.new.send(:users_data).keys).to_not include guest_user_incomplete_order.email  }
-        it { expect(Spree::Marketing::List::AbandonedCart.new.send(:users_data).keys).to include registered_user_incomplete_order.email  }
+        it { expect(Spree::Marketing::List::AbandonedCart.new.send(:users_data).keys).to_not include guest_user_incomplete_order.email }
+        it { expect(Spree::Marketing::List::AbandonedCart.new.send(:users_data).keys).to include registered_user_incomplete_order.email }
       end
 
       context 'when there are no items in the cart' do
@@ -41,5 +40,4 @@ describe Spree::Marketing::List::AbandonedCart, type: :model do
       end
     end
   end
-
 end

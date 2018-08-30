@@ -11,5 +11,4 @@ class ListModificationJob < ActiveJob::Base
     list.contacts_lists.with_contact_ids(unsubscribable_ids).destroy_all
     list.populate(contacts_data, subscribable_users_data)
   end
-
 end

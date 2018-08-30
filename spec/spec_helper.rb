@@ -10,7 +10,7 @@ end
 ENV['RAILS_ENV'] ||= 'test'
 
 begin
-  require File.expand_path('../dummy/config/environment', __FILE__)
+  require File.expand_path('dummy/config/environment', __dir__)
 rescue LoadError
   puts 'Could not load dummy application. Please ensure you have run `bundle exec rake test_app`'
   exit
@@ -18,20 +18,18 @@ end
 
 require 'rspec/rails'
 require 'database_cleaner'
-require 'factory_girl'
+require 'factory_bot'
 require 'faker'
 require 'ffaker'
 require 'shoulda-matchers'
 require 'shoulda-callback-matchers'
 require 'pry'
-require "spree/testing_support/factories"
+require 'spree/testing_support/factories'
 require 'spree/testing_support/url_helpers'
-require "spree/testing_support/authorization_helpers"
-require "spree/testing_support/controller_requests"
+require 'spree/testing_support/authorization_helpers'
+require 'spree/testing_support/controller_requests'
 require 'spree/testing_support/preferences'
-require 'spree/testing_support/shoulda_matcher_configuration'
 require 'rspec/active_model/mocks'
-require 'spree_events_tracker/factories'
 require 'spree_marketing/factories'
 
 RSpec.configure do |config|
@@ -40,36 +38,45 @@ RSpec.configure do |config|
   config.fail_fast = false
   config.filter_run focus: true
   config.run_all_when_everything_filtered = true
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
   config.infer_spec_type_from_file_location!
   config.raise_errors_for_deprecations!
   config.expect_with :rspec do |expectations|
     expectations.syntax = :expect
   end
 
-  config.before :suite do
+
+  config.before(:suite) do
     DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with :truncation
+    DatabaseCleaner.clean_with(:truncation)
   end
 
-  # Before each spec check if it is a Javascript test and switch between using database transactions or not where necessary.
+  config.around(:each) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
+  end
+
   config.before :each do
-    DatabaseCleaner.strategy = RSpec.current_example.metadata[:js] ? :truncation : :transaction
-    DatabaseCleaner.start
     ActionMailer::Base.deliveries.clear
   end
 
-  # After each spec clean the database.
-  config.after :each do
-    DatabaseCleaner.clean
-  end
   config.include Spree::TestingSupport::ControllerRequests, type: :controller
   config.include Spree::TestingSupport::UrlHelpers
   config.include Devise::TestHelpers, type: :controller
-
 end
 
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    # Choose a test framework:
+    with.test_framework :rspec
+
+    with.library :rails
+  end
+end
+
+Dir[File.join(File.dirname(__FILE__), 'factories/*.rb')].each { |file| require file }
 Dir[File.join(File.dirname(__FILE__), 'support/**/*.rb')].each { |file| require file }
 Dir[File.join(File.dirname(__FILE__), 'shared/*.rb')].each { |file| require file }
 
-SpreeMarketing::CONFIG = { Rails.env => {} }
+SpreeMarketing::CONFIG = { Rails.env => {} }.freeze

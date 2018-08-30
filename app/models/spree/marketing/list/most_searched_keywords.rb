@@ -2,7 +2,6 @@ module Spree
   module Marketing
     class List
       class MostSearchedKeywords < Spree::Marketing::List
-
         include Spree::Marketing::ActsAsMultiList
 
         # Constants
@@ -11,13 +10,13 @@ module Spree
         ENTITY_TYPE = nil
         TIME_FRAME = 1.month
         MOST_SEARCHRD_KEYWORD_COUNT = 5
-        AVAILABLE_REPORTS = [:cart_additions_by, :purchases_by]
+        AVAILABLE_REPORTS = %i[cart_additions_by purchases_by].freeze
 
         def user_ids
           Spree::PageEvent.where(search_keywords: searched_keyword)
                           .where('created_at >= :time_frame', time_frame: computed_time)
                           .of_registered_users
-                          .where(actor_type: Spree.user_class)
+                          .where(actor_type: Spree.user_class.to_s)
                           .group(:actor_id)
                           .pluck(:actor_id)
         end

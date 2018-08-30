@@ -12,16 +12,25 @@ This extension provides user lists for "Most Selling Products", "Abandoned Carts
 Installation
 -------------
 
-  1. Add this extension to your Gemfile by this line.
+  1. Add this extension to your Gemfile with this line:
+
+  #### Spree >= 3.2
 
   ```ruby
-   gem 'spree_marketing', github: 'vinsol-spree-contrib/spree_marketing'
+  gem 'spree_marketing', github: 'vinsol-spree-contrib/spree_marketing'
+  gem 'spree_events_tracker', github: 'vinsol-spree-contrib/spree_events_tracker'
   ```
-    Specify branch corresponding to the spree version you are using like `3-0-stable` for spree `3.0.x`
-    Also this gem has dependency on spree_events_tracker. So make sure spree_events_tracker gem is added in your `Gemfile` like
+
+
+  #### Spree 3.0 and Spree 3.1
+
   ```ruby
-   gem 'spree_events_tracker', github: 'vinsol-spree-contrib/spree_events_tracker'
+  gem 'spree_marketing', github: 'vinsol-spree-contrib/spree_marketing', branch: 'X-X-stable'
+  gem 'spree_events_tracker', github: 'vinsol-spree-contrib/spree_events_tracker', branch: 'X-X-stable'
   ```
+
+  The `branch` option is important: it must match the version of Spree you're using.
+  For example, use `3-0-stable` if you're using Spree `3-0-stable` or any `3.0.x` version.
 
   2. Install the gem using bundler.
 
