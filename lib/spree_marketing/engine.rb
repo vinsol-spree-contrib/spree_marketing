@@ -36,7 +36,7 @@ module SpreeMarketing
       end
 
       Dir.glob(File.join(File.dirname(__FILE__), '../../app/models/**/*.rb')) do |c|
-        require(c)
+        Rails.configuration.cache_classes ? require(c) : load(c)
       end
     end
 
