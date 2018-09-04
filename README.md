@@ -9,6 +9,18 @@ This extension gives you a lot of lists synced with Mailchimp to help you in cre
 
 This extension provides user lists for "Most Selling Products", "Abandoned Carts", "Most searched keywords", etc. to give better insights.
 
+
+Demo
+----
+Try Spree Marketing for Spree master with direct deployment on Heroku:
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/vinsol-spree-contrib/spree-demo-heroku/tree/spree-marketing-master)
+
+Try Spree Marketing for Spree 3-6 with direct deployment on Heroku:
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/vinsol-spree-contrib/spree-demo-heroku/tree/spree-marketing-3-6)
+
+
 Installation
 -------------
 
