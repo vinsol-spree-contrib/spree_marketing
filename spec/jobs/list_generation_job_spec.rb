@@ -3,9 +3,11 @@ require 'spec_helper'
 RSpec.describe ListGenerationJob, type: :job do
   include ActiveJob::TestHelper
 
-  SpreeMarketing::CONFIG ||= { Rails.env => {} }
+  SpreeMarketing::CONFIG ||= { Rails.env => {} }.freeze
 
   class GibbonServiceTest; end
+
+  subject(:job) { described_class.perform_later(list_name, users_data, list_class_name) }
 
   let(:gibbon_service) { GibbonServiceTest.new }
   let(:list) { create(:marketing_list) }
@@ -22,7 +24,10 @@ RSpec.describe ListGenerationJob, type: :job do
     allow(gibbon_service).to receive(:subscribe_members).and_return(contacts_data)
   end
 
-  subject(:job) { described_class.perform_later(list_name, users_data, list_class_name) }
+  after do
+    clear_enqueued_jobs
+    clear_performed_jobs
+  end
 
   it 'queues the job' do
     expect { job }.to change(ActiveJob::Base.queue_adapter.enqueued_jobs, :size).by(1)
@@ -43,6 +48,8 @@ RSpec.describe ListGenerationJob, type: :job do
   end
 
   context 'executes perform' do
+    after { perform_enqueued_jobs { job } }
+
     it 'expect GibbonService::ListService to be initialized' do
       expect(GibbonService::ListService).to receive(:new).and_return(gibbon_service)
     end
@@ -52,12 +59,5 @@ RSpec.describe ListGenerationJob, type: :job do
     it 'expect initialized service to receive subscribe_members' do
       expect(gibbon_service).to receive(:subscribe_members).with(emails).and_return(contacts_data)
     end
-
-    after { perform_enqueued_jobs { job } }
-  end
-
-  after do
-    clear_enqueued_jobs
-    clear_performed_jobs
   end
 end

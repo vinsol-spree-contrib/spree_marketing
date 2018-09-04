@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Spree::Marketing::List::MostActiveUsers, type: :model do
-
   let!(:user_with_6_page_events) { create(:user_with_page_events, page_events_count: 6) }
 
   describe 'Constants' do
@@ -12,7 +11,7 @@ describe Spree::Marketing::List::MostActiveUsers, type: :model do
       expect(Spree::Marketing::List::MostActiveUsers::MINIMUM_PAGE_EVENT_COUNT).to eq 5
     end
     it 'AVAILABLE_REPORTS equals to array of reports for this list type' do
-      expect(Spree::Marketing::List::MostActiveUsers::AVAILABLE_REPORTS).to eq [:cart_additions_by, :purchases_by, :product_views_by]
+      expect(Spree::Marketing::List::MostActiveUsers::AVAILABLE_REPORTS).to eq %i[cart_additions_by purchases_by product_views_by]
     end
   end
 
@@ -59,5 +58,4 @@ describe Spree::Marketing::List::MostActiveUsers, type: :model do
       end
     end
   end
-
 end

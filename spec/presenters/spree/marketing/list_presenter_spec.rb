@@ -1,14 +1,13 @@
 require 'spec_helper'
 
 describe Spree::Marketing::ListPresenter do
-
   let(:list) { create(:abandoned_cart, name: 'abandoned_cart') }
   let(:product_name) { 'Sample Product' }
   let(:product) { create(:product, name: product_name) }
-  let(:multilist) { create(:favourable_products, entity: product, name: "favourable_products_list_#{ product_name }") }
+  let(:multilist) { create(:favourable_products, entity: product, name: "favourable_products_list_#{product_name}") }
   let(:list_presenter) { Spree::Marketing::ListPresenter.new list }
   let(:multilist_presenter) { Spree::Marketing::ListPresenter.new multilist }
-  let(:view_names_hash) {
+  let(:view_names_hash) do
     {
       'AbandonedCart' => {
         tooltip_content: Spree.t('marketing.lists.abandoned_cart.tooltip_content'),
@@ -51,10 +50,10 @@ describe Spree::Marketing::ListPresenter do
         description: Spree.t('marketing.lists.new_users.description')
       }
     }
-  }
+  end
 
-  describe "Constant" do
-    it "VIEW_NAMES_HASH stores view names of lists" do
+  describe 'Constant' do
+    it 'VIEW_NAMES_HASH stores view names of lists' do
       expect(Spree::Marketing::ListPresenter::VIEW_NAMES_HASH).to eq view_names_hash
     end
   end
@@ -86,5 +85,4 @@ describe Spree::Marketing::ListPresenter do
       end
     end
   end
-
 end

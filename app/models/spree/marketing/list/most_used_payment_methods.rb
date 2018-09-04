@@ -2,7 +2,6 @@ module Spree
   module Marketing
     class List
       class MostUsedPaymentMethods < Spree::Marketing::List
-
         include Spree::Marketing::ActsAsMultiList
 
         # Constants
@@ -12,7 +11,7 @@ module Spree
         TIME_FRAME = 1.month
         MINIMUM_COUNT = 5
         MOST_USED_PAYMENT_METHODS_COUNT = 5
-        AVAILABLE_REPORTS = [:purchases_by]
+        AVAILABLE_REPORTS = [:purchases_by].freeze
 
         def user_ids
           Spree::Order.joins(payments: :payment_method)
@@ -21,7 +20,7 @@ module Spree
                       .of_registered_users
                       .group(:user_id)
                       .having('COUNT(spree_orders.id) > ?', MINIMUM_COUNT)
-                      .order('COUNT(spree_orders.id) DESC')
+                      .order(Arel.sql("COUNT(spree_orders.id) DESC"))
                       .pluck(:user_id)
         end
 
@@ -30,12 +29,11 @@ module Spree
                         .where('spree_orders.completed_at >= :time_frame', time_frame: computed_time)
                         .where(state: :completed)
                         .group('spree_payment_methods.id')
-                        .order('COUNT(spree_orders.id) DESC')
+                        .order(Arel.sql("COUNT(spree_orders.id) DESC"))
                         .limit(MOST_USED_PAYMENT_METHODS_COUNT)
                         .pluck(:payment_method_id)
         end
         private_class_method :data
-
       end
     end
   end

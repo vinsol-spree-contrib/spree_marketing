@@ -1,7 +1,6 @@
 module Spree
   module Marketing
     class ListPresenter
-
       VIEW_NAMES_HASH = {
         'AbandonedCart' => {
           tooltip_content: Spree.t('marketing.lists.abandoned_cart.tooltip_content'),
@@ -43,9 +42,9 @@ module Spree
           tooltip_content: Spree.t('marketing.lists.new_users.tooltip_content'),
           description: Spree.t('marketing.lists.new_users.description')
         }
-      }
+      }.freeze
 
-      def initialize list
+      def initialize(list)
         @list = list
       end
 

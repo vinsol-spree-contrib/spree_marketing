@@ -12,13 +12,13 @@ module SpreeMarketing
       config.i18n.load_path += Dir["#{config.root}/config/locales/**/*.yml"]
     end
 
-    initializer 'load spree_marketing config', group: :all do |app|
+    initializer 'load spree_marketing config', group: :all do |_app|
       app_config = Rails.root.join('config', 'spree_marketing.yml').to_s
-      if File.exists?( app_config )
+      if File.exist?(app_config)
         SpreeMarketing::CONFIG = YAML.load_file(app_config).with_indifferent_access
       else
-        #Unless file found with correct format, there would be definite exceptional cases
-        Rails.logger.info "Please create the yml file spree_marketing.yml"
+        # Unless file found with correct format, there would be definite exceptional cases
+        Rails.logger.info 'Please create the yml file spree_marketing.yml'
       end
     end
 

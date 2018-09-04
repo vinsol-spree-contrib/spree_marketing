@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 describe Spree::Marketing::List::LeastZoneWiseOrders, type: :model do
-
-  let(:state_name) { 'alabama' }
-  let(:state) { create(:state, name: state_name) }
-  let(:entity_id) { state.id }
-  let(:entity_name) { state.name.downcase.gsub(' ', '_') }
+  let(:state_name)                                                          { 'alabama'                                                                                     }
+  let(:state)                                                               { Spree::State.find_by(name: state_name) || create(:state, name: state_name)                           }
+  let(:entity_id)                                                           { state.id                                                                                      }
+  let(:entity_name)                                                         { state.name.downcase.tr(' ', '_')                                                              }
   let!(:user_with_completed_orders_with_billing_address_having_given_state) { create(:user_with_completed_orders, :with_given_billing_state, state: state, orders_count: 3) }
 
   it_behaves_like 'acts_as_multilist', Spree::Marketing::List::LeastZoneWiseOrders
@@ -32,11 +31,10 @@ describe Spree::Marketing::List::LeastZoneWiseOrders, type: :model do
   end
 
   describe 'methods' do
-
     describe '.data' do
       context 'method flow' do
         it 'includes entity state id' do
-          expect(Spree::Marketing::List::LeastZoneWiseOrders.send :data).to include state.id
+          expect(Spree::Marketing::List::LeastZoneWiseOrders.send(:data)).to include state.id
         end
       end
 
@@ -53,10 +51,10 @@ describe Spree::Marketing::List::LeastZoneWiseOrders, type: :model do
         let!(:orders_in_sixth_state) { create_list(:order_with_given_billing_state, 6, state: sixth_state) }
 
         it 'includes top 5 states where least number of orders are placed' do
-          expect(Spree::Marketing::List::LeastZoneWiseOrders.send :data).to include *[state.id, second_state.id, third_state.id, fourth_state.id, fifth_state.id]
+          expect(Spree::Marketing::List::LeastZoneWiseOrders.send(:data)).to include state.id, second_state.id, third_state.id, fourth_state.id, fifth_state.id
         end
         it "doesn't include state which is not included in top 5 states with least number of orders" do
-          expect(Spree::Marketing::List::LeastZoneWiseOrders.send :data).to_not include sixth_state.id
+          expect(Spree::Marketing::List::LeastZoneWiseOrders.send(:data)).to_not include sixth_state.id
         end
       end
 
@@ -65,7 +63,7 @@ describe Spree::Marketing::List::LeastZoneWiseOrders, type: :model do
         let!(:old_orders_in_other_state) { create_list(:order_with_given_billing_state, 1, :with_custom_completed_at, state: other_state) }
 
         it 'returns state ids which will not include orders completed before time frame' do
-          expect(Spree::Marketing::List::LeastZoneWiseOrders.send :data).to_not include other_state.id
+          expect(Spree::Marketing::List::LeastZoneWiseOrders.send(:data)).to_not include other_state.id
         end
       end
     end
@@ -101,10 +99,9 @@ describe Spree::Marketing::List::LeastZoneWiseOrders, type: :model do
         let!(:old_completed_orders) { create_list(:order_with_given_billing_state, 1, :with_custom_completed_at, user_id: user_having_old_completed_orders_in_given_state.id, state: state, completed_at: timestamp) }
 
         it "doesn't include users who have orders in entity state completed before time frame" do
-          expect(Spree::Marketing::List::LeastZoneWiseOrders.new(params).send :user_ids).to_not include user_having_old_completed_orders_in_given_state.id
+          expect(Spree::Marketing::List::LeastZoneWiseOrders.new(params).send(:user_ids)).to_not include user_having_old_completed_orders_in_given_state.id
         end
       end
     end
   end
-
 end

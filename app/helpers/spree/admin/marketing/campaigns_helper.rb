@@ -2,13 +2,12 @@ module Spree
   module Admin
     module Marketing
       module CampaignsHelper
-
         def recipient_user_link(text, report_key, user)
-          if report_key == :purchases
-            path = spree.orders_admin_user_path(id: user.id)
-          else
-            path = spree.edit_admin_user_path(id: user.id)
-          end
+          path = if report_key == :purchases
+                   spree.orders_admin_user_path(id: user.id)
+                 else
+                   spree.edit_admin_user_path(id: user.id)
+                 end
           link_to(text, path, target: '_blank')
         end
 

@@ -2,7 +2,6 @@ module Spree
   module Marketing
     class List
       class LeastZoneWiseOrders < Spree::Marketing::List
-
         include Spree::Marketing::ActsAsMultiList
 
         # Constants
@@ -11,7 +10,7 @@ module Spree
         ENTITY_TYPE = 'Spree::State'
         TIME_FRAME = 1.month
         LEAST_ZONE_WISE_ORDER_COUNT = 5
-        AVAILABLE_REPORTS = [:purchases_by]
+        AVAILABLE_REPORTS = [:purchases_by].freeze
 
         def user_ids
           # FIXME: what if state id is not available, only country id is available. Should we use only zones.
@@ -22,7 +21,7 @@ module Spree
                       .where('spree_states.id = ?', entity_id)
                       .where('spree_orders.completed_at >= :time_frame', time_frame: computed_time)
                       .group(:user_id)
-                      .order('COUNT(spree_orders.id)')
+                      .order(Arel.sql('COUNT(spree_orders.id)'))
                       .pluck('spree_orders.user_id')
         end
 
@@ -30,12 +29,11 @@ module Spree
           Spree::Order.joins(bill_address: :state)
                       .where('spree_orders.completed_at >= :time_frame', time_frame: computed_time)
                       .group('spree_states.id')
-                      .order('COUNT(spree_orders.id)')
+                      .order(Arel.sql('COUNT(spree_orders.id)'))
                       .limit(LEAST_ZONE_WISE_ORDER_COUNT)
                       .pluck(:state_id)
         end
         private_class_method :data
-
       end
     end
   end

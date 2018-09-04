@@ -1,7 +1,6 @@
 module Spree
   module Marketing
     module ActsAsMultiList
-
       extend ActiveSupport::Concern
 
       def display_name
@@ -21,7 +20,7 @@ module Spree
               list.update_list
             else
               # ENTITY_KEY constant defines the attribute we are updating(searched_keyword/entity_id)
-              new("#{ self::ENTITY_KEY }" => entity, entity_type: self::ENTITY_TYPE).generate
+              new(self::ENTITY_KEY.to_s => entity, entity_type: self::ENTITY_TYPE).generate
               list = load_list_by_entity(entity)
             end
             lists << list
@@ -35,9 +34,9 @@ module Spree
 
         private
 
-          def load_list_by_entity(entity)
-            find_by("#{ self::ENTITY_KEY }" => entity)
-          end
+        def load_list_by_entity(entity)
+          find_by(self::ENTITY_KEY.to_s => entity)
+        end
       end
     end
   end

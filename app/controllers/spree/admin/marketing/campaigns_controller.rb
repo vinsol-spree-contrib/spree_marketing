@@ -2,8 +2,7 @@ module Spree
   module Admin
     module Marketing
       class CampaignsController < Spree::Admin::ResourceController
-
-        before_action :load_reports, only: [:show, :display_recipient_emails]
+        before_action :load_reports, only: %i[show display_recipient_emails]
 
         def sync
           Spree::Marketing::Campaign.sync
@@ -19,7 +18,6 @@ module Spree
         end
 
         private
-
           def collection
             @campaigns = Spree::Marketing::Campaign.order(scheduled_at: :desc)
           end

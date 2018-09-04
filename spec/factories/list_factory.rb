@@ -1,5 +1,4 @@
-FactoryGirl.define do
-
+FactoryBot.define do
   factory :marketing_list, class: Spree::Marketing::List do
     uid { Faker::Number.number(8) }
     name { Faker::Name.name }
@@ -10,5 +9,4 @@ FactoryGirl.define do
     factory factory_name, parent: :marketing_list, class: sub_class do
     end
   end
-
 end

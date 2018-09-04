@@ -8,5 +8,4 @@ class ListCleanupJob < ActiveJob::Base
     gibbon_service.delete_lists(list_uids)
     Spree::Marketing::List.where(uid: list_uids).destroy_all
   end
-
 end

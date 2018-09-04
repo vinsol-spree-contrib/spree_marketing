@@ -16,5 +16,4 @@ class CampaignSyncJob < ActiveJob::Base
       end
     end
   end
-
 end

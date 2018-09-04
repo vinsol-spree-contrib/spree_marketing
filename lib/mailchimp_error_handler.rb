@@ -1,5 +1,4 @@
 module MailchimpErrorHandler
-
   extend ActiveSupport::Concern
 
   RETRY_LIMIT = 5
@@ -21,7 +20,7 @@ module MailchimpErrorHandler
 
   def rescue_with_handler(exception)
     if should_retry?(retry_attempt)
-      p "retrying job : #{ retry_attempt }"
+      p "retrying job : #{retry_attempt}"
       @retry_attempt += 1
       retry_job
     else

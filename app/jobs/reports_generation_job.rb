@@ -3,6 +3,6 @@ class ReportsGenerationJob < ActiveJob::Base
 
   def perform(campaign_id = nil)
     campaign = Spree::Marketing::Campaign.find_by(id: campaign_id) if campaign_id
-    campaign.generate_reports if campaign
+    campaign&.generate_reports
   end
 end
