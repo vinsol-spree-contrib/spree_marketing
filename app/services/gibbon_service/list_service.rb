@@ -3,7 +3,7 @@ module GibbonService
     attr_reader :members, :list_uid
 
     MEMBER_STATUS                   = { unsubscribe: 'unsubscribed', subscribe: 'subscribed' }.freeze
-    DEFAULT_MEMBER_RETRIEVAL_PARAMS = { params: { 'status': MEMBER_STATUS[:subscribe] } }.freeze
+    DEFAULT_MEMBER_RETRIEVAL_PARAMS = { params: { status: MEMBER_STATUS[:subscribe] } }.freeze
     LIST_ATTRIBUTES                 = %i[permission_reminder email_type_option campaign_defaults contact].freeze
     DEFAULT_LIST_GENERATION_PARAMS  = SpreeMarketing::CONFIG[Rails.env].slice(*LIST_ATTRIBUTES)
 
@@ -14,7 +14,7 @@ module GibbonService
 
     def generate_list(list_name = '')
       p "Generating List #{list_name}"
-      response = gibbon.lists.create(body: { name: list_name }.merge(DEFAULT_LIST_GENERATION_PARAMS))
+      response = gibbon.lists.create(body: { name: list_name }.merge(DEFAULT_LIST_GENERATION_PARAMS)).body
       p response
       @list_uid = response['id'] if response['id'].present?
       p "Generated List #{list_name} -- #{@list_uid}"
