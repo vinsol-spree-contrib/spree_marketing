@@ -38,9 +38,9 @@ module GibbonService
         members_batch.each do |email|
           params = { body: { email_address: email, status: MEMBER_STATUS[:subscribe] } }
           if member_uid = Spree::Marketing::Contact.find_by(email: email).try(:uid)
-            response = gibbon.lists(@list_uid).members(member_uid).upsert(params)
+            response = gibbon.lists(@list_uid).members(member_uid).upsert(params).body
           else
-            response = gibbon.lists(@list_uid).members.create(params)
+            response = gibbon.lists(@list_uid).members.create(params).body
           end
           @members << response if response['id']
           p response
@@ -55,7 +55,7 @@ module GibbonService
       members_batches.each do |members_batch|
         p "Starting unsubscribe on mailchimp for members with uids #{members_batch.join('-')}"
         members_batch.each do |uid|
-          response = gibbon.lists(@list_uid).members(uid).update(body: { status: MEMBER_STATUS[:unsubscribe] })
+          response = gibbon.lists(@list_uid).members(uid).update(body: { status: MEMBER_STATUS[:unsubscribe] }).body
           p response
         end
         p "Finished unsubscribe on mailchimp for members with uids #{members_batch.join(', ')}"
