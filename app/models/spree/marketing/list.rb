@@ -43,8 +43,8 @@ module Spree
       end
 
       def self.generator
-        list = find_by(name: NAME_TEXT)
-        list ? list.update_list : new(name: NAME_TEXT).generate
+        list = find_by(name: self::NAME_TEXT)
+        list ? list.update_list : new(name: self::NAME_TEXT).generate
       end
 
       def self.generate_all
