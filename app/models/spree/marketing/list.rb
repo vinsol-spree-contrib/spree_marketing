@@ -76,6 +76,19 @@ module Spree
       end
       private_class_method :computed_time
 
+      protected
+
+        def all_users(emails)
+          registered_users = Spree.user_class.where(email: emails)
+
+          user_emails = registered_users.pluck(:email)
+          unregistered_emails = emails - user_emails
+
+          unregistered_users = unregistered_emails.map{|email| Spree.user_class.new(email: email) }
+
+          registered_users.to_a + unregistered_users
+        end
+
       private
         def computed_time
           self.class.send :computed_time
