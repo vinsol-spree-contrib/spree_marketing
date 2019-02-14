@@ -15,7 +15,11 @@
     <tbody>
       <% @contacts.each do |contact| %>
         <tr>
-          <td><%= link_to contact.email, edit_admin_user_path(id: contact.user_id), target: '_blank' %></td>
+          <% if contact.user_id %>
+            <td><%= link_to contact.email, edit_admin_user_path(id: contact.user_id), target: '_blank' %></td>
+          <% else %>
+            <td><%= contact.email %></td>
+          <% end %>
           <td><%= contact.uid %></td>
         </tr>
       <% end %>

@@ -6,15 +6,17 @@ module Spree
         NAME_TEXT = 'Abandoned Cart'
         AVAILABLE_REPORTS = [:purchases_by].freeze
 
-        def user_ids
-          # FIXME: There is a case where guest user has an incomplete order and we
-          # might have his email if he has processed address state successfully
-          # right now we are leaving that case.
-          Spree::Order.incomplete
-                      .of_registered_users
-                      .where.not(item_count: 0)
-                      .distinct
-                      .pluck(:user_id)
+        def users
+          order_emails = Spree::Order.incomplete.where.not(item_count: 0).distinct.pluck(:email).compact.uniq
+
+          registered_users = User.where(email: order_emails)
+
+          user_emails = registered_users.pluck(:email)
+          unregistered_emails = order_emails - user_emails
+
+          unregistered_users = unregistered_emails.map{|email| User.new(email: email) }
+
+          registered_users.to_a + unregistered_users
         end
       end
     end
