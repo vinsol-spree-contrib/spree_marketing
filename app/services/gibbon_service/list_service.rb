@@ -70,7 +70,7 @@ module GibbonService
 
     def retrieve_members
       p "retrieving members for list #{@list_uid}"
-      @members = gibbon.lists(@list_uid).members.retrieve(DEFAULT_MEMBER_RETRIEVAL_PARAMS)['members']
+      @members = gibbon.lists(@list_uid).members.retrieve(DEFAULT_MEMBER_RETRIEVAL_PARAMS).body['members']
     end
   end
 end
